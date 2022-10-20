@@ -11,6 +11,7 @@ public class Main {
         Lecture secondLecture = new Lecture ("Math", 70, new Homework(), new AdditionalMaterial());
         LectureService.createLecture();
         Lecture fourthLecture = LectureService.createLecture();
+        Lecture fifthLecture = LectureService.createLecture();
 
         System.out.println(secondLecture.getID()); // ID of secondLecture
 
