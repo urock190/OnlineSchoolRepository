@@ -8,7 +8,7 @@ public class Course {
     private Student student;
     private Lecture lecture;
 
-    public void Course (String name, Teacher teacher, Student student, Lecture lecture) {
+    public Course (String name, Teacher teacher, Student student, Lecture lecture) {
         this.name = name;
         this.teacher = teacher;
         this.student = student;

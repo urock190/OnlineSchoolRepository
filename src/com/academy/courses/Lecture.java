@@ -8,15 +8,18 @@ public class Lecture {
     private int amount;
     private int ID;
     private static int counterOfLectures;
+    private Course course;
     private Homework homework;
     private AdditionalMaterial additionalMaterial;
+    public int courseID;
 
-    public Lecture (String name, int amount, Homework homework, AdditionalMaterial additionalMaterial) {
+    public Lecture (String name, int amount, Homework homework, AdditionalMaterial additionalMaterial, Course course) {
         this.name = name;
         this.amount = amount;
         this.homework = homework;
         this.additionalMaterial = additionalMaterial;
         ID = ++counterOfLectures;
+        courseID = course.getID();
     }
     public Lecture(){
         ID = ++counterOfLectures;
