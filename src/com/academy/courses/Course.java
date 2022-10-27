@@ -14,6 +14,7 @@ public class Course {
         this.student = student;
         this.lecture = lecture;
         ID = ++counterOfCourses;
+        lecture.courseID = ID;
     }
     public Course(){
         ID = ++counterOfCourses;

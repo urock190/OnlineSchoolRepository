@@ -6,6 +6,13 @@ public class Homework {
     private int ID;
     private static int counterOfHomework;
 
+    @Override
+    public String toString() {
+        return "Homework (" +
+                "name = '" + name + '\'' +
+                ", numberOfTasks = " + numberOfTasks +
+                ')';
+    }
     public Homework(String name, int numberOfTasks) {
         this.name = name;
         this.numberOfTasks = numberOfTasks;

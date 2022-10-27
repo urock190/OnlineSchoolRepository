@@ -6,6 +6,13 @@ public class AdditionalMaterial {
     private int ID;
     private static int counterOfAddMaterials;
 
+    @Override
+    public String toString() {
+        return "AdditionalMaterial (" +
+                "name = '" + name + '\'' +
+                ", numberOfArticles = " + numberOfArticles +
+                ')';
+    }
     public AdditionalMaterial(String name, int numberOfArticles) {
         this.name = name;
         this.numberOfArticles = numberOfArticles;
