@@ -31,30 +31,38 @@ public class Main {
         Lecture sixthLecture = LectureService.createLecture("Informatics", 70, new Homework(),
                 new AdditionalMaterial());
 
-        LectureService.printCourseID(sixthLecture); // courseID of sixthLecture
-
+      //  LectureService.printCourseID(sixthLecture); // courseID of sixthLecture
+        chooseCategoryAndCreateLecture();
+    }
+    static void chooseCategoryAndCreateLecture(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Choose category: press 1 - for \"Course\", 2 - for \"Lecture\", 3 - for \"Student\" " +
-                "or 4 - for \"Teacher\"");
-        int categoryNumber = scanner.nextInt();
+        int categoryNumber = 0;
+        OUTER:
+        while (true){
+          do {
+              System.out.println("Choose category: press 1 - for \"Course\", 2 - for \"Lecture\", 3 - for \"Student\" " +
+                      "or 4 - for \"Teacher\"\n Type \"ex\" to exit the program");
+              if(scanner.hasNext("ex")) break OUTER;
+            categoryNumber = scanner.nextInt();
         switch(categoryNumber){
             case 1 -> System.out.println("You have choose the category \"Course\"");
             case 2 -> System.out.println("You have choose the category \"Lecture\"");
             case 3 -> System.out.println("You have choose the category \"Student\"");
             case 4 -> System.out.println("You have choose the category \"Teacher\"");
-            default -> System.out.println("Please, enter a number from 1 to 4");
+            default -> System.out.println("Please, enter a number from 1 to 4");}
+          } while (categoryNumber < 1 || categoryNumber > 4);
+            while (Lecture.getCounterOfLectures() < 8){
+                Lecture newLecture = LectureService.createLectureFromConsole();
+            System.out.println(newLecture);
+                if (Lecture.getCounterOfLectures() == 8) {
+                    System.out.println("=================\nExiting program: eight lectures have already been created.");
+                    break OUTER;}
+            LectureService.printCourseID(newLecture);
+            System.out.println("===========================================\nDo you want to finish creating lectures? " +
+                    "Enter \"yes\" to confirm.\nEnter anything else to create new lecture.");
+            String confirmation = scanner.next();
+            if(confirmation.equals("yes")) break;
+                }
+            } LectureService.printCounter(); // Counter of lectures
         }
-        Lecture seventhLecture = LectureService.createLectureFromConsole();
-        System.out.println(seventhLecture);
-        LectureService.printCourseID(seventhLecture);
-        System.out.println("===========================================\n" +
-                "Do you want to create new lecture? Enter \"yes\" to confirm. \nEnter anything else to cancel.");
-        String confirmation = scanner.next();
-        if(confirmation.equals("yes")){
-            Lecture eighthLecture = LectureService.createLectureFromConsole();
-            System.out.println(eighthLecture);
-        } else {
-            scanner.close();
-        } LectureService.printCounter(); // Counter of lectures
-    }
 }

@@ -23,7 +23,7 @@ public class LectureService {
     }
     public static Lecture createLectureFromConsole() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Create new lecture. \nEnter the name of this lecture");
+        System.out.println("==========================\nCreate new lecture. \nEnter the name of this lecture");
         String name = scanner.next();
         System.out.println("Enter amount of lectures");
         int amount = scanner.nextInt();
