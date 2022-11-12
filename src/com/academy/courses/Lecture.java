@@ -33,6 +33,9 @@ public class Lecture {
         ID = ++counterOfLectures;
         courseID = getCounterOfCourses();
     }
+    public String getName() {
+        return name;
+    }
     public int getID() {
         return ID;
     }

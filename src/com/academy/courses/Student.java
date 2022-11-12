@@ -6,6 +6,12 @@ public class Student {
     private int ID;
     private static int counterOfStudents;
 
+    @Override
+    public String toString() {
+        return "Student (" +
+                "name = '" + name + '\'' +
+                ", secondName = '" + secondName + '\'' + ')';
+    }
     public Student (String name, String secondName) {
         this.name = name;
         this.secondName = secondName;
@@ -13,6 +19,9 @@ public class Student {
     }
     public Student(){
         ID = ++counterOfStudents;
+    }
+    public String getName() {
+        return name;
     }
     public int getID() {
         return ID;

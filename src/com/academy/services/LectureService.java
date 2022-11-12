@@ -1,9 +1,9 @@
 package com.academy.services;
 
-import com.academy.courses.Course;
 import com.academy.courses.Lecture;
 import com.academy.courses.lectures.AdditionalMaterial;
 import com.academy.courses.lectures.Homework;
+import com.academy.repository.LectureRepository;
 
 import java.util.Scanner;
 
@@ -39,4 +39,12 @@ public class LectureService {
         AdditionalMaterial additionalMaterial = new AdditionalMaterial(addMatName, numberOfArticles);
         return new Lecture(name, amount, homework, additionalMaterial);
         }
+    public static void printID(){
+        System.out.println("======================\nShort lectures info:");
+        for (Lecture lecture : LectureRepository.getArray()) {
+            if (lecture == null) break;
+            System.out.println("{Lecture \"" + lecture.getName() + "\" ID = " + lecture.getID() + '}');
+        }
+        System.out.println();
+    }
 }
