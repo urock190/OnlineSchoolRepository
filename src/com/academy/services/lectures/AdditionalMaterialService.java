@@ -1,6 +1,6 @@
 package com.academy.services.lectures;
 
-import com.academy.courses.lectures.AdditionalMaterial;
+import com.academy.models.lectures.AdditionalMaterial;
 
 public class AdditionalMaterialService {
     public static void printCounter(){

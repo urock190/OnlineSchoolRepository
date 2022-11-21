@@ -1,6 +1,6 @@
 package com.academy.services.lectures;
 
-import com.academy.courses.lectures.Homework;
+import com.academy.models.lectures.Homework;
 
 public class HomeworkService {
     public static void printCounter(){

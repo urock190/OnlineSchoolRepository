@@ -1,11 +1,11 @@
 package com.academy.services;
 
-import com.academy.courses.Course;
-import com.academy.courses.Lecture;
-import com.academy.courses.Student;
-import com.academy.courses.Teacher;
-import com.academy.courses.lectures.AdditionalMaterial;
-import com.academy.courses.lectures.Homework;
+import com.academy.models.Course;
+import com.academy.models.Lecture;
+import com.academy.models.Student;
+import com.academy.models.Teacher;
+import com.academy.models.lectures.AdditionalMaterial;
+import com.academy.models.lectures.Homework;
 import com.academy.repository.CourseRepository;
 import com.academy.repository.LectureRepository;
 import com.academy.repository.StudentRepository;
@@ -16,6 +16,7 @@ import java.util.Scanner;
 public class MainService {
 
     public static void init(){
+        LectureRepository lectureRepository = new LectureRepository();
         CourseService courseService = new CourseService();
         Course firstCourse = courseService.createCourse("firstCourse", new Teacher("Victoriya",
                 "Karnauh"), new Student("Yurii", "Shovkoplias"));
@@ -24,16 +25,21 @@ public class MainService {
         StudentRepository.addStudent(firstCourse.getStudent());
         Lecture firstLecture = LectureService.createLecture("Chemistry", 70, new Homework(),
                 new AdditionalMaterial());
-        LectureRepository.addLecture(firstLecture);
+        lectureRepository.addLecture(firstLecture);
         Lecture secondLecture = LectureService.createLecture("English", 75, new Homework(),
                 new AdditionalMaterial());
-        LectureRepository.addLecture(secondLecture);
+        lectureRepository.addLecture(secondLecture);
         Lecture thirdLecture = LectureService.createLecture("Informatics", 70, new Homework(),
                 new AdditionalMaterial());
-        LectureRepository.addLecture(thirdLecture);
+        lectureRepository.addLecture(thirdLecture);
     }
     public static void chooseCategoryAndCreateLecture(){
         Scanner scanner = new Scanner(System.in);
+        LectureService lectureService = new LectureService();
+        CourseService courseService = new CourseService();
+        StudentService studentService = new StudentService();
+        TeacherService teacherService = new TeacherService();
+        LectureRepository lectureRepository = new LectureRepository();
         int categoryNumber = 0;
         OUTER:
         while (true){
@@ -50,7 +56,7 @@ public class MainService {
                                 "\nType anything else to continue creating lectures.");
                         String confirmation = scanner.next();
                         if(confirmation.equals("yes")) {
-                            CourseService.printID(); continue OUTER;
+                            courseService.printID(); continue OUTER;
                         } else if (confirmation.equals("no")) {
                             continue OUTER;
                         } else break;
@@ -61,7 +67,7 @@ public class MainService {
                                 "\nType anything else to continue creating lectures.");
                         String confirmation1 = scanner.next();
                         if(confirmation1.equals("yes")) {
-                            LectureService.printID(); continue OUTER;
+                            lectureService.printID(); continue OUTER;
                         } else if (confirmation1.equals("no")) {
                             continue OUTER;
                         } else break;
@@ -72,7 +78,7 @@ public class MainService {
                                 "\nType anything else to continue creating lectures.");
                         String confirmation2 = scanner.next();
                         if(confirmation2.equals("yes")) {
-                            StudentService.printID(); continue OUTER;
+                            studentService.printID(); continue OUTER;
                         } else if (confirmation2.equals("no")) {
                             continue OUTER;
                         } else break;
@@ -83,7 +89,7 @@ public class MainService {
                                 "\nType anything else to continue creating lectures.");
                         String confirmation3 = scanner.next();
                         if(confirmation3.equals("yes")) {
-                            TeacherService.printID(); continue OUTER;
+                            teacherService.printID(); continue OUTER;
                         } else if (confirmation3.equals("no")) {
                             continue OUTER;
                         } else break;
@@ -91,7 +97,7 @@ public class MainService {
             } while (categoryNumber < 1 || categoryNumber > 4);
             while (Lecture.getCounterOfLectures() < 8){
                 Lecture newLecture = LectureService.createLectureFromConsole();
-                LectureRepository.addLecture(newLecture);
+                lectureRepository.addLecture(newLecture);
                 System.out.println(newLecture);
                 if (Lecture.getCounterOfLectures() == 8) {
                     System.out.println("=================\nExiting program: eight lectures have already been created.");
@@ -105,21 +111,3 @@ public class MainService {
         } LectureService.printCounter(); // Counter of lectures
     }
 }
-/**CourseService courseService = new CourseService();
- Course firstCourse = courseService.createCourse("firstCourse", new Teacher(), new Student(),
- new Lecture("English", 77, new Homework("first", 2),
- new AdditionalMaterial()));                           // creating course 1
- Lecture secondLecture = LectureService.createLecture("Math", 70, new Homework(),
- new AdditionalMaterial());
-
- Course secondCourse = courseService.createCourse("secondCourse", new Teacher("Victoriya",
- "Karnauh"), new Student("Yurii", "Shovkoplias"),
- new Lecture("Literature", 30, new Homework(),
- new AdditionalMaterial()));                            // creating course 2
- Lecture fourthLecture = LectureService.createLecture("Chemistry", 70, new Homework(),
- new AdditionalMaterial());
- Lecture fifthLecture = LectureService.createLecture("English", 75, new Homework(),
- new AdditionalMaterial());
- Lecture sixthLecture = LectureService.createLecture("Informatics", 70, new Homework(),
- new AdditionalMaterial());
- LectureService.printCourseID(sixthLecture); // courseID of sixthLecture*/

@@ -1,16 +1,31 @@
 package com.academy.repository;
 
-import com.academy.courses.Course;
+import com.academy.models.Course;
+import com.academy.superclasses.Repository;
 
-public class CourseRepository {
+public class CourseRepository extends Repository {
     private static int capacity = 3;
     private static Course[] courses = new Course[capacity];
+
+    @Override
+    public int getCapacity() {
+        return capacity;
+    }
+
+    @Override
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+    @Override
+    public Course[] getAll() {
+        return courses;
+    }
 
     public static void addCourse (Course course){
         for (int i = 0; i < courses.length; i++) {
             if (courses[i] == null){
                 courses[i] = course;
-            break;
+                break;
             }else if (i == capacity-1){
                 expandArray();
             }
@@ -23,7 +38,18 @@ public class CourseRepository {
         System.arraycopy(courses, 0, tmpArray, 0, newCapacity);
         courses = tmpArray;
     }
-    public static Course[] getArray(){
-        return courses;
+    @Override
+    public Course getById(int ID) {
+        for (Course course : getAll()){
+            if (course == null) continue;
+            if (course.getID() == ID) return course;
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteById(int ID) {
+        for (int i = 0; i < courses.length; i++){
+        if (courses[i].getID() == ID) courses[i] = null;}
     }
 }

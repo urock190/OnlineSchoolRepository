@@ -1,8 +1,8 @@
 package com.academy.services;
 
-import com.academy.courses.Lecture;
-import com.academy.courses.lectures.AdditionalMaterial;
-import com.academy.courses.lectures.Homework;
+import com.academy.models.Lecture;
+import com.academy.models.lectures.AdditionalMaterial;
+import com.academy.models.lectures.Homework;
 import com.academy.repository.LectureRepository;
 
 import java.util.Scanner;
@@ -12,7 +12,7 @@ public class LectureService {
     System.out.println("number of lectures = " + Lecture.getCounterOfLectures());
     }
     public static void printCourseID(Lecture lecture){
-        System.out.println("course ID of lecture №" + lecture.getID() + " = " + lecture.courseID);
+        System.out.println("course ID of lecture №" + lecture.getID() + " = " + lecture.getCourseID());
     }
     public static Lecture createLecture() {
         return new Lecture();
@@ -39,10 +39,11 @@ public class LectureService {
         AdditionalMaterial additionalMaterial = new AdditionalMaterial(addMatName, numberOfArticles);
         return new Lecture(name, amount, homework, additionalMaterial);
         }
-    public static void printID(){
+        LectureRepository lectureRepository = new LectureRepository();
+    public void printID(){
         System.out.println("======================\nShort lectures info:");
-        for (Lecture lecture : LectureRepository.getArray()) {
-            if (lecture == null) break;
+        for (Lecture lecture : lectureRepository.getAll()) {
+            if (lecture == null) continue;
             System.out.println("{Lecture \"" + lecture.getName() + "\" ID = " + lecture.getID() + '}');
         }
         System.out.println();
