@@ -4,6 +4,7 @@ import com.academy.models.Lecture;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
 import com.academy.repository.LectureRepository;
+import com.academy.repository.PersonRepository;
 
 import java.util.Scanner;
 
@@ -40,6 +41,7 @@ public class LectureService {
         return new Lecture(name, amount, homework, additionalMaterial);
         }
         LectureRepository lectureRepository = new LectureRepository();
+    PersonRepository personRepository = new PersonRepository();
     public void printID(){
         System.out.println("======================\nShort lectures info:");
         for (Lecture lecture : lectureRepository.getAll()) {
@@ -47,5 +49,30 @@ public class LectureService {
             System.out.println("{Lecture \"" + lecture.getName() + "\" ID = " + lecture.getID() + '}');
         }
         System.out.println();
+    }
+    public void addTeacherByID() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("==========================\nAdd a teacher for a lecture. \nEnter lecture's ID first.");
+        int lectureID;
+        INNER:
+        do {
+            lectureID = scanner.nextInt();
+            if (lectureRepository.getById(lectureID) != null){
+                System.out.println("==========================\nEnter teacher's ID, please.");
+                int teacherID;
+                do {
+                    teacherID = scanner.nextInt();
+                    if (personRepository.getTeacherById(teacherID) != null){
+                        lectureRepository.getById(lectureID).setPersonID(teacherID);
+                        System.out.println("Teacher's ID has been successfully added.\n=============================");
+                        break INNER;
+                    }else {System.out.println("There's no teacher with ID = " + teacherID + ". Please, enter correct ID or type" +
+                            " \"ex\" for exit.");}
+                    if(scanner.hasNext("ex")) break;
+                }while (personRepository.getTeacherById(teacherID) == null);
+            }else {System.out.println("There's no lecture with ID = " + lectureID + ". Please, enter correct ID or type" +
+                    " \"ex\" for exit.");}
+            if(scanner.hasNext("ex")) break;
+        }while (lectureRepository.getById(lectureID) == null);
     }
 }

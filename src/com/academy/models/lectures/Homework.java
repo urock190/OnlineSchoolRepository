@@ -1,6 +1,6 @@
 package com.academy.models.lectures;
 
-import com.academy.superclasses.Models;
+import com.academy.models.Models;
 
 public class Homework extends Models {
     private int numberOfTasks;

@@ -1,7 +1,6 @@
 package com.academy.repository;
 
 import com.academy.models.Course;
-import com.academy.superclasses.Repository;
 
 public class CourseRepository extends Repository {
     private static int capacity = 3;

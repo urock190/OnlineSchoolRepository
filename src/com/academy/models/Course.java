@@ -1,11 +1,9 @@
 package com.academy.models;
 
-import com.academy.superclasses.Models;
-
 public class Course extends Models {
     private static int counterOfCourses;
-    private Teacher teacher;
-    private Student student;
+    private Person teacher;
+    private Person student;
     private Lecture lecture;
     @Override
     public String toString() {
@@ -16,7 +14,7 @@ public class Course extends Models {
                 ", student = " + student +
                 ", lecture = " + lecture + ')';
     }
-    public Course (String name, Teacher teacher, Student student, Lecture lecture) {
+    public Course (String name, Person teacher, Person student, Lecture lecture) {
         this.setName(name);
         this.teacher = teacher;
         this.student = student;
@@ -24,7 +22,7 @@ public class Course extends Models {
         setID(++counterOfCourses);
         lecture.setCourseID(getID());
     }
-    public Course (String name, Teacher teacher, Student student) {
+    public Course (String name, Person teacher, Person student) {
         this.setName(name);
         this.teacher = teacher;
         this.student = student;
@@ -34,11 +32,11 @@ public class Course extends Models {
         setID(++counterOfCourses);
     }
 
-    public void setTeacher(Teacher teacher) {
+    public void setTeacher(Person teacher) {
         this.teacher = teacher;
     }
 
-    public void setStudent(Student student) {
+    public void setStudent(Person student) {
         this.student = student;
     }
 
@@ -57,10 +55,10 @@ public class Course extends Models {
     public Lecture getLecture() {
         return lecture;
     }
-    public Teacher getTeacher() {
+    public Person getTeacher() {
         return teacher;
     }
-    public Student getStudent() {
+    public Person getStudent() {
         return student;
     }
 }

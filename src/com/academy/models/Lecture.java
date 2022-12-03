@@ -2,9 +2,9 @@ package com.academy.models;
 
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
-import com.academy.superclasses.Models;
 
 import static com.academy.models.Course.getCounterOfCourses;
+import static com.academy.models.Person.getCounterOfPersons;
 
 public class Lecture extends Models {
     private int amount;
@@ -12,13 +12,17 @@ public class Lecture extends Models {
     private Homework homework;
     private AdditionalMaterial additionalMaterial;
     private int courseID;
+    private int personID;
     @Override
     public String toString() {
         return "Lecture (" +
                 "name = '" + getName() + '\'' +
                 ", amount = " + amount +
+                ", ID = " + getID() +
                 ", homework = " + homework +
-                ", additionalMaterial = " + additionalMaterial + ')';
+                ", additionalMaterial = " + additionalMaterial +
+                ", courseID = " + courseID +
+                ", personID = " + personID +')';
     }
     public Lecture (String name, int amount, Homework homework, AdditionalMaterial additionalMaterial) {
         this.setName(name);
@@ -27,10 +31,12 @@ public class Lecture extends Models {
         this.additionalMaterial = additionalMaterial;
         setID(++counterOfLectures);
         courseID = getCounterOfCourses();
+        personID = getCounterOfPersons();
     }
     public Lecture(){
         setID(++counterOfLectures);
         courseID = getCounterOfCourses();
+        personID = getCounterOfPersons();
     }
 
     public void setAmount(int amount) {
@@ -48,7 +54,12 @@ public class Lecture extends Models {
     public void setCourseID(int courseID) {
         this.courseID = courseID;
     }
-
+    public int getPersonID() {
+        return personID;
+    }
+    public void setPersonID(int personID) {
+        this.personID = personID;
+    }
     public int getAmount() {
         return amount;
     }

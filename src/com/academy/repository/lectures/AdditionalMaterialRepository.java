@@ -1,7 +1,7 @@
 package com.academy.repository.lectures;
 
 import com.academy.models.lectures.AdditionalMaterial;
-import com.academy.superclasses.Repository;
+import com.academy.repository.Repository;
 
 public class AdditionalMaterialRepository extends Repository {
     private static int capacity = 10;

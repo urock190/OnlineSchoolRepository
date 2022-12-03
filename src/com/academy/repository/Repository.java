@@ -1,7 +1,7 @@
-package com.academy.superclasses;
+package com.academy.repository;
 
 import com.academy.models.Lecture;
-import com.academy.repository.LectureRepository;
+import com.academy.models.Models;
 
 public class Repository {
     private static int capacity = 3;
@@ -50,6 +50,6 @@ public class Repository {
     public void deleteById(int ID){
         for (int i = 0; i < array.length; i++){
         if (array[i].getID() == ID) array[i] = null;
-    }
+        }
     }
 }

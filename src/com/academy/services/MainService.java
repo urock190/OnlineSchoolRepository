@@ -2,27 +2,25 @@ package com.academy.services;
 
 import com.academy.models.Course;
 import com.academy.models.Lecture;
-import com.academy.models.Student;
-import com.academy.models.Teacher;
+import com.academy.models.Person;
+import com.academy.models.Role;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
 import com.academy.repository.CourseRepository;
 import com.academy.repository.LectureRepository;
-import com.academy.repository.StudentRepository;
-import com.academy.repository.TeacherRepository;
+import com.academy.repository.PersonRepository;
 
 import java.util.Scanner;
 
 public class MainService {
-
     public static void init(){
         LectureRepository lectureRepository = new LectureRepository();
         CourseService courseService = new CourseService();
-        Course firstCourse = courseService.createCourse("firstCourse", new Teacher("Victoriya",
-                "Karnauh"), new Student("Yurii", "Shovkoplias"));
+        Course firstCourse = courseService.createCourse("firstCourse", new Person(Role.TEACHER,"Victoriya",
+                "Karnauh"), new Person(Role.STUDENT, "Yurii", "Shovkoplias"));
         CourseRepository.addCourse(firstCourse);
-        TeacherRepository.addTeacher(firstCourse.getTeacher());
-        StudentRepository.addStudent(firstCourse.getStudent());
+        PersonRepository.addPerson(firstCourse.getTeacher());
+        PersonRepository.addPerson(firstCourse.getStudent());
         Lecture firstLecture = LectureService.createLecture("Chemistry", 70, new Homework(),
                 new AdditionalMaterial());
         lectureRepository.addLecture(firstLecture);
@@ -37,10 +35,9 @@ public class MainService {
         Scanner scanner = new Scanner(System.in);
         LectureService lectureService = new LectureService();
         CourseService courseService = new CourseService();
-        StudentService studentService = new StudentService();
-        TeacherService teacherService = new TeacherService();
+        PersonService personService = new PersonService();
         LectureRepository lectureRepository = new LectureRepository();
-        int categoryNumber = 0;
+        int categoryNumber;
         OUTER:
         while (true){
             do {
@@ -62,37 +59,69 @@ public class MainService {
                         } else break;
                     case 2:
                         System.out.println("You have choose the category \"Lecture\"");
-                        System.out.println("Do you want to print short info about lecture objects? " +
-                                "Type \"yes\" to confirm.\nType \"no\" to choose another category." +
-                                "\nType anything else to continue creating lectures.");
+                        System.out.println("Do you want to print short info about lecture objects? Type \"yes\" to confirm." +
+                                "\nType \"no\" to choose another category. Enter \"1\" to add teacher's ID to the lecture." +
+                                "\nEnter \"2\" to get lecture by it's ID. Type anything else to continue creating lectures.");
                         String confirmation1 = scanner.next();
                         if(confirmation1.equals("yes")) {
                             lectureService.printID(); continue OUTER;
                         } else if (confirmation1.equals("no")) {
                             continue OUTER;
-                        } else break;
+                        } else if (confirmation1.equals("1")) {
+                            lectureService.addTeacherByID();
+                            continue OUTER;
+                        } else if (confirmation1.equals("2")) {
+                            do {System.out.println("====================================\nEnter ID number of the lecture.");
+                                int id = scanner.nextInt();
+                                if (lectureRepository.getById(id) == null){
+                                    System.out.println("There's no lecture with such ID");
+                                } else System.out.println(lectureRepository.getById(id));
+                                System.out.println("====================================\nWould you like to get another lecture?" +
+                                        " Enter \"yes\" to confirm.\nEnter anything else to finish showing lecture's info and" +
+                                        " return to \"Choose category\" menu.");
+                            }while (scanner.next().equals("yes"));
+                            continue OUTER;
+                        }else break;
                     case 3:
                         System.out.println("You have choose the category \"Student\"");
-                        System.out.println("Do you want to print short info about students? " +
-                                "Type \"yes\" to confirm.\nType \"no\" to choose another category." +
+                        System.out.println("Do you want to print short info about students? Type \"yes\" to confirm." +
+                                "\nType \"no\" to choose another category. Enter \"1\" to create new student." +
                                 "\nType anything else to continue creating lectures.");
                         String confirmation2 = scanner.next();
                         if(confirmation2.equals("yes")) {
-                            studentService.printID(); continue OUTER;
+                            personService.printStudentsID(); continue OUTER;
                         } else if (confirmation2.equals("no")) {
+                            continue OUTER;
+                        } else if (confirmation2.equals("1")) {
+                            do {
+                                Person newStudent = PersonService.createStudentFromConsole();
+                                PersonRepository.addPerson(newStudent);
+                                System.out.println("==========================================\nDo you want to create new student? " +
+                                    "Enter \"yes\" to confirm.\nEnter anything else to finish creating students and" +
+                                        " return to \"Choose category\" menu.");
+                            }while (scanner.next().equals("yes"));
                             continue OUTER;
                         } else break;
                     case 4:
                         System.out.println("You have choose the category \"Teacher\"");
-                        System.out.println("Do you want to print short info about teachers? " +
-                                "Type \"yes\" to confirm.\nType \"no\" to choose another category." +
+                        System.out.println("Do you want to print short info about teachers? Type \"yes\" to confirm." +
+                                "\nType \"no\" to choose another category. Enter \"1\" to create new teacher." +
                                 "\nType anything else to continue creating lectures.");
                         String confirmation3 = scanner.next();
                         if(confirmation3.equals("yes")) {
-                            teacherService.printID(); continue OUTER;
+                            personService.printTeachersID(); continue OUTER;
                         } else if (confirmation3.equals("no")) {
                             continue OUTER;
-                        } else break;
+                        } else if (confirmation3.equals("1")) {
+                            do {
+                                Person newTeacher = PersonService.createTeacherFromConsole();
+                                PersonRepository.addPerson(newTeacher);
+                                System.out.println("==========================================\nDo you want to create new teacher? " +
+                                        "Enter \"yes\" to confirm.\nEnter anything else to finish creating teachers and" +
+                                        " return to \"Choose category\" menu.");
+                            } while (scanner.next().equals("yes"));
+                            continue OUTER;
+                        }else break;
                     default: System.out.println("Please, enter a number from 1 to 4");}
             } while (categoryNumber < 1 || categoryNumber > 4);
             while (Lecture.getCounterOfLectures() < 8){

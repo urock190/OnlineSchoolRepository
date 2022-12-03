@@ -1,4 +1,4 @@
-package com.academy.superclasses;
+package com.academy.models;
 
 public class Models {
     private String name;

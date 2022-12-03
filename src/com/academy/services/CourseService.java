@@ -2,8 +2,7 @@ package com.academy.services;
 
 import com.academy.models.Course;
 import com.academy.models.Lecture;
-import com.academy.models.Student;
-import com.academy.models.Teacher;
+import com.academy.models.Person;
 import com.academy.repository.CourseRepository;
 
 public class CourseService {
@@ -13,9 +12,9 @@ public class CourseService {
     public Course createCourse() {
         return new Course();
     }
-    public Course createCourse(String name, Teacher teacher, Student student, Lecture lecture) {
+    public Course createCourse(String name, Person teacher, Person student, Lecture lecture) {
         return new Course(name, teacher, student, lecture);}
-    public Course createCourse(String name, Teacher teacher, Student student) {
+    public Course createCourse(String name, Person teacher, Person student) {
         return new Course(name, teacher, student);}
     CourseRepository courseRepository = new CourseRepository();
     public void printID(){
