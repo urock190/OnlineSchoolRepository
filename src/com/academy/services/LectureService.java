@@ -7,8 +7,12 @@ import com.academy.repository.LectureRepository;
 import com.academy.repository.PersonRepository;
 
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LectureService {
+    private static Pattern pattern = Pattern.compile("^\\s$|[\\W&&[\\S]]");
+    private static Pattern pattern1 = Pattern.compile("^\\s$|.{201,}");
     public static void printCounter(){
     System.out.println("number of lectures = " + Lecture.getCounterOfLectures());
     }
@@ -18,27 +22,44 @@ public class LectureService {
     public static Lecture createLecture() {
         return new Lecture();
     }
-    public static Lecture createLecture(String name, int amount, Homework homework,
-                                        AdditionalMaterial additionalMaterial){
+    public static Lecture createLecture(String name, int amount, Homework homework, AdditionalMaterial additionalMaterial){
         return new Lecture(name, amount, homework, additionalMaterial);
+    }
+    public static Lecture createLecture(String name, int amount, String description, Homework homework,
+                                        AdditionalMaterial additionalMaterial){
+        return new Lecture(name, amount, description, homework, additionalMaterial);
     }
     public static Lecture createLectureFromConsole() {
         Scanner scanner = new Scanner(System.in);
+        String name = " ";
+        boolean out = false;
         System.out.println("==========================\nCreate new lecture. \nEnter the name of this lecture");
-        String name = scanner.next();
+        while (!out) {
+            name = scanner.next() + scanner.nextLine();
+            Matcher matcher = pattern.matcher(name);
+            if (matcher.find() == false) out = true;
+            else System.out.println("The lecture name must contain only English letters and numbers.");}
         System.out.println("Enter amount of lectures");
         int amount = scanner.nextInt();
+        System.out.println("Enter a short description of the lecture, please.");
+        String description  = " ";
+        while (out) {
+            description = scanner.next() + scanner.nextLine();
+            Matcher matcher = pattern1.matcher(description);
+            if (matcher.find() == false) out = false;
+            else System.out.println("The description must contain a maximum of 200 characters. You have entered " +
+                            description.length() + " characters. Please enter a shorter description.");}
         System.out.println("Enter homework's name");
-        String homeworkName = scanner.next();
+        String homeworkName = scanner.next() + scanner.nextLine();
         System.out.println("Enter number of tasks");
         int numberOfTasks = scanner.nextInt();
         Homework homework = new Homework(homeworkName, numberOfTasks);
         System.out.println("Enter the name of additional material");
-        String addMatName = scanner.next();
+        String addMatName = scanner.next() + scanner.nextLine();
         System.out.println("Enter amount of articles");
         int numberOfArticles = scanner.nextInt();
         AdditionalMaterial additionalMaterial = new AdditionalMaterial(addMatName, numberOfArticles);
-        return new Lecture(name, amount, homework, additionalMaterial);
+        return new Lecture(name, amount, description, homework, additionalMaterial);
         }
         LectureRepository lectureRepository = new LectureRepository();
     PersonRepository personRepository = new PersonRepository();

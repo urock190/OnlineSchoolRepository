@@ -8,6 +8,7 @@ import static com.academy.models.Person.getCounterOfPersons;
 
 public class Lecture extends Models {
     private int amount;
+    private String description;
     private static int counterOfLectures;
     private Homework homework;
     private AdditionalMaterial additionalMaterial;
@@ -18,6 +19,7 @@ public class Lecture extends Models {
         return "Lecture (" +
                 "name = '" + getName() + '\'' +
                 ", amount = " + amount +
+                ", description = \"" + description + '\"'+
                 ", ID = " + getID() +
                 ", homework = " + homework +
                 ", additionalMaterial = " + additionalMaterial +
@@ -33,10 +35,29 @@ public class Lecture extends Models {
         courseID = getCounterOfCourses();
         personID = getCounterOfPersons();
     }
+    public Lecture(String name, int amount, String description, Homework homework, AdditionalMaterial additionalMaterial) {
+        this.setName(name);
+        this.amount = amount;
+        this.description = description;
+        this.homework = homework;
+        this.additionalMaterial = additionalMaterial;
+        setID(++counterOfLectures);
+        courseID = getCounterOfCourses();
+        personID = getCounterOfPersons();
+    }
+
     public Lecture(){
         setID(++counterOfLectures);
         courseID = getCounterOfCourses();
         personID = getCounterOfPersons();
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setAmount(int amount) {
