@@ -15,12 +15,14 @@ import java.util.Scanner;
 public class MainService {
     public static void init(){
         LectureRepository lectureRepository = new LectureRepository();
+        CourseRepository courseRepository = new CourseRepository();
+        PersonRepository personRepository = new PersonRepository();
         CourseService courseService = new CourseService();
         Course firstCourse = courseService.createCourse("firstCourse", new Person(Role.TEACHER,"Victoriya",
                 "Karnauh"), new Person(Role.STUDENT, "Yurii", "Shovkoplias"));
-        CourseRepository.addCourse(firstCourse);
-        PersonRepository.addPerson(firstCourse.getTeacher());
-        PersonRepository.addPerson(firstCourse.getStudent());
+        courseRepository.addCourse(firstCourse);
+        personRepository.addPerson(firstCourse.getTeacher());
+        personRepository.addPerson(firstCourse.getStudent());
         Lecture firstLecture = LectureService.createLecture("Chemistry", 70, new Homework(),
                 new AdditionalMaterial());
         lectureRepository.addLecture(firstLecture);
@@ -61,7 +63,7 @@ public class MainService {
                         } else if (confirmation.equals("1")) {
                             do {
                                 Course newCourse = courseService.createCourseFromConsole();
-                                CourseRepository.addCourse(newCourse);
+                                courseRepository.addCourse(newCourse);
                                 System.out.println("==========================================\nDo you want to create new course? " +
                                         "Enter \"yes\" to confirm.\nEnter anything else to finish creating courses and" +
                                         " return to \"Choose category\" menu.");
@@ -117,7 +119,7 @@ public class MainService {
                         } else if (confirmation2.equals("1")) {
                             do {
                                 Person newStudent = PersonService.createStudentFromConsole();
-                                PersonRepository.addPerson(newStudent);
+                                personRepository.addPerson(newStudent);
                                 System.out.println("==========================================\nDo you want to create new student? " +
                                     "Enter \"yes\" to confirm.\nEnter anything else to finish creating students and" +
                                         " return to \"Choose category\" menu.");
@@ -148,7 +150,7 @@ public class MainService {
                         } else if (confirmation3.equals("1")) {
                             do {
                                 Person newTeacher = PersonService.createTeacherFromConsole();
-                                PersonRepository.addPerson(newTeacher);
+                                personRepository.addPerson(newTeacher);
                                 System.out.println("==========================================\nDo you want to create new teacher? " +
                                         "Enter \"yes\" to confirm.\nEnter anything else to finish creating teachers and" +
                                         " return to \"Choose category\" menu.");

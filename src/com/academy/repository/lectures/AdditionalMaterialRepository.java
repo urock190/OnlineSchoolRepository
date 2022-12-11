@@ -2,42 +2,47 @@ package com.academy.repository.lectures;
 
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.repository.Repository;
+import com.academy.services.RepositoryService;
 
 public class AdditionalMaterialRepository extends Repository {
     private static int capacity = 10;
     private static AdditionalMaterial[] additionalMaterials = new AdditionalMaterial[capacity];
+    private static RepositoryService <AdditionalMaterial> materialRepositoryService = new RepositoryService<>(additionalMaterials);
 
-    @Override
-    public int getCapacity() {
-        return capacity;
+    public int size(){
+        return materialRepositoryService.size();
     }
 
-    @Override
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public boolean isEmpty(){
+        return materialRepositoryService.isEmpty();
     }
 
-    @Override
+    public AdditionalMaterial get (int index){
+        return materialRepositoryService.get(index);
+    }
+    public void addAdditionalMaterials (AdditionalMaterial additionalMaterial){
+        if (getAll()[capacity-1] != null) expandArray();
+        materialRepositoryService.add(additionalMaterial);
+    }
+
+    public void addAdditionalMaterials (int index, AdditionalMaterial additionalMaterial) {
+        if (getAll()[capacity-1] != null) expandArray();
+        materialRepositoryService.add(index, additionalMaterial);
+    }
+    public void remove (int index) {
+        materialRepositoryService.remove(index);
+    }
+
     public AdditionalMaterial[] getAll() {
-        return additionalMaterials;
+        return materialRepositoryService.getElements();
     }
 
-    public static void setAdditionalMaterials (AdditionalMaterial additionalMaterial){
-        for (int i = 0; i < additionalMaterials.length; i++) {
-            if (additionalMaterials[i] == null){
-                additionalMaterials[i] = additionalMaterial;
-                break;
-            }else if (i == capacity-1){
-                expandArray();
-            }
-        }
-    }
-    private static void expandArray(){
+    private void expandArray(){
         int newCapacity = capacity;
         capacity = capacity*3/2 + 1;
         AdditionalMaterial[] tmpArray = new AdditionalMaterial[capacity];
-        System.arraycopy(additionalMaterials, 0, tmpArray, 0, newCapacity);
-        additionalMaterials = tmpArray;
+        System.arraycopy(getAll(), 0, tmpArray, 0, newCapacity);
+        materialRepositoryService.setElements(tmpArray);
     }
 
     @Override
@@ -50,8 +55,9 @@ public class AdditionalMaterialRepository extends Repository {
     }
     @Override
     public void deleteById(int ID){
-        for (int i = 0; i < additionalMaterials.length; i++){
-            if (additionalMaterials[i].getID() == ID) additionalMaterials[i] = null;
+        for (int i = 0; i < size(); i++){
+            if (getAll()[i] == null) continue;
+            if (getAll()[i].getID() == ID) getAll()[i] = null;
         }
     }
 }

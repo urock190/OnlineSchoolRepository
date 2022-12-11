@@ -1,42 +1,47 @@
 package com.academy.repository;
 
 import com.academy.models.Person;
+import com.academy.services.RepositoryService;
 
 public class PersonRepository extends Repository{
     private static int capacity = 10;
     private static Person[] persons = new Person[capacity];
+    private static RepositoryService <Person> personRepService = new RepositoryService<>(persons);
 
-    @Override
-    public int getCapacity() {
-        return capacity;
+    public int size(){
+        return personRepService.size();
     }
 
-    @Override
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public boolean isEmpty(){
+        return personRepService.isEmpty();
     }
 
-    @Override
+    public Person get (int index){
+        return personRepService.get(index);
+    }
+    public void addPerson (Person person){
+        if (getAll()[capacity-1] != null) expandArray();
+        personRepService.add(person);
+    }
+
+    public void addPerson (int index, Person person) {
+        if (getAll()[capacity-1] != null) expandArray();
+        personRepService.add(index, person);
+    }
+    public void remove (int index) {
+        personRepService.remove(index);
+    }
+
     public Person[] getAll() {
-        return persons;
+        return personRepService.getElements();
     }
 
-    public static void addPerson (Person person){
-        for (int i = 0; i < persons.length; i++) {
-            if (persons[i] == null){
-                persons[i] = person;
-                break;
-            }else if (i == capacity-1){
-                expandArray();
-            }
-        }
-    }
-    private static void expandArray(){
+    private void expandArray(){
         int newCapacity = capacity;
         capacity = capacity*3/2 + 1;
         Person[] tmpArray = new Person[capacity];
-        System.arraycopy(persons, 0, tmpArray, 0, newCapacity);
-        persons = tmpArray;
+        System.arraycopy(getAll(), 0, tmpArray, 0, newCapacity);
+        personRepService.setElements(tmpArray);
     }
 
     @Override
@@ -63,8 +68,9 @@ public class PersonRepository extends Repository{
     }
     @Override
     public void deleteById(int ID){
-        for (int i = 0; i < persons.length; i++){
-            if (persons[i].getID() == ID) persons[i] = null;
+        for (int i = 0; i < size(); i++){
+            if (getAll()[i] == null) continue;
+            if (getAll()[i].getID() == ID) getAll()[i] = null;
         }
     }
 }
