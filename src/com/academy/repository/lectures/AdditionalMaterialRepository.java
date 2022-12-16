@@ -1,38 +1,46 @@
 package com.academy.repository.lectures;
 
+import com.academy.models.Models;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.repository.Repository;
 import com.academy.services.RepositoryService;
 
-public class AdditionalMaterialRepository extends Repository {
+public class AdditionalMaterialRepository implements Repository {
     private static int capacity = 10;
     private static AdditionalMaterial[] additionalMaterials = new AdditionalMaterial[capacity];
     private static RepositoryService <AdditionalMaterial> materialRepositoryService = new RepositoryService<>(additionalMaterials);
 
+    @Override
     public int size(){
         return materialRepositoryService.size();
     }
-
+    @Override
     public boolean isEmpty(){
         return materialRepositoryService.isEmpty();
     }
 
+    @Override
+    public void add(Models model) {
+        if (getAll()[capacity-1] != null) expandArray();
+        materialRepositoryService.add((AdditionalMaterial) model);
+    }
+
+    @Override
+    public void add(int index, Models model) {
+        if (getAll()[capacity-1] != null) expandArray();
+        materialRepositoryService.add(index, (AdditionalMaterial) model);
+    }
+    @Override
     public AdditionalMaterial get (int index){
         return materialRepositoryService.get(index);
     }
-    public void addAdditionalMaterials (AdditionalMaterial additionalMaterial){
-        if (getAll()[capacity-1] != null) expandArray();
-        materialRepositoryService.add(additionalMaterial);
-    }
 
-    public void addAdditionalMaterials (int index, AdditionalMaterial additionalMaterial) {
-        if (getAll()[capacity-1] != null) expandArray();
-        materialRepositoryService.add(index, additionalMaterial);
-    }
+    @Override
     public void remove (int index) {
         materialRepositoryService.remove(index);
     }
 
+    @Override
     public AdditionalMaterial[] getAll() {
         return materialRepositoryService.getElements();
     }

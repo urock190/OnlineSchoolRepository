@@ -3,6 +3,8 @@ package com.academy.models;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
 
+import java.util.Arrays;
+
 import static com.academy.models.Course.getCounterOfCourses;
 import static com.academy.models.Person.getCounterOfPersons;
 
@@ -10,7 +12,7 @@ public class Lecture extends Models {
     private int amount;
     private String description;
     private static int counterOfLectures;
-    private Homework homework;
+    private Homework [] homeworks;
     private AdditionalMaterial additionalMaterial;
     private int courseID;
     private int personID;
@@ -21,29 +23,37 @@ public class Lecture extends Models {
                 ", amount = " + amount +
                 ", description = \"" + description + '\"'+
                 ", ID = " + getID() +
-                ", homework = " + homework +
+                ", homework = " + Arrays.toString(homeworks) +
                 ", additionalMaterial = " + additionalMaterial +
                 ", courseID = " + courseID +
                 ", personID = " + personID +')';
     }
-    public Lecture (String name, int amount, Homework homework, AdditionalMaterial additionalMaterial) {
+    public Lecture (String name, int amount, Homework [] homeworks, AdditionalMaterial additionalMaterial) {
         this.setName(name);
         this.amount = amount;
-        this.homework = homework;
+        this.homeworks = homeworks;
         this.additionalMaterial = additionalMaterial;
         setID(++counterOfLectures);
         courseID = getCounterOfCourses();
         personID = getCounterOfPersons();
+        for (Homework homework : homeworks) {
+            if (homework == null) continue;
+            homework.setLectureID(getID());
+        }
     }
-    public Lecture(String name, int amount, String description, Homework homework, AdditionalMaterial additionalMaterial) {
+    public Lecture(String name, int amount, String description, Homework [] homeworks, AdditionalMaterial additionalMaterial) {
         this.setName(name);
         this.amount = amount;
         this.description = description;
-        this.homework = homework;
+        this.homeworks = homeworks;
         this.additionalMaterial = additionalMaterial;
         setID(++counterOfLectures);
         courseID = getCounterOfCourses();
         personID = getCounterOfPersons();
+        for (Homework homework : homeworks) {
+            if (homework == null) continue;
+            homework.setLectureID(getID());
+        }
     }
 
     public Lecture(){
@@ -64,8 +74,8 @@ public class Lecture extends Models {
         this.amount = amount;
     }
 
-    public void setHomework(Homework homework) {
-        this.homework = homework;
+    public void setHomework(Homework [] homeworks) {
+        this.homeworks = homeworks;
     }
 
     public void setAdditionalMaterial(AdditionalMaterial additionalMaterial) {
@@ -85,8 +95,8 @@ public class Lecture extends Models {
         return amount;
     }
 
-    public Homework getHomework() {
-        return homework;
+    public Homework[] getHomework() {
+        return homeworks;
     }
 
     public AdditionalMaterial getAdditionalMaterial() {

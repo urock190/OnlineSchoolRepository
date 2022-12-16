@@ -1,6 +1,6 @@
 package com.academy.models;
 
-public class Models {
+public abstract class Models {
     private String name;
     private int ID;
 

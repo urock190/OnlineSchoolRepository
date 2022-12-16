@@ -1,40 +1,48 @@
 package com.academy.repository;
 
 import com.academy.models.Course;
+import com.academy.models.Models;
 import com.academy.services.RepositoryService;
 
-public class CourseRepository extends Repository {
+public class CourseRepository implements Repository {
     private static int capacity = 3;
     private static Course[] courses = new Course[capacity];
     private static RepositoryService <Course> courseRepositoryService = new RepositoryService<>(courses);
+
     @Override
     public Course[] getAll() {
         return courseRepositoryService.getElements();
     }
 
+    @Override
     public int size(){
         return courseRepositoryService.size();
     }
-
+    @Override
     public boolean isEmpty(){
         return courseRepositoryService.isEmpty();
     }
 
+    @Override
+    public void add(Models model) {
+        if (getAll()[capacity-1] != null) expandArray();
+        courseRepositoryService.add((Course) model);
+    }
+
+    @Override
+    public void add(int index, Models model) {
+        if (getAll()[capacity-1] != null) expandArray();
+        courseRepositoryService.add(index, (Course) model);
+    }
+    @Override
     public Course get (int index){
         return courseRepositoryService.get(index);
     }
-    public void addCourse (Course course){
-        if (getAll()[capacity-1] != null) expandArray();
-        courseRepositoryService.add(course);
-    }
-
-    public void addCourse (int index, Course course) {
-        if (getAll()[capacity-1] != null) expandArray();
-        courseRepositoryService.add(index, course);
-    }
+    @Override
     public void remove (int index) {
         courseRepositoryService.remove(index);
     }
+
     private void expandArray(){
         int newCapacity = capacity;
         capacity = capacity*3/2 + 1;

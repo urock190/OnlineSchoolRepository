@@ -5,6 +5,8 @@ import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
 import com.academy.repository.LectureRepository;
 import com.academy.repository.PersonRepository;
+import com.academy.repository.lectures.HomeworkRepository;
+import com.academy.services.lectures.HomeworkService;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -22,15 +24,18 @@ public class LectureService {
     public static Lecture createLecture() {
         return new Lecture();
     }
-    public static Lecture createLecture(String name, int amount, Homework homework, AdditionalMaterial additionalMaterial){
-        return new Lecture(name, amount, homework, additionalMaterial);
+    public static Lecture createLecture(String name, int amount, Homework [] homeworks, AdditionalMaterial additionalMaterial){
+        return new Lecture(name, amount, homeworks, additionalMaterial);
     }
-    public static Lecture createLecture(String name, int amount, String description, Homework homework,
+    public static Lecture createLecture(String name, int amount, String description, Homework [] homeworks,
                                         AdditionalMaterial additionalMaterial){
-        return new Lecture(name, amount, description, homework, additionalMaterial);
+        return new Lecture(name, amount, description, homeworks, additionalMaterial);
     }
     public static Lecture createLectureFromConsole() {
+        HomeworkRepository homeworkRepository = new HomeworkRepository();
         Scanner scanner = new Scanner(System.in);
+        int capacity = 1;
+        Homework [] homeworks= new Homework[capacity];
         String name = " ";
         boolean out = false;
         System.out.println("==========================\nCreate new lecture. \nEnter the name of this lecture");
@@ -49,17 +54,24 @@ public class LectureService {
             if (matcher.find() == false) out = false;
             else System.out.println("The description must contain a maximum of 200 characters. You have entered " +
                             description.length() + " characters. Please enter a shorter description.");}
-        System.out.println("Enter homework's name");
-        String homeworkName = scanner.next() + scanner.nextLine();
-        System.out.println("Enter number of tasks");
-        int numberOfTasks = scanner.nextInt();
-        Homework homework = new Homework(homeworkName, numberOfTasks);
+        while (!out) {
+            Homework homework = HomeworkService.createHomeworkFromConsole();
+            homeworkRepository.add(homework);
+            homeworks[capacity-1] = homework;
+            int newCapacity = capacity;
+            Homework[] tmpArray = new Homework[++capacity];
+            System.arraycopy(homeworks, 0, tmpArray, 0, newCapacity);
+            homeworks = tmpArray;
+            System.out.println("==========================================\nDo you want to create new homework? " +
+                    "Enter something to confirm.\nEnter \"no\" to finish creating homeworks.");
+            if (scanner.next().equals("no")) out = true;
+        }
         System.out.println("Enter the name of additional material");
         String addMatName = scanner.next() + scanner.nextLine();
         System.out.println("Enter amount of articles");
         int numberOfArticles = scanner.nextInt();
         AdditionalMaterial additionalMaterial = new AdditionalMaterial(addMatName, numberOfArticles);
-        return new Lecture(name, amount, description, homework, additionalMaterial);
+        return new Lecture(name, amount, description, homeworks, additionalMaterial);
         }
         LectureRepository lectureRepository = new LectureRepository();
     PersonRepository personRepository = new PersonRepository();

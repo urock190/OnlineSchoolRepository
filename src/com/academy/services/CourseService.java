@@ -4,6 +4,8 @@ import com.academy.models.Course;
 import com.academy.models.Lecture;
 import com.academy.models.Person;
 import com.academy.repository.CourseRepository;
+import com.academy.repository.LectureRepository;
+import com.academy.repository.PersonRepository;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -23,6 +25,8 @@ public class CourseService {
         return new Course(name, teacher, student);}
 
     public Course createCourseFromConsole(){
+        PersonRepository personRepository = new PersonRepository();
+        LectureRepository lectureRepository = new LectureRepository();
         Scanner scanner = new Scanner(System.in);
         String name = " ";
         boolean out = false;
@@ -33,8 +37,11 @@ public class CourseService {
         if (matcher.find() == false) out = true;
         else System.out.println("The course name must contain only English letters and numbers.");}
         Person teacher = PersonService.createTeacherFromConsole();
+        personRepository.add(teacher);
         Person student = PersonService.createStudentFromConsole();
+        personRepository.add(student);
         Lecture lecture = LectureService.createLectureFromConsole();
+        lectureRepository.add(lecture);
         return new Course(name, teacher, student, lecture);
     }
     CourseRepository courseRepository = new CourseRepository();

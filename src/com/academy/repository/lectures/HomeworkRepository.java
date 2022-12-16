@@ -1,38 +1,47 @@
 package com.academy.repository.lectures;
 
+import com.academy.models.Models;
 import com.academy.models.lectures.Homework;
 import com.academy.repository.Repository;
 import com.academy.services.RepositoryService;
 
-public class HomeworkRepository extends Repository {
+public class HomeworkRepository implements Repository {
     private static int capacity = 10;
     private static Homework [] homeworks = new Homework[capacity];
     private static RepositoryService <Homework> homeworkRepositoryService = new RepositoryService<>(homeworks);
 
+    @Override
     public int size(){
         return homeworkRepositoryService.size();
     }
-
+    @Override
     public boolean isEmpty(){
         return homeworkRepositoryService.isEmpty();
     }
 
+    @Override
+    public void add(Models model) {
+        if (getAll()[capacity-1] != null) expandArray();
+        homeworkRepositoryService.add((Homework) model);
+    }
+
+    @Override
+    public void add(int index, Models model) {
+        if (getAll()[capacity-1] != null) expandArray();
+        homeworkRepositoryService.add(index, (Homework) model);
+    }
+
+    @Override
     public Homework get (int index){
         return homeworkRepositoryService.get(index);
     }
-    public void addHomework (Homework homework){
-        if (getAll()[capacity-1] != null) expandArray();
-        homeworkRepositoryService.add(homework);
-    }
 
-    public void addHomework (int index, Homework homework) {
-        if (getAll()[capacity-1] != null) expandArray();
-        homeworkRepositoryService.add(index, homework);
-    }
+    @Override
     public void remove (int index) {
         homeworkRepositoryService.remove(index);
     }
 
+    @Override
     public Homework[] getAll() {
         return homeworkRepositoryService.getElements();
     }
@@ -53,7 +62,7 @@ public class HomeworkRepository extends Repository {
         }
         return null;
     }
-
+    @Override
     public void deleteById(int ID){
         for (int i = 0; i < size(); i++){
             if (getAll()[i] == null) continue;

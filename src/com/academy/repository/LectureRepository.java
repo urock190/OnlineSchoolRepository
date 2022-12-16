@@ -1,38 +1,45 @@
 package com.academy.repository;
 
 import com.academy.models.Lecture;
+import com.academy.models.Models;
 import com.academy.services.RepositoryService;
 
-public class LectureRepository extends Repository {
+public class LectureRepository implements Repository {
     private static int capacity = 3;
     private static Lecture[] lectures = new Lecture[capacity];
     private static RepositoryService<Lecture> lectureRepositoryService = new RepositoryService<>(lectures);
 
+    @Override
     public int size(){
         return lectureRepositoryService.size();
     }
-
+    @Override
     public boolean isEmpty(){
         return lectureRepositoryService.isEmpty();
     }
 
+    @Override
+    public void add (Models model) {
+        if (getAll()[capacity-1] != null) expandArray();
+        lectureRepositoryService.add((Lecture) model);
+    }
+
+    @Override
+    public void add(int index, Models model) {
+        if (getAll()[capacity-1] != null) expandArray();
+        lectureRepositoryService.add(index, (Lecture) model);
+    }
+    @Override
     public Lecture get (int index){
         return lectureRepositoryService.get(index);
     }
-    public void addLecture (Lecture lecture){
-        if (getAll()[capacity-1] != null) expandArray();
-        lectureRepositoryService.add(lecture);
-    }
 
-    public void addLecture (int index, Lecture lecture) {
-        if (getAll()[capacity-1] != null) expandArray();
-        lectureRepositoryService.add(index, lecture);
-    }
+    @Override
     public void remove (int index) {
         lectureRepositoryService.remove(index);
     }
-
-public Lecture[] getAll() {
+    @Override
+    public Lecture[] getAll() {
     return lectureRepositoryService.getElements();
 }
 

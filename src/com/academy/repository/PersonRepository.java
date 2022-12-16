@@ -1,37 +1,46 @@
 package com.academy.repository;
 
+import com.academy.models.Models;
 import com.academy.models.Person;
 import com.academy.services.RepositoryService;
 
-public class PersonRepository extends Repository{
+public class PersonRepository implements Repository {
     private static int capacity = 10;
     private static Person[] persons = new Person[capacity];
     private static RepositoryService <Person> personRepService = new RepositoryService<>(persons);
 
+    @Override
     public int size(){
         return personRepService.size();
     }
 
+    @Override
     public boolean isEmpty(){
         return personRepService.isEmpty();
     }
 
+    @Override
+    public void add(Models model) {
+        if (getAll()[capacity-1] != null) expandArray();
+        personRepService.add((Person) model);
+    }
+
+    @Override
+    public void add(int index, Models model) {
+        if (getAll()[capacity-1] != null) expandArray();
+        personRepService.add(index, (Person) model);
+    }
+
+    @Override
     public Person get (int index){
         return personRepService.get(index);
     }
-    public void addPerson (Person person){
-        if (getAll()[capacity-1] != null) expandArray();
-        personRepService.add(person);
-    }
 
-    public void addPerson (int index, Person person) {
-        if (getAll()[capacity-1] != null) expandArray();
-        personRepService.add(index, person);
-    }
+    @Override
     public void remove (int index) {
         personRepService.remove(index);
     }
-
+    @Override
     public Person[] getAll() {
         return personRepService.getElements();
     }
