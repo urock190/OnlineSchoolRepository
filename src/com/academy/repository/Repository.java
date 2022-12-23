@@ -1,5 +1,6 @@
 package com.academy.repository;
 
+import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Models;
 
 public interface Repository{
@@ -17,12 +18,12 @@ public interface Repository{
 
     void remove(int index);
 
-    default Models getById(int ID){
-        for (Models lecture : getAll()){
-            if (lecture == null) continue;
-            if (lecture.getID() == ID) return lecture;
+    default Models getById(int ID) throws EntityNotFoundException {
+        for (Models model : getAll()){
+            if (model == null) continue;
+            if (model.getID() == ID) return model;
         }
-        return null;
+        throw new EntityNotFoundException();
     }
 
     default void deleteById(int ID){

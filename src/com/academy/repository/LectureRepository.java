@@ -1,5 +1,6 @@
 package com.academy.repository;
 
+import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Lecture;
 import com.academy.models.Models;
 import com.academy.services.RepositoryService;
@@ -52,12 +53,12 @@ public class LectureRepository implements Repository {
     }
 
     @Override
-    public Lecture getById (int ID){
+    public Lecture getById (int ID) throws EntityNotFoundException {
         for (Lecture lecture : getAll()){
             if (lecture == null) continue;
             if (lecture.getID() == ID) return lecture;
         }
-        return null;
+        throw new EntityNotFoundException("There's no lecture with such ID");
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.academy.services;
 
+import com.academy.exceptions.EntityNotFoundException;
+import com.academy.exceptions.ValidationErrorException;
 import com.academy.models.Lecture;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
@@ -13,8 +15,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LectureService {
-    private static Pattern pattern = Pattern.compile("^\\s$|[\\W&&[\\S]]");
-    private static Pattern pattern1 = Pattern.compile("^\\s$|.{201,}");
+    private static final Pattern namePattern = Pattern.compile("^\\s$|[\\W&&[\\S]]");
+    private static final Pattern descriptionPattern = Pattern.compile("^\\s$|.{201,}");
+    private static String validationFindFalseMethod (Pattern pattern, Scanner scanner) throws ValidationErrorException {
+        String newString = scanner.next() + scanner.nextLine();
+        Matcher matcher = pattern.matcher(newString);
+        if (!matcher.find()) return newString;
+        else throw new ValidationErrorException();
+    }
     public static void printCounter(){
     System.out.println("number of lectures = " + Lecture.getCounterOfLectures());
     }
@@ -40,20 +48,26 @@ public class LectureService {
         boolean out = false;
         System.out.println("==========================\nCreate new lecture. \nEnter the name of this lecture");
         while (!out) {
-            name = scanner.next() + scanner.nextLine();
-            Matcher matcher = pattern.matcher(name);
-            if (matcher.find() == false) out = true;
-            else System.out.println("The lecture name must contain only English letters and numbers.");}
+            try{
+            name = validationFindFalseMethod(namePattern, scanner);
+            out = true;
+            } catch (ValidationErrorException e) {
+                System.out.println("Validation Error. The lecture name must contain only English letters and numbers.");
+            }
+        }
         System.out.println("Enter amount of lectures");
         int amount = scanner.nextInt();
         System.out.println("Enter a short description of the lecture, please.");
         String description  = " ";
         while (out) {
-            description = scanner.next() + scanner.nextLine();
-            Matcher matcher = pattern1.matcher(description);
-            if (matcher.find() == false) out = false;
-            else System.out.println("The description must contain a maximum of 200 characters. You have entered " +
-                            description.length() + " characters. Please enter a shorter description.");}
+            try {
+                description = validationFindFalseMethod(descriptionPattern, scanner);
+                out = false;
+            } catch (ValidationErrorException e) {
+                System.out.println("The description must contain a maximum of 200 characters. You have entered " +
+                        description.length() + " characters. Please enter a shorter description.");
+            }
+        }
         while (!out) {
             Homework homework = HomeworkService.createHomeworkFromConsole();
             homeworkRepository.add(homework);
@@ -86,26 +100,33 @@ public class LectureService {
     public void addTeacherByID() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("==========================\nAdd a teacher for a lecture. \nEnter lecture's ID first.");
-        int lectureID;
+        int lectureID = 0;
         INNER:
-        do {
+        while (lectureID == 0) {
             lectureID = scanner.nextInt();
-            if (lectureRepository.getById(lectureID) != null){
+            try {
+                lectureRepository.getById(lectureID);
                 System.out.println("==========================\nEnter teacher's ID, please.");
-                int teacherID;
-                do {
-                    teacherID = scanner.nextInt();
-                    if (personRepository.getTeacherById(teacherID) != null){
-                        lectureRepository.getById(lectureID).setPersonID(teacherID);
-                        System.out.println("Teacher's ID has been successfully added.\n=============================");
-                        break INNER;
-                    }else {System.out.println("There's no teacher with ID = " + teacherID + ". Please, enter correct ID or type" +
-                            " \"ex\" for exit.");}
-                    if(scanner.hasNext("ex")) break;
-                }while (personRepository.getTeacherById(teacherID) == null);
-            }else {System.out.println("There's no lecture with ID = " + lectureID + ". Please, enter correct ID or type" +
-                    " \"ex\" for exit.");}
+                int teacherID = 0;
+                while (teacherID == 0) {
+                        teacherID = scanner.nextInt();
+                        try{
+                            personRepository.getTeacherById(teacherID);
+                            lectureRepository.getById(lectureID).setPersonID(teacherID);
+                            System.out.println("Teacher's ID has been successfully added.\n=============================");
+                            break INNER;
+                        }catch (EntityNotFoundException a) {
+                            System.out.println("There's no teacher with ID = " + teacherID + ". Please, enter correct ID or type" +
+                                " \"ex\" for exit.");
+                            teacherID = 0;}
+                        if(scanner.hasNext("ex")) break;
+                    }
+            } catch (EntityNotFoundException e) {
+                System.out.println("There's no lecture with ID = " + lectureID + ". Please, enter correct ID or type" +
+                    " \"ex\" for exit.");
+                lectureID = 0;
+            }
             if(scanner.hasNext("ex")) break;
-        }while (lectureRepository.getById(lectureID) == null);
+        }
     }
 }

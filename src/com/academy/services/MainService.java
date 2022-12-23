@@ -1,5 +1,6 @@
 package com.academy.services;
 
+import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Course;
 import com.academy.models.Lecture;
 import com.academy.models.Person;
@@ -12,6 +13,7 @@ import com.academy.repository.PersonRepository;
 import com.academy.repository.lectures.HomeworkRepository;
 import com.academy.services.lectures.HomeworkService;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MainService {
@@ -35,6 +37,15 @@ public class MainService {
                 new AdditionalMaterial());
         lectureRepository.add(thirdLecture);
     }
+    private static int categoryNumMethod() {
+        try {Scanner scanner = new Scanner(System.in);
+            return scanner.nextInt();
+        }
+        catch (InputMismatchException e) {
+            System.out.println(e + ": Incorrect input. Only integer values are allowed.");
+            return categoryNumMethod();
+        }
+    }
     public static void chooseCategoryAndCreateLecture(){
         Scanner scanner = new Scanner(System.in);
         LectureService lectureService = new LectureService();
@@ -52,7 +63,14 @@ public class MainService {
                 System.out.println("Choose category: press 1 - for \"Course\", 2 - for \"Lecture\", 3 - for \"Student\" " +
                         "or 4 - for \"Teacher\", 5 - for \"Homework\"\n Type \"ex\" to exit the program");
                 if(scanner.hasNext("ex")) break OUTER;
-                categoryNumber = scanner.nextInt();
+                try{
+                    categoryNumber = scanner.nextInt();
+                }catch (InputMismatchException e){
+                System.out.println(e + ": Incorrect input. Only integer values are allowed.");
+                categoryNumber = categoryNumMethod();
+                scanner.skip(".*");
+                }
+
                 switch(categoryNumber){
                     case 1:
                         System.out.println("You have choose the category \"Course\"");
@@ -76,9 +94,11 @@ public class MainService {
                         } else if (confirmation.equals("2")) {
                             do {System.out.println("====================================\nEnter ID number of the course.");
                                 int id = scanner.nextInt();
-                                if (courseRepository.getById(id) == null){
-                                    System.out.println("There's no course with such ID");
-                                } else System.out.println(courseRepository.getById(id));
+                                try {
+                                    System.out.println(courseRepository.getById(id));
+                                } catch (EntityNotFoundException e) {
+                                    System.out.println(e);
+                                }
                                 System.out.println("====================================\nWould you like to get another course?" +
                                         " Enter \"yes\" to confirm.\nEnter anything else to finish showing course's info and" +
                                         " return to \"Choose category\" menu.");
@@ -101,9 +121,11 @@ public class MainService {
                         } else if (confirmation1.equals("2")) {
                             do {System.out.println("====================================\nEnter ID number of the lecture.");
                                 int id = scanner.nextInt();
-                                if (lectureRepository.getById(id) == null){
-                                    System.out.println("There's no lecture with such ID");
-                                } else System.out.println(lectureRepository.getById(id));
+                                try {
+                                    System.out.println(lectureRepository.getById(id));
+                                } catch (EntityNotFoundException e) {
+                                    System.out.println(e);
+                                }
                                 System.out.println("====================================\nWould you like to get another lecture?" +
                                         " Enter \"yes\" to confirm.\nEnter anything else to finish showing lecture's info and" +
                                         " return to \"Choose category\" menu.");
@@ -132,9 +154,11 @@ public class MainService {
                         } else if (confirmation2.equals("2")) {
                             do {System.out.println("====================================\nEnter ID number of the student.");
                                 int id = scanner.nextInt();
-                                if (personRepository.getStudentById(id) == null){
-                                    System.out.println("There's no student with such ID");
-                                } else System.out.println(personRepository.getStudentById(id));
+                                try {
+                                    System.out.println(personRepository.getStudentById(id));
+                                } catch (EntityNotFoundException e) {
+                                    System.out.println(e);
+                                }
                                 System.out.println("====================================\nWould you like to get another student?" +
                                         " Enter \"yes\" to confirm.\nEnter anything else to finish showing student's info and" +
                                         " return to \"Choose category\" menu.");
@@ -163,9 +187,11 @@ public class MainService {
                         } else if (confirmation3.equals("2")) {
                             do {System.out.println("====================================\nEnter ID number of the teacher.");
                                 int id = scanner.nextInt();
-                                if (personRepository.getTeacherById(id) == null){
-                                    System.out.println("There's no teacher with such ID");
-                                } else System.out.println(personRepository.getTeacherById(id));
+                                try {
+                                    System.out.println(personRepository.getTeacherById(id));
+                                } catch (EntityNotFoundException e) {
+                                    System.out.println(e);
+                                }
                                 System.out.println("====================================\nWould you like to get another teacher?" +
                                         " Enter \"yes\" to confirm.\nEnter anything else to finish showing teacher's info and" +
                                         " return to \"Choose category\" menu.");
@@ -194,9 +220,11 @@ public class MainService {
                         } else if (confirmation4.equals("2")) {
                             do {System.out.println("====================================\nEnter ID number of the homework.");
                                 int id = scanner.nextInt();
-                                if (homeworkRepository.getById(id) == null){
-                                    System.out.println("There's no homework with such ID");
-                                } else System.out.println(homeworkRepository.getById(id));
+                                try {
+                                    System.out.println(homeworkRepository.getById(id));
+                                } catch (EntityNotFoundException e) {
+                                    System.out.println(e);
+                                }
                                 System.out.println("====================================\nWould you like to get another homework?" +
                                         " Enter \"yes\" to confirm.\nEnter anything else to finish showing homework's info and" +
                                         " return to \"Choose category\" menu.");

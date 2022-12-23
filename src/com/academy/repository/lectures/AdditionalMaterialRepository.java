@@ -1,5 +1,6 @@
 package com.academy.repository.lectures;
 
+import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Models;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.repository.Repository;
@@ -54,12 +55,12 @@ public class AdditionalMaterialRepository implements Repository {
     }
 
     @Override
-    public AdditionalMaterial getById (int ID){
+    public AdditionalMaterial getById (int ID) throws EntityNotFoundException {
         for (AdditionalMaterial additionalMaterial : getAll()){
             if (additionalMaterial == null) continue;
             if (additionalMaterial.getID() == ID) return additionalMaterial;
         }
-        return null;
+        throw new EntityNotFoundException("There's no additional material with such ID");
     }
     @Override
     public void deleteById(int ID){

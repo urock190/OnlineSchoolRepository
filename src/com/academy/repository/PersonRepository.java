@@ -1,5 +1,6 @@
 package com.academy.repository;
 
+import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Models;
 import com.academy.models.Person;
 import com.academy.services.RepositoryService;
@@ -54,26 +55,26 @@ public class PersonRepository implements Repository {
     }
 
     @Override
-    public Person getById (int ID){
+    public Person getById (int ID) throws EntityNotFoundException {
         for (Person person : getAll()){
             if (person == null) continue;
             if (person.getID() == ID) return person;
         }
-        return null;
+        throw new EntityNotFoundException("There's no person with such ID");
     }
-    public Person getTeacherById (int teacherID){
+    public Person getTeacherById (int teacherID) throws EntityNotFoundException {
         for (Person teacher : getAll()){
             if (teacher == null) continue;
             if (teacher.getTeacherID() == teacherID) return teacher;
         }
-        return null;
+        throw new EntityNotFoundException("There's no teacher with such ID");
     }
-    public Person getStudentById (int studentID){
+    public Person getStudentById (int studentID) throws EntityNotFoundException {
         for (Person student : getAll()){
             if (student == null) continue;
             if (student.getStudentID() == studentID) return student;
         }
-        return null;
+        throw new EntityNotFoundException("There's no student with such ID");
     }
     @Override
     public void deleteById(int ID){

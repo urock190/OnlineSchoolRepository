@@ -1,5 +1,6 @@
 package com.academy.services.lectures;
 
+import com.academy.exceptions.ValidationErrorException;
 import com.academy.models.lectures.Homework;
 import com.academy.repository.lectures.HomeworkRepository;
 
@@ -8,7 +9,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HomeworkService {
-    private static Pattern taskPattern = Pattern.compile("^\\s$|.{201,}");
+    private static final Pattern TASK_PATTERN = Pattern.compile("^\\s$|.{201,}");
+    private static String validationFindFalseMethod (Pattern pattern, Scanner scanner) throws ValidationErrorException {
+        String newString = scanner.next() + scanner.nextLine();
+        Matcher matcher = pattern.matcher(newString);
+        if (!matcher.find()) return newString;
+        else throw new ValidationErrorException();
+    }
     public static void printCounter(){
         System.out.println(Homework.getCounterOfHomework());
     }
@@ -26,11 +33,14 @@ public class HomeworkService {
         System.out.println("Enter the task, please.");
         String task  = " ";
         while (!out) {
-            task = scanner.next() + scanner.nextLine();
-            Matcher matcher = taskPattern.matcher(task);
-            if (matcher.find() == false) out = true;
-            else System.out.println("The task must contain a maximum of 200 characters. You have entered " +
-                    task.length() + " characters. Please enter a shorter description of the task.");}
+            try {
+                task = validationFindFalseMethod(TASK_PATTERN, scanner);
+                out = true;
+            } catch (ValidationErrorException e) {
+                System.out.println("The task must contain a maximum of 200 characters. You have entered " +
+                        task.length() + " characters. Please enter a shorter description of the task.");
+            }
+        }
         return new Homework(name, numberOfTasks, task);
     }
     HomeworkRepository homeworkRepository = new HomeworkRepository();

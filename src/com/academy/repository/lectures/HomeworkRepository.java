@@ -1,5 +1,6 @@
 package com.academy.repository.lectures;
 
+import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Models;
 import com.academy.models.lectures.Homework;
 import com.academy.repository.Repository;
@@ -55,12 +56,12 @@ public class HomeworkRepository implements Repository {
     }
 
     @Override
-    public Homework getById (int ID){
+    public Homework getById (int ID) throws EntityNotFoundException {
         for (Homework homework : getAll()){
             if (homework == null) continue;
             if (homework.getID() == ID) return homework;
         }
-        return null;
+        throw new EntityNotFoundException("There's no homework with such ID");
     }
     @Override
     public void deleteById(int ID){

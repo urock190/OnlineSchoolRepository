@@ -1,5 +1,6 @@
 package com.academy.services;
 
+import com.academy.exceptions.ValidationErrorException;
 import com.academy.models.Course;
 import com.academy.models.Lecture;
 import com.academy.models.Person;
@@ -12,7 +13,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CourseService {
-    private static Pattern pattern = Pattern.compile("^\\s$|[\\W&&[\\S]]");
+    private static final Pattern NAME_PATTERN = Pattern.compile("^\\s$|[\\W&&[\\S]]");
+    private static String validationFindFalseMethod (Pattern pattern, Scanner scanner) throws ValidationErrorException {
+        String newString = scanner.next() + scanner.nextLine();
+        Matcher matcher = pattern.matcher(newString);
+        if (!matcher.find()) return newString;
+        else throw new ValidationErrorException();
+    }
     public static void printCounter(){
         System.out.println(Course.getCounterOfCourses());
     }
@@ -32,10 +39,13 @@ public class CourseService {
         boolean out = false;
         System.out.println("==========================\nCreate new course. \nEnter the name of this course.");
         while (!out) {
-        name = scanner.next() + scanner.nextLine();
-        Matcher matcher = pattern.matcher(name);
-        if (matcher.find() == false) out = true;
-        else System.out.println("The course name must contain only English letters and numbers.");}
+            try {
+                name = validationFindFalseMethod(NAME_PATTERN, scanner);
+                out = true;
+            } catch (ValidationErrorException e) {
+                System.out.println("The course name must contain only English letters and numbers.");
+            }
+        }
         Person teacher = PersonService.createTeacherFromConsole();
         personRepository.add(teacher);
         Person student = PersonService.createStudentFromConsole();
