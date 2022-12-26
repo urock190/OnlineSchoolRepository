@@ -2,7 +2,7 @@ package com.academy.models;
 
 public abstract class Models {
     private String name;
-    private int ID;
+    private Integer ID;
 
     public void setName(String name) {
         this.name = name;
@@ -16,7 +16,7 @@ public abstract class Models {
         return name;
     }
 
-    public int getID() {
+    public Integer getID() {
         return ID;
     }
 }

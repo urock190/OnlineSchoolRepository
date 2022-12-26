@@ -5,6 +5,7 @@ import com.academy.models.Models;
 import com.academy.models.lectures.Homework;
 import com.academy.repository.Repository;
 import com.academy.services.RepositoryService;
+import com.academy.services.SimpleIterator;
 
 public class HomeworkRepository implements Repository {
     private static int capacity = 10;
@@ -43,6 +44,19 @@ public class HomeworkRepository implements Repository {
     }
 
     @Override
+    public void findAll() {
+        System.out.println("======================\nFull homeworks info:");
+        SimpleIterator<Homework> iterator = iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+                Homework homework = iterator.next();
+                if (homework == null) {i++; continue;}
+                System.out.println(homework);
+        }
+        if (i == size()) System.out.println("Array is empty.");
+    }
+
+    @Override
     public Homework[] getAll() {
         return homeworkRepositoryService.getElements();
     }
@@ -69,5 +83,10 @@ public class HomeworkRepository implements Repository {
             if (getAll()[i] == null) continue;
             if (getAll()[i].getID() == ID) getAll()[i] = null;
         }
+    }
+
+    @Override
+    public SimpleIterator<Homework> iterator() {
+        return new SimpleIterator<>(getAll());
     }
 }

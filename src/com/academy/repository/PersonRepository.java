@@ -1,9 +1,9 @@
 package com.academy.repository;
 
 import com.academy.exceptions.EntityNotFoundException;
-import com.academy.models.Models;
-import com.academy.models.Person;
+import com.academy.models.*;
 import com.academy.services.RepositoryService;
+import com.academy.services.SimpleIterator;
 
 public class PersonRepository implements Repository {
     private static int capacity = 10;
@@ -41,6 +41,32 @@ public class PersonRepository implements Repository {
     public void remove (int index) {
         personRepService.remove(index);
     }
+
+    @Override
+    public void findAll() {
+        System.out.println("======================\nFull persons info:");
+        SimpleIterator<Person> iterator = iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            Person person = iterator.next();
+            if (person == null) {i++; continue;}
+            System.out.println(person);
+        }
+        if (i == size()) System.out.println("Array is empty.");
+    }
+
+    public void findAll (Role role) {
+        System.out.println("======================\nFull " + role.toString().toLowerCase() + "s info:");
+        SimpleIterator<Person> iterator = iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            Person person = iterator.next();
+            if (person == null || person.getRole() != role) {i++; continue;}
+            System.out.println(person);
+        }
+        if (i == size()) System.out.println("Array is empty.");
+    }
+
     @Override
     public Person[] getAll() {
         return personRepService.getElements();
@@ -82,5 +108,10 @@ public class PersonRepository implements Repository {
             if (getAll()[i] == null) continue;
             if (getAll()[i].getID() == ID) getAll()[i] = null;
         }
+    }
+
+    @Override
+    public SimpleIterator<Person> iterator() {
+        return new SimpleIterator<>(getAll());
     }
 }

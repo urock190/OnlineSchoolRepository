@@ -64,8 +64,7 @@ public class LectureService {
                 description = validationFindFalseMethod(descriptionPattern, scanner);
                 out = false;
             } catch (ValidationErrorException e) {
-                System.out.println("The description must contain a maximum of 200 characters. You have entered " +
-                        description.length() + " characters. Please enter a shorter description.");
+                System.out.println("The description must contain a maximum of 200 characters. Please enter a shorter description.");
             }
         }
         while (!out) {

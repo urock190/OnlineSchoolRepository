@@ -5,6 +5,7 @@ import com.academy.models.Models;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.repository.Repository;
 import com.academy.services.RepositoryService;
+import com.academy.services.SimpleIterator;
 
 public class AdditionalMaterialRepository implements Repository {
     private static int capacity = 10;
@@ -42,6 +43,19 @@ public class AdditionalMaterialRepository implements Repository {
     }
 
     @Override
+    public void findAll() {
+        System.out.println("======================\nFull additional materials info:");
+        SimpleIterator<AdditionalMaterial> iterator = iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+                AdditionalMaterial additionalMaterial = iterator.next();
+                if (additionalMaterial == null) {i++; continue;}
+                System.out.println(additionalMaterial);
+        }
+        if (i == size()) System.out.println("Array is empty.");
+    }
+
+    @Override
     public AdditionalMaterial[] getAll() {
         return materialRepositoryService.getElements();
     }
@@ -68,5 +82,10 @@ public class AdditionalMaterialRepository implements Repository {
             if (getAll()[i] == null) continue;
             if (getAll()[i].getID() == ID) getAll()[i] = null;
         }
+    }
+
+    @Override
+    public SimpleIterator<AdditionalMaterial> iterator() {
+        return new SimpleIterator<>(getAll());
     }
 }

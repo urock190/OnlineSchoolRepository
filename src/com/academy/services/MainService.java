@@ -75,8 +75,9 @@ public class MainService {
                     case 1:
                         System.out.println("You have choose the category \"Course\"");
                         System.out.println("Do you want to print short info about course objects? Type \"yes\" to confirm." +
-                                "\nType \"no\" to choose another category. Enter \"1\" to create new course." +
-                                "\nEnter \"2\" to get course by it's ID. Type anything else to continue creating lectures.");
+                                " Type \"no\" to choose another category. \nEnter \"1\" to create new course." +
+                                " Enter \"2\" to get course by it's ID. Enter \"3\" to print full info about courses." +
+                                "\nType anything else to continue creating lectures.");
                         String confirmation = scanner.next();
                         if(confirmation.equals("yes")) {
                             courseService.printID(); continue OUTER;
@@ -102,14 +103,16 @@ public class MainService {
                                 System.out.println("====================================\nWould you like to get another course?" +
                                         " Enter \"yes\" to confirm.\nEnter anything else to finish showing course's info and" +
                                         " return to \"Choose category\" menu.");
-                            }while (scanner.next().equals("yes"));
-                            continue OUTER;
+                            } while (scanner.next().equals("yes")); continue OUTER;
+                        }else if (confirmation.equals("3")) {
+                            courseRepository.findAll(); System.out.println("\n++++++++++++++++++++++"); continue OUTER;
                         }else break;
                     case 2:
                         System.out.println("You have choose the category \"Lecture\"");
                         System.out.println("Do you want to print short info about lecture objects? Type \"yes\" to confirm." +
-                                "\nType \"no\" to choose another category. Enter \"1\" to add teacher's ID to the lecture." +
-                                "\nEnter \"2\" to get lecture by it's ID. Type anything else to continue creating lectures.");
+                                " Type \"no\" to choose another category. \nEnter \"1\" to add teacher's ID to the lecture." +
+                                " Enter \"2\" to get lecture by it's ID. Enter \"3\" to print full info about lectures." +
+                                "\nType anything else to continue creating lectures.");
                         String confirmation1 = scanner.next();
                         if(confirmation1.equals("yes")) {
                             lectureService.printID(); continue OUTER;
@@ -131,12 +134,15 @@ public class MainService {
                                         " return to \"Choose category\" menu.");
                             }while (scanner.next().equals("yes"));
                             continue OUTER;
+                        }else if (confirmation1.equals("3")) {
+                            lectureRepository.findAll(); System.out.println("\n++++++++++++++++++++++"); continue OUTER;
                         }else break;
                     case 3:
                         System.out.println("You have choose the category \"Student\"");
                         System.out.println("Do you want to print short info about students? Type \"yes\" to confirm." +
-                                "\nType \"no\" to choose another category. Enter \"1\" to create new student." +
-                                "\nEnter \"2\" to get student by their ID. Type anything else to continue creating lectures.");
+                                " Type \"no\" to choose another category. \nEnter \"1\" to create new student." +
+                                " Enter \"2\" to get student by their ID. Enter \"3\" to print full info about students." +
+                                "\nType anything else to continue creating lectures.");
                         String confirmation2 = scanner.next();
                         if(confirmation2.equals("yes")) {
                             personService.printStudentsID(); continue OUTER;
@@ -164,12 +170,15 @@ public class MainService {
                                         " return to \"Choose category\" menu.");
                             }while (scanner.next().equals("yes"));
                             continue OUTER;
+                        }else if (confirmation2.equals("3")) {
+                            personRepository.findAll(Role.STUDENT); System.out.println("\n++++++++++++++++++++++"); continue OUTER;
                         }else break;
                     case 4:
                         System.out.println("You have choose the category \"Teacher\"");
                         System.out.println("Do you want to print short info about teachers? Type \"yes\" to confirm." +
-                                "\nType \"no\" to choose another category. Enter \"1\" to create new teacher." +
-                                "\nEnter \"2\" to get teacher by their ID. Type anything else to continue creating lectures.");
+                                " Type \"no\" to choose another category. \nEnter \"1\" to create new teacher." +
+                                " Enter \"2\" to get teacher by their ID. Enter \"3\" to print full info about teachers." +
+                                "\nType anything else to continue creating lectures.");
                         String confirmation3 = scanner.next();
                         if(confirmation3.equals("yes")) {
                             personService.printTeachersID(); continue OUTER;
@@ -197,12 +206,15 @@ public class MainService {
                                         " return to \"Choose category\" menu.");
                             }while (scanner.next().equals("yes"));
                             continue OUTER;
+                        }else if (confirmation3.equals("3")) {
+                            personRepository.findAll(Role.TEACHER); System.out.println("\n++++++++++++++++++++++"); continue OUTER;
                         }else break;
                     case 5:
                         System.out.println("You have choose the category \"Homework\"");
                         System.out.println("Do you want to print short info about homeworks? Type \"yes\" to confirm." +
-                                "\nType \"no\" to choose another category. Enter \"1\" to create new homework." +
-                                "\nEnter \"2\" to get homework by it's ID. Type anything else to continue creating lectures.");
+                                " Type \"no\" to choose another category. \nEnter \"1\" to create new homework." +
+                                " Enter \"2\" to get homework by it's ID. Enter \"3\" to print full info about homeworks." +
+                                "\nType anything else to continue creating lectures.");
                         String confirmation4 = scanner.next();
                         if(confirmation4.equals("yes")) {
                             homeworkService.printID(); continue OUTER;
@@ -230,6 +242,8 @@ public class MainService {
                                         " return to \"Choose category\" menu.");
                             }while (scanner.next().equals("yes"));
                             continue OUTER;
+                        }else if (confirmation4.equals("3")) {
+                            homeworkRepository.findAll(); System.out.println("\n++++++++++++++++++++++"); continue OUTER;
                         }else break;
                         default: System.out.println("Please, enter a number from 1 to 5");}
             } while (categoryNumber < 1 || categoryNumber > 5);

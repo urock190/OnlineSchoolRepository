@@ -2,6 +2,7 @@ package com.academy.repository;
 
 import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Models;
+import com.academy.services.SimpleIterator;
 
 public interface Repository{
     Models[] getAll();
@@ -17,6 +18,7 @@ public interface Repository{
     void add(int index, Models model);
 
     void remove(int index);
+    void findAll();
 
     default Models getById(int ID) throws EntityNotFoundException {
         for (Models model : getAll()){
@@ -32,4 +34,5 @@ public interface Repository{
             if (getAll()[i].getID() == ID) getAll()[i] = null;
         }
     }
+    SimpleIterator<? extends Models> iterator();
 }

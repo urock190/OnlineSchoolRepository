@@ -37,8 +37,7 @@ public class HomeworkService {
                 task = validationFindFalseMethod(TASK_PATTERN, scanner);
                 out = true;
             } catch (ValidationErrorException e) {
-                System.out.println("The task must contain a maximum of 200 characters. You have entered " +
-                        task.length() + " characters. Please enter a shorter description of the task.");
+                System.out.println("The task must contain a maximum of 200 characters. Please enter a shorter description of the task.");
             }
         }
         return new Homework(name, numberOfTasks, task);

@@ -4,6 +4,7 @@ import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Course;
 import com.academy.models.Models;
 import com.academy.services.RepositoryService;
+import com.academy.services.SimpleIterator;
 
 public class CourseRepository implements Repository {
     private static int capacity = 3;
@@ -43,6 +44,18 @@ public class CourseRepository implements Repository {
     public void remove (int index) {
         courseRepositoryService.remove(index);
     }
+    @Override
+    public void findAll() {
+        System.out.println("======================\nFull courses info:");
+        SimpleIterator<Course> iterator = iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            Course course = iterator.next();
+            if (course == null) {i++; continue;}
+            System.out.println(course);
+        }
+        if (i == size()) System.out.println("Array is empty.");
+    }
 
     private void expandArray(){
         int newCapacity = capacity;
@@ -66,5 +79,9 @@ public class CourseRepository implements Repository {
             if (getAll()[i] == null) continue;
             if (getAll()[i].getID() == ID) getAll()[i] = null;
         }
+    }
+    @Override
+    public SimpleIterator<Course> iterator(){
+        return new SimpleIterator<>(getAll());
     }
 }
