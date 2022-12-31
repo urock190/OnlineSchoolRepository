@@ -4,42 +4,49 @@ import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Models;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.repository.Repository;
-import com.academy.services.RepositoryService;
 import com.academy.services.SimpleIterator;
 
-public class AdditionalMaterialRepository implements Repository {
-    private static int capacity = 10;
-    private static AdditionalMaterial[] additionalMaterials = new AdditionalMaterial[capacity];
-    private static RepositoryService <AdditionalMaterial> materialRepositoryService = new RepositoryService<>(additionalMaterials);
+import java.util.ArrayList;
+import java.util.List;
 
+public class AdditionalMaterialRepository implements Repository {
+    private static AdditionalMaterialRepository instance;
+    private List<AdditionalMaterial> additionalMaterials;
+
+    private AdditionalMaterialRepository() {
+         additionalMaterials = new ArrayList<>();
+    }
+
+    public static AdditionalMaterialRepository getInstance(){
+        if (instance == null) instance = new AdditionalMaterialRepository();
+        return instance;
+    }
     @Override
     public int size(){
-        return materialRepositoryService.size();
+        return additionalMaterials.size();
     }
     @Override
     public boolean isEmpty(){
-        return materialRepositoryService.isEmpty();
+        return additionalMaterials.isEmpty();
     }
 
     @Override
     public void add(Models model) {
-        if (getAll()[capacity-1] != null) expandArray();
-        materialRepositoryService.add((AdditionalMaterial) model);
+        additionalMaterials.add((AdditionalMaterial) model);
     }
 
     @Override
     public void add(int index, Models model) {
-        if (getAll()[capacity-1] != null) expandArray();
-        materialRepositoryService.add(index, (AdditionalMaterial) model);
+        additionalMaterials.add(index, (AdditionalMaterial) model);
     }
     @Override
     public AdditionalMaterial get (int index){
-        return materialRepositoryService.get(index);
+        return additionalMaterials.get(index);
     }
 
     @Override
     public void remove (int index) {
-        materialRepositoryService.remove(index);
+        additionalMaterials.remove(index);
     }
 
     @Override
@@ -56,21 +63,13 @@ public class AdditionalMaterialRepository implements Repository {
     }
 
     @Override
-    public AdditionalMaterial[] getAll() {
-        return materialRepositoryService.getElements();
-    }
-
-    private void expandArray(){
-        int newCapacity = capacity;
-        capacity = capacity*3/2 + 1;
-        AdditionalMaterial[] tmpArray = new AdditionalMaterial[capacity];
-        System.arraycopy(getAll(), 0, tmpArray, 0, newCapacity);
-        materialRepositoryService.setElements(tmpArray);
+    public List<AdditionalMaterial> getAll() {
+        return additionalMaterials;
     }
 
     @Override
     public AdditionalMaterial getById (int ID) throws EntityNotFoundException {
-        for (AdditionalMaterial additionalMaterial : getAll()){
+        for (AdditionalMaterial additionalMaterial : additionalMaterials){
             if (additionalMaterial == null) continue;
             if (additionalMaterial.getID() == ID) return additionalMaterial;
         }
@@ -79,13 +78,13 @@ public class AdditionalMaterialRepository implements Repository {
     @Override
     public void deleteById(int ID){
         for (int i = 0; i < size(); i++){
-            if (getAll()[i] == null) continue;
-            if (getAll()[i].getID() == ID) getAll()[i] = null;
+            if (additionalMaterials.get(i) == null) continue;
+            if (additionalMaterials.get(i).getID() == ID) additionalMaterials.remove(i);
         }
     }
 
     @Override
     public SimpleIterator<AdditionalMaterial> iterator() {
-        return new SimpleIterator<>(getAll());
+        return new SimpleIterator<>(additionalMaterials);
     }
 }

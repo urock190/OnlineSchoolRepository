@@ -4,8 +4,10 @@ import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Models;
 import com.academy.services.SimpleIterator;
 
+import java.util.List;
+
 public interface Repository{
-    Models[] getAll();
+    List<? extends Models> getAll();
 
     int size();
 
@@ -29,9 +31,9 @@ public interface Repository{
     }
 
     default void deleteById(int ID){
-        for (int i = 0; i < getAll().length; i++){
-            if (getAll()[i] == null) continue;
-            if (getAll()[i].getID() == ID) getAll()[i] = null;
+        for (int i = 0; i < size(); i++){
+            if (getAll().get(i) == null) continue;
+            if (getAll().get(i).getID() == ID) getAll().remove(i);
         }
     }
     SimpleIterator<? extends Models> iterator();

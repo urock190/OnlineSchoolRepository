@@ -3,46 +3,54 @@ package com.academy.repository;
 import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Course;
 import com.academy.models.Models;
-import com.academy.services.RepositoryService;
 import com.academy.services.SimpleIterator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CourseRepository implements Repository {
-    private static int capacity = 3;
-    private static Course[] courses = new Course[capacity];
-    private static RepositoryService <Course> courseRepositoryService = new RepositoryService<>(courses);
+    private static CourseRepository instance;
+    private List<Course> courses;
+
+    private CourseRepository() {
+        courses = new ArrayList<>();
+    }
+
+    public static CourseRepository getInstance(){
+        if (instance == null) instance = new CourseRepository();
+        return instance;
+    }
 
     @Override
-    public Course[] getAll() {
-        return courseRepositoryService.getElements();
+    public List<Course> getAll() {
+        return courses;
     }
 
     @Override
     public int size(){
-        return courseRepositoryService.size();
+        return courses.size();
     }
     @Override
     public boolean isEmpty(){
-        return courseRepositoryService.isEmpty();
+        return courses.isEmpty();
     }
 
     @Override
     public void add(Models model) {
-        if (getAll()[capacity-1] != null) expandArray();
-        courseRepositoryService.add((Course) model);
+        courses.add((Course) model);
     }
 
     @Override
     public void add(int index, Models model) {
-        if (getAll()[capacity-1] != null) expandArray();
-        courseRepositoryService.add(index, (Course) model);
+        courses.add(index, (Course) model);
     }
     @Override
     public Course get (int index){
-        return courseRepositoryService.get(index);
+        return courses.get(index);
     }
     @Override
     public void remove (int index) {
-        courseRepositoryService.remove(index);
+        courses.remove(index);
     }
     @Override
     public void findAll() {
@@ -56,17 +64,9 @@ public class CourseRepository implements Repository {
         }
         if (i == size()) System.out.println("Array is empty.");
     }
-
-    private void expandArray(){
-        int newCapacity = capacity;
-        capacity = capacity*3/2 + 1;
-        Course[] tmpArray = new Course[capacity];
-        System.arraycopy(getAll(), 0, tmpArray, 0, newCapacity);
-        courseRepositoryService.setElements(tmpArray);
-    }
     @Override
     public Course getById(int ID) throws EntityNotFoundException{
-        for (Course course : getAll()){
+        for (Course course : courses){
             if (course == null) continue;
             if (course.getID() == ID) return course;
         }
@@ -76,12 +76,12 @@ public class CourseRepository implements Repository {
     @Override
     public void deleteById(int ID) {
         for (int i = 0; i < size(); i++){
-            if (getAll()[i] == null) continue;
-            if (getAll()[i].getID() == ID) getAll()[i] = null;
+            if (courses.get(i) == null) continue;
+            if (courses.get(i).getID() == ID) courses.remove(i);
         }
     }
     @Override
     public SimpleIterator<Course> iterator(){
-        return new SimpleIterator<>(getAll());
+        return new SimpleIterator<>(courses);
     }
 }

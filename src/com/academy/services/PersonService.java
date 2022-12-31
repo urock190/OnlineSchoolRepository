@@ -132,7 +132,7 @@ public class PersonService {
         }
         return new Person (Role.TEACHER, name, lastName, phone, email);
     }
-    PersonRepository personRepository = new PersonRepository();
+    PersonRepository personRepository = PersonRepository.getInstance();
    public void printAllID(){
         System.out.println("======================\nShort persons info:");
         for (Person person : personRepository.getAll()) {

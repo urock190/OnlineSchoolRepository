@@ -1,40 +1,54 @@
 package com.academy.models.lectures;
 
 import com.academy.models.Models;
+import com.academy.models.ResourceType;
+
+import static com.academy.models.Lecture.getCounterOfLectures;
 
 public class AdditionalMaterial extends Models {
-    private int numberOfArticles;
+    private int lectureID;
     private static int counterOfAddMaterials;
+    private ResourceType resourceType;
 
     @Override
     public String toString() {
-        return "AdditionalMaterial (" +
-                "name = '" + getName() + '\'' +
-                ", numberOfArticles = " + numberOfArticles +
+        return "AdditionalMaterial (" + resourceType +
+                ", name = '" + getName() + '\'' +
+                ", ID = " + getID() + ", lectureID = " + lectureID +
                 ')';
     }
-    public AdditionalMaterial(String name, int numberOfArticles) {
+    public AdditionalMaterial(String name, ResourceType resourceType) {
         this.setName(name);
-        this.numberOfArticles = numberOfArticles;
+        this.resourceType = resourceType;
         setID(++counterOfAddMaterials);
+        lectureID = getCounterOfLectures();
     }
     public AdditionalMaterial(){
         setID(++counterOfAddMaterials);
-    }
-
-    public void setNumberOfArticles(int numberOfArticles) {
-        this.numberOfArticles = numberOfArticles;
+        lectureID = getCounterOfLectures();
     }
 
     public static void setCounterOfAddMaterials(int counterOfAddMaterials) {
         AdditionalMaterial.counterOfAddMaterials = counterOfAddMaterials;
     }
 
-    public int getNumberOfArticles() {
-        return numberOfArticles;
-    }
-
     public static int getCounterOfAddMaterials() {
         return counterOfAddMaterials;
+    }
+
+    public int getLectureID() {
+        return lectureID;
+    }
+
+    public void setLectureID(int lectureID) {
+        this.lectureID = lectureID;
+    }
+
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
     }
 }

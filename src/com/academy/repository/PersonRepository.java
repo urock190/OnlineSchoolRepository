@@ -1,45 +1,55 @@
 package com.academy.repository;
 
 import com.academy.exceptions.EntityNotFoundException;
-import com.academy.models.*;
-import com.academy.services.RepositoryService;
+import com.academy.models.Models;
+import com.academy.models.Person;
+import com.academy.models.Role;
 import com.academy.services.SimpleIterator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PersonRepository implements Repository {
-    private static int capacity = 10;
-    private static Person[] persons = new Person[capacity];
-    private static RepositoryService <Person> personRepService = new RepositoryService<>(persons);
+    private static PersonRepository instance;
+    private List<Person> persons;
+
+    private PersonRepository() {
+        persons = new ArrayList<>();
+    }
+
+    public static PersonRepository getInstance(){
+        if (instance == null) instance = new PersonRepository();
+        return instance;
+    }
 
     @Override
     public int size(){
-        return personRepService.size();
+        return persons.size();
     }
 
     @Override
     public boolean isEmpty(){
-        return personRepService.isEmpty();
+        return persons.isEmpty();
     }
 
     @Override
     public void add(Models model) {
-        if (getAll()[capacity-1] != null) expandArray();
-        personRepService.add((Person) model);
+        persons.add((Person) model);
     }
 
     @Override
     public void add(int index, Models model) {
-        if (getAll()[capacity-1] != null) expandArray();
-        personRepService.add(index, (Person) model);
+        persons.add(index, (Person) model);
     }
 
     @Override
     public Person get (int index){
-        return personRepService.get(index);
+        return persons.get(index);
     }
 
     @Override
     public void remove (int index) {
-        personRepService.remove(index);
+        persons.remove(index);
     }
 
     @Override
@@ -68,35 +78,29 @@ public class PersonRepository implements Repository {
     }
 
     @Override
-    public Person[] getAll() {
-        return personRepService.getElements();
-    }
-
-    private void expandArray(){
-        int newCapacity = capacity;
-        capacity = capacity*3/2 + 1;
-        Person[] tmpArray = new Person[capacity];
-        System.arraycopy(getAll(), 0, tmpArray, 0, newCapacity);
-        personRepService.setElements(tmpArray);
+    public List<Person> getAll() {
+        return persons;
     }
 
     @Override
     public Person getById (int ID) throws EntityNotFoundException {
-        for (Person person : getAll()){
+        for (Person person : persons){
             if (person == null) continue;
             if (person.getID() == ID) return person;
         }
         throw new EntityNotFoundException("There's no person with such ID");
     }
+
     public Person getTeacherById (int teacherID) throws EntityNotFoundException {
-        for (Person teacher : getAll()){
+        for (Person teacher : persons){
             if (teacher == null) continue;
             if (teacher.getTeacherID() == teacherID) return teacher;
         }
         throw new EntityNotFoundException("There's no teacher with such ID");
     }
+
     public Person getStudentById (int studentID) throws EntityNotFoundException {
-        for (Person student : getAll()){
+        for (Person student : persons){
             if (student == null) continue;
             if (student.getStudentID() == studentID) return student;
         }
@@ -105,13 +109,13 @@ public class PersonRepository implements Repository {
     @Override
     public void deleteById(int ID){
         for (int i = 0; i < size(); i++){
-            if (getAll()[i] == null) continue;
-            if (getAll()[i].getID() == ID) getAll()[i] = null;
+            if (persons.get(i) == null) continue;
+            if (persons.get(i).getID() == ID) persons.remove(i);
         }
     }
 
     @Override
     public SimpleIterator<Person> iterator() {
-        return new SimpleIterator<>(getAll());
+        return new SimpleIterator<>(persons);
     }
 }

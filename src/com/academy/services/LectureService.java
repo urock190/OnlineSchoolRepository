@@ -8,6 +8,8 @@ import com.academy.models.lectures.Homework;
 import com.academy.repository.LectureRepository;
 import com.academy.repository.PersonRepository;
 import com.academy.repository.lectures.HomeworkRepository;
+import com.academy.repository.lectures.AdditionalMaterialRepository;
+import com.academy.services.lectures.AdditionalMaterialService;
 import com.academy.services.lectures.HomeworkService;
 
 import java.util.Scanner;
@@ -40,7 +42,8 @@ public class LectureService {
         return new Lecture(name, amount, description, homeworks, additionalMaterial);
     }
     public static Lecture createLectureFromConsole() {
-        HomeworkRepository homeworkRepository = new HomeworkRepository();
+        HomeworkRepository homeworkRepository = HomeworkRepository.getInstance();
+        AdditionalMaterialRepository addMaterialRepository = AdditionalMaterialRepository.getInstance();
         Scanner scanner = new Scanner(System.in);
         int capacity = 1;
         Homework [] homeworks= new Homework[capacity];
@@ -79,15 +82,12 @@ public class LectureService {
                     "Enter something to confirm.\nEnter \"no\" to finish creating homeworks.");
             if (scanner.next().equals("no")) out = true;
         }
-        System.out.println("Enter the name of additional material");
-        String addMatName = scanner.next() + scanner.nextLine();
-        System.out.println("Enter amount of articles");
-        int numberOfArticles = scanner.nextInt();
-        AdditionalMaterial additionalMaterial = new AdditionalMaterial(addMatName, numberOfArticles);
+        AdditionalMaterial additionalMaterial = AdditionalMaterialService.createAddMaterialFromConsole();
+        addMaterialRepository.add(additionalMaterial);
         return new Lecture(name, amount, description, homeworks, additionalMaterial);
         }
-        LectureRepository lectureRepository = new LectureRepository();
-    PersonRepository personRepository = new PersonRepository();
+        LectureRepository lectureRepository = LectureRepository.getInstance();
+    PersonRepository personRepository = PersonRepository.getInstance();
     public void printID(){
         System.out.println("======================\nShort lectures info:");
         for (Lecture lecture : lectureRepository.getAll()) {
@@ -100,7 +100,6 @@ public class LectureService {
         Scanner scanner = new Scanner(System.in);
         System.out.println("==========================\nAdd a teacher for a lecture. \nEnter lecture's ID first.");
         int lectureID = 0;
-        INNER:
         while (lectureID == 0) {
             lectureID = scanner.nextInt();
             try {
@@ -113,7 +112,7 @@ public class LectureService {
                             personRepository.getTeacherById(teacherID);
                             lectureRepository.getById(lectureID).setPersonID(teacherID);
                             System.out.println("Teacher's ID has been successfully added.\n=============================");
-                            break INNER;
+                            return;
                         }catch (EntityNotFoundException a) {
                             System.out.println("There's no teacher with ID = " + teacherID + ". Please, enter correct ID or type" +
                                 " \"ex\" for exit.");

@@ -42,7 +42,7 @@ public class HomeworkService {
         }
         return new Homework(name, numberOfTasks, task);
     }
-    HomeworkRepository homeworkRepository = new HomeworkRepository();
+    HomeworkRepository homeworkRepository = HomeworkRepository.getInstance();
     public void printID(){
         System.out.println("======================\nShort homeworks info:");
         for (Homework homework : homeworkRepository.getAll()) {

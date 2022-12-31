@@ -32,8 +32,8 @@ public class CourseService {
         return new Course(name, teacher, student);}
 
     public Course createCourseFromConsole(){
-        PersonRepository personRepository = new PersonRepository();
-        LectureRepository lectureRepository = new LectureRepository();
+        PersonRepository personRepository = PersonRepository.getInstance();
+        LectureRepository lectureRepository = LectureRepository.getInstance();
         Scanner scanner = new Scanner(System.in);
         String name = " ";
         boolean out = false;
@@ -54,7 +54,7 @@ public class CourseService {
         lectureRepository.add(lecture);
         return new Course(name, teacher, student, lecture);
     }
-    CourseRepository courseRepository = new CourseRepository();
+    CourseRepository courseRepository = CourseRepository.getInstance();
     public void printID(){
         System.out.println("======================\nShort courses info:");
         for (Course course : courseRepository.getAll()) {

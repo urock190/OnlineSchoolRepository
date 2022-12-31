@@ -40,6 +40,7 @@ public class Lecture extends Models {
             if (homework == null) continue;
             homework.setLectureID(getID());
         }
+        additionalMaterial.setLectureID(getID());
     }
     public Lecture(String name, int amount, String description, Homework [] homeworks, AdditionalMaterial additionalMaterial) {
         this.setName(name);
@@ -54,6 +55,7 @@ public class Lecture extends Models {
             if (homework == null) continue;
             homework.setLectureID(getID());
         }
+        additionalMaterial.setLectureID(getID());
     }
 
     public Lecture(){
