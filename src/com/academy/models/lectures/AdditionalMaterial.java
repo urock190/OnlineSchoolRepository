@@ -3,9 +3,11 @@ package com.academy.models.lectures;
 import com.academy.models.Models;
 import com.academy.models.ResourceType;
 
+import java.util.Comparator;
+
 import static com.academy.models.Lecture.getCounterOfLectures;
 
-public class AdditionalMaterial extends Models {
+public class AdditionalMaterial extends Models implements Comparable<AdditionalMaterial>{
     private int lectureID;
     private static int counterOfAddMaterials;
     private ResourceType resourceType;
@@ -51,4 +53,14 @@ public class AdditionalMaterial extends Models {
     public void setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
     }
+
+    /**Compares two additional materials by their ID.*/
+    @Override
+    public int compareTo(AdditionalMaterial o) {
+        return getID() - o.getID();
+    }
+    /**Comparator for sorting the list by lecture's ID*/
+    public static Comparator<AdditionalMaterial> lectureIDComparator = Comparator.comparingInt(addMat -> addMat.lectureID);
+    /**Comparator for sorting the list by resource type*/
+    public static Comparator<AdditionalMaterial> resourceTypeComparator = Comparator.comparing(o -> (o.resourceType));
 }

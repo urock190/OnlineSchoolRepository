@@ -12,6 +12,7 @@ import com.academy.repository.lectures.HomeworkRepository;
 import com.academy.services.lectures.AdditionalMaterialService;
 import com.academy.services.lectures.HomeworkService;
 
+import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -28,17 +29,17 @@ public class MainService {
         personRepository.add(firstCourse.getTeacher());
         personRepository.add(firstCourse.getStudent());
         Lecture firstLecture = LectureService.createLecture("Chemistry", 70, new Homework[]{},
-                new AdditionalMaterial());
+                new AdditionalMaterial("Organic chemistry", ResourceType.BOOK));
         lectureRepository.add(firstLecture);
         addMaterialRepository.add(firstLecture.getAdditionalMaterial());
         Lecture secondLecture = LectureService.createLecture("English", 75, new Homework[]{},
-                new AdditionalMaterial());
+                new AdditionalMaterial("Big Fat Video-course", ResourceType.VIDEO));
         lectureRepository.add(secondLecture);
-        addMaterialRepository.add(secondLecture.getAdditionalMaterial());
         Lecture thirdLecture = LectureService.createLecture("Informatics", 70, new Homework[]{},
                 new AdditionalMaterial("Head First Java", ResourceType.BOOK));
         lectureRepository.add(thirdLecture);
         addMaterialRepository.add(thirdLecture.getAdditionalMaterial());
+        addMaterialRepository.add(secondLecture.getAdditionalMaterial());
     }
 
     private static int categoryNumMethod(Scanner scanner) {
@@ -194,6 +195,7 @@ public class MainService {
     private static void courseMenu(String confirmation, Scanner scanner) {
         CourseService courseService = new CourseService();
         CourseRepository courseRepository = CourseRepository.getInstance();
+        Collections.sort(courseRepository.getAll());
         if (confirmation.equals("yes")) {
             courseService.printID();
         } else if (confirmation.equals("1")) {
@@ -255,6 +257,7 @@ public class MainService {
     private static void studentMenu(String confirmation2, Scanner scanner) {
         PersonService personService = new PersonService();
         PersonRepository personRepository = PersonRepository.getInstance();
+        Collections.sort(personRepository.getAll());
         if (confirmation2.equals("yes")) {
             personService.printStudentsID();
         } else if (confirmation2.equals("1")) {
@@ -289,6 +292,7 @@ public class MainService {
     private static void teacherMenu(String confirmation3, Scanner scanner) {
         PersonService personService = new PersonService();
         PersonRepository personRepository = PersonRepository.getInstance();
+        Collections.sort(personRepository.getAll());
         if (confirmation3.equals("yes")) {
             personService.printTeachersID();
         } else if (confirmation3.equals("1")) {
@@ -357,8 +361,19 @@ public class MainService {
     private static void addMaterialMenu(String confirmation5, Scanner scanner) {
         AdditionalMaterialService additionalMaterialService = new AdditionalMaterialService();
         AdditionalMaterialRepository additionalMaterialRepository = AdditionalMaterialRepository.getInstance();
+        Collections.sort(additionalMaterialRepository.getAll());
+        String conf;
         if (confirmation5.equals("yes")) {
-            additionalMaterialService.printID();
+            do {
+                additionalMaterialService.printID();
+                System.out.println("""
+                        ==========================================
+                        Enter "1" if you want to sort additional materials by lecture's ID or enter "2" if you want to sort by resource type.
+                        Enter anything else to return to "Choose category" menu.""");
+                conf = scanner.next();
+                if (conf.equals("1")) Collections.sort(additionalMaterialRepository.getAll(), AdditionalMaterial.lectureIDComparator);
+                else if (conf.equals("2")) Collections.sort(additionalMaterialRepository.getAll(), AdditionalMaterial.resourceTypeComparator);
+            } while (conf.equals("1")||conf.equals("2"));
         } else if (confirmation5.equals("1")) {
             do {
                 AdditionalMaterial additionalMaterial = AdditionalMaterialService.createAddMaterialFromConsole();
@@ -383,8 +398,16 @@ public class MainService {
                         Enter anything else to finish showing additional material's info and return to "Choose category" menu.""");
             } while (scanner.next().equals("yes"));
         } else if (confirmation5.equals("3")) {
-            additionalMaterialRepository.findAll();
-            System.out.println("\n++++++++++++++++++++++");
-        }
+            do {
+                additionalMaterialRepository.findAll();
+                System.out.println("""
+                        ==========================================
+                        Enter "1" if you want to sort additional materials by lecture's ID or enter "2" if you want to sort by resource type.
+                        Enter anything else to return to "Choose category" menu.""");
+                conf = scanner.next();
+                if (conf.equals("1")) Collections.sort(additionalMaterialRepository.getAll(), AdditionalMaterial.lectureIDComparator);
+                else if (conf.equals("2")) Collections.sort(additionalMaterialRepository.getAll(), AdditionalMaterial.resourceTypeComparator);
+            } while (conf.equals("1")||conf.equals("2"));
+        } System.out.println("++++++++++++++++++++++");
     }
 }

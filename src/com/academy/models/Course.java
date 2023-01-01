@@ -1,6 +1,6 @@
 package com.academy.models;
 
-public class Course extends Models {
+public class Course extends Models implements Comparable<Course> {
     private static int counterOfCourses;
     private Person teacher;
     private Person student;
@@ -60,5 +60,16 @@ public class Course extends Models {
     }
     public Person getStudent() {
         return student;
+    }
+
+    /**
+     * Compares two Course instances by Name field lexicographically, ignoring case differences. This method
+     * returns an integer whose sign is that of calling {@code compareTo} with case folded versions of the strings
+     * where case differences have been eliminated by calling {@code Character.toLowerCase(Character.toUpperCase(int))}
+     * on each Unicode code point.
+     */
+    @Override
+    public int compareTo(Course o) {
+        return  getName().compareToIgnoreCase(o.getName());
     }
 }

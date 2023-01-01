@@ -2,7 +2,7 @@ package com.academy.models;
 
 import static com.academy.models.Course.getCounterOfCourses;
 
-public class Person extends Models {
+public class Person extends Models implements Comparable<Person> {
     private String lastName;
     private String phone;
     private String email;
@@ -125,5 +125,15 @@ public class Person extends Models {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    /**
+     * Compares two persons by lastName field lexicographically, ignoring case differences. This method
+     * returns an integer whose sign is that of calling {@code compareTo} with case folded versions of the strings
+     * where case differences have been eliminated by calling {@code Character.toLowerCase(Character.toUpperCase(int))}
+     * on each Unicode code point. */
+    @Override
+    public int compareTo(Person o) {
+        return  lastName.compareToIgnoreCase(o.lastName);
     }
 }
