@@ -63,4 +63,12 @@ public class CourseService {
         }
         System.out.println();
     }
+
+    public static void courseMenuTitle() {
+        System.out.println("You have choose the category \"Course\"");
+        System.out.println("""
+                                Do you want to print short info about course objects? Type "yes" to confirm. Type "no" to choose another category.
+                                Enter "1" to create new course. Enter "2" to get course by it's ID. Enter "3" to print full info about courses.
+                                Type anything else to continue creating lectures.""");
+    }
 }

@@ -3,8 +3,6 @@ package com.academy.models;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
 
-import java.util.Arrays;
-
 import static com.academy.models.Course.getCounterOfCourses;
 import static com.academy.models.Person.getCounterOfPersons;
 
@@ -23,8 +21,6 @@ public class Lecture extends Models {
                 ", amount = " + amount +
                 ", description = \"" + description + '\"'+
                 ", ID = " + getID() +
-                ", homework = " + Arrays.toString(homeworks) +
-                ", additionalMaterial = " + additionalMaterial +
                 ", courseID = " + courseID +
                 ", personID = " + personID +')';
     }

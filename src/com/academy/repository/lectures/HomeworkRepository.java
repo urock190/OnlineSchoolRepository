@@ -1,20 +1,18 @@
 package com.academy.repository.lectures;
 
 import com.academy.exceptions.EntityNotFoundException;
-import com.academy.models.Models;
 import com.academy.models.lectures.Homework;
-import com.academy.repository.Repository;
-import com.academy.services.SimpleIterator;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class HomeworkRepository implements Repository {
+public class HomeworkRepository {
     private static HomeworkRepository instance;
-    private List<Homework> homeworks;
+    private Map <Integer, List<Homework>> homeworks;
 
     private HomeworkRepository() {
-        homeworks = new ArrayList<>();
+        homeworks = new HashMap<>();
     }
 
     public static HomeworkRepository getInstance(){
@@ -22,71 +20,66 @@ public class HomeworkRepository implements Repository {
         return instance;
     }
 
-    @Override
     public int size(){
         return homeworks.size();
     }
-    @Override
     public boolean isEmpty(){
         return homeworks.isEmpty();
     }
-
-    @Override
-    public void add(Models model) {
-        homeworks.add((Homework) model);
+    public void put (int lectureID, List<Homework> homeworkList) {
+        homeworks.put(lectureID, homeworkList);
     }
-
-    @Override
-    public void add(int index, Models model) {
-        homeworks.add(index, (Homework) model);
+    public void putIfAbsent (int lectureID, List<Homework> homeworkList) {
+        homeworks.putIfAbsent(lectureID, homeworkList);
     }
-
-    @Override
-    public Homework get (int index){
-        return homeworks.get(index);
+    public void remove (int lectureID) {
+        homeworks.remove(lectureID);
     }
-
-    @Override
-    public void remove (int index) {
-        homeworks.remove(index);
-    }
-
-    @Override
-    public void findAll() {
-        System.out.println("======================\nFull homeworks info:");
-        SimpleIterator<Homework> iterator = iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-                Homework homework = iterator.next();
-                if (homework == null) {i++; continue;}
-                System.out.println(homework);
-        }
-        if (i == size()) System.out.println("Array is empty.");
-    }
-
-    @Override
-    public List<Homework> getAll() {
+    public Map<Integer, List<Homework>> getAll() {
         return homeworks;
     }
+    public List<Homework> get (int lectureID){
+        return homeworks.get(lectureID);
+    }
 
-    @Override
+    public void deleteById(int lectureID, int ID){
+        get(lectureID);
+        boolean success = false;
+        for (int i = 0; i < get(lectureID).size(); i++){
+            if (get(lectureID).get(i) == null) continue;
+            if (get(lectureID).get(i).getID() == ID) {get(lectureID).remove(i); success = true;}
+        }
+        if (success) System.out.println("Homework ID = " + ID + " has been successfully removed from lecture with ID = " + lectureID + '.');
+        else System.out.println("Homework not found.");
+    }
+
     public Homework getById (int ID) throws EntityNotFoundException {
-        for (Homework homework : homeworks){
-            if (homework == null) continue;
-            if (homework.getID() == ID) return homework;
+        for (List<Homework> list : homeworks.values()) {
+            if (list == null) continue;
+            for (Homework homework : list){
+                if (homework == null) continue;
+                if (homework.getID() == ID) return homework;
+            }
         }
         throw new EntityNotFoundException("There's no homework with such ID");
     }
-    @Override
-    public void deleteById(int ID){
-        for (int i = 0; i < size(); i++){
-            if (homeworks.get(i) == null) continue;
-            if (homeworks.get(i).getID() == ID) homeworks.remove(i);
-        }
+
+    public void addById (int lectureID, int ID) throws EntityNotFoundException {
+        get(lectureID).add(getById(ID));
+        System.out.println("Homework with ID = " + ID + " has been successfully added to the lecture with ID = " + lectureID + '.');
+        deleteById(getById(ID).getLectureID(), ID);
+        getById(ID).setLectureID(lectureID);
     }
 
-    @Override
-    public SimpleIterator<Homework> iterator() {
-        return new SimpleIterator<>(homeworks);
+    public void findAll() {
+        System.out.println("======================\nFull homeworks info:");
+        if (isEmpty()) System.out.println("Array is empty.");
+        for (List<Homework> list : homeworks.values()) {
+            if (list == null) continue;
+            for (Homework homework : list) {
+                if(homework == null) continue;
+                System.out.println(homework);
+            }
+        }
     }
 }

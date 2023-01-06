@@ -4,6 +4,7 @@ import com.academy.exceptions.ValidationErrorException;
 import com.academy.models.lectures.Homework;
 import com.academy.repository.lectures.HomeworkRepository;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,10 +46,21 @@ public class HomeworkService {
     HomeworkRepository homeworkRepository = HomeworkRepository.getInstance();
     public void printID(){
         System.out.println("======================\nShort homeworks info:");
-        for (Homework homework : homeworkRepository.getAll()) {
-            if (homework == null) continue;
-            System.out.println("{Homework \"" + homework.getName() + "\" ID = " + homework.getID() + '}');
+        for (List<Homework> list : homeworkRepository.getAll().values()) {
+            if (list == null) continue;
+            for (Homework homework : list) {
+                if (homework == null) continue;
+                System.out.println("{Homework \"" + homework.getName() + "\" ID = " + homework.getID() + '}');
+            }
         }
         System.out.println();
+    }
+
+    public static void homeworkMenuTitle() {
+        System.out.println("You have choose the category \"Homework\"");
+        System.out.println("""
+                                Do you want to print short info about homeworks? Type "yes" to confirm. Type "no" to choose another category.\s
+                                Enter "1" to create new homework. Enter "2" to get homework by it's ID. Enter "3" to print full info about homeworks.
+                                Type anything else to continue creating lectures.""");
     }
 }

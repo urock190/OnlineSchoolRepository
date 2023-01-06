@@ -12,9 +12,7 @@ import com.academy.repository.lectures.HomeworkRepository;
 import com.academy.services.lectures.AdditionalMaterialService;
 import com.academy.services.lectures.HomeworkService;
 
-import java.util.Collections;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class MainService {
     public static void init() {
@@ -22,24 +20,32 @@ public class MainService {
         CourseRepository courseRepository = CourseRepository.getInstance();
         PersonRepository personRepository = PersonRepository.getInstance();
         AdditionalMaterialRepository addMaterialRepository = AdditionalMaterialRepository.getInstance();
+        HomeworkRepository homeworkRepository = HomeworkRepository.getInstance();
         CourseService courseService = new CourseService();
         Course firstCourse = courseService.createCourse("firstCourse", new Person(Role.TEACHER, "Victoriya",
                 "Karnauh"), new Person(Role.STUDENT, "Yurii", "Shovkoplias"));
         courseRepository.add(firstCourse);
         personRepository.add(firstCourse.getTeacher());
         personRepository.add(firstCourse.getStudent());
-        Lecture firstLecture = LectureService.createLecture("Chemistry", 70, new Homework[]{},
+        Lecture firstLecture = LectureService.createLecture("Chemistry", 70, new Homework[]{new Homework("exercises",
+                        3, "task 1"), new Homework("reading", 1, "article 2")},
                 new AdditionalMaterial("Organic chemistry", ResourceType.BOOK));
         lectureRepository.add(firstLecture);
-        addMaterialRepository.add(firstLecture.getAdditionalMaterial());
+        homeworkRepository.put(firstLecture.getID(), new ArrayList<>());
+        for (Homework homework : firstLecture.getHomework()) {
+            homeworkRepository.get(firstLecture.getID()).add(homework);}
+        addMaterialRepository.put(firstLecture.getID(), new ArrayList<>());
+        addMaterialRepository.get(firstLecture.getID()).add(firstLecture.getAdditionalMaterial());
         Lecture secondLecture = LectureService.createLecture("English", 75, new Homework[]{},
                 new AdditionalMaterial("Big Fat Video-course", ResourceType.VIDEO));
         lectureRepository.add(secondLecture);
         Lecture thirdLecture = LectureService.createLecture("Informatics", 70, new Homework[]{},
                 new AdditionalMaterial("Head First Java", ResourceType.BOOK));
         lectureRepository.add(thirdLecture);
-        addMaterialRepository.add(thirdLecture.getAdditionalMaterial());
-        addMaterialRepository.add(secondLecture.getAdditionalMaterial());
+        addMaterialRepository.put(thirdLecture.getID(), new ArrayList<>());
+        addMaterialRepository.get(thirdLecture.getID()).add(thirdLecture.getAdditionalMaterial());
+        addMaterialRepository.put(secondLecture.getID(), new ArrayList<>());
+        addMaterialRepository.get(secondLecture.getID()).add(secondLecture.getAdditionalMaterial());
     }
 
     private static int categoryNumMethod(Scanner scanner) {
@@ -72,11 +78,7 @@ public class MainService {
 
                 switch (categoryNumber) {
                     case 1:
-                        System.out.println("You have choose the category \"Course\"");
-                        System.out.println("""
-                                Do you want to print short info about course objects? Type "yes" to confirm. Type "no" to choose another category.
-                                Enter "1" to create new course. Enter "2" to get course by it's ID. Enter "3" to print full info about courses.
-                                Type anything else to continue creating lectures.""");
+                        CourseService.courseMenuTitle();
                         String confirmation = scanner.next();
                         switch (confirmation) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -88,11 +90,7 @@ public class MainService {
                             }
                         }
                     case 2:
-                        System.out.println("You have choose the category \"Lecture\"");
-                        System.out.println("""
-                                Do you want to print short info about lecture objects? Type "yes" to confirm. Type "no" to choose another category.\s
-                                Enter "1" to add teacher's ID to the lecture. Enter "2" to get lecture by it's ID. Enter "3" to print full info about lectures.
-                                Type anything else to continue creating lectures.""");
+                        LectureService.lectureMenuTitle();
                         String confirmation1 = scanner.next();
                         switch (confirmation1) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -104,11 +102,7 @@ public class MainService {
                             }
                         }
                     case 3:
-                        System.out.println("You have choose the category \"Student\"");
-                        System.out.println("""
-                                Do you want to print short info about students? Type "yes" to confirm. Type "no" to choose another category.\s
-                                Enter "1" to create new student. Enter "2" to get student by their ID. Enter "3" to print full info about students.
-                                Type anything else to continue creating lectures.""");
+                        PersonService.studentMenuTitle();
                         String confirmation2 = scanner.next();
                         switch (confirmation2) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -120,11 +114,7 @@ public class MainService {
                             }
                         }
                     case 4:
-                        System.out.println("You have choose the category \"Teacher\"");
-                        System.out.println("""
-                                Do you want to print short info about teachers? Type "yes" to confirm. Type "no" to choose another category.\s
-                                Enter "1" to create new teacher. Enter "2" to get teacher by their ID. Enter "3" to print full info about teachers.
-                                Type anything else to continue creating lectures.""");
+                        PersonService.teacherMenuTitle();
                         String confirmation3 = scanner.next();
                         switch (confirmation3) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -135,13 +125,8 @@ public class MainService {
                                 continue;
                             }
                         }
-
                     case 5:
-                        System.out.println("You have choose the category \"Homework\"");
-                        System.out.println("""
-                                Do you want to print short info about homeworks? Type "yes" to confirm. Type "no" to choose another category.\s
-                                Enter "1" to create new homework. Enter "2" to get homework by it's ID. Enter "3" to print full info about homeworks.
-                                Type anything else to continue creating lectures.""");
+                        HomeworkService.homeworkMenuTitle();
                         String confirmation4 = scanner.next();
                         switch (confirmation4) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -152,13 +137,8 @@ public class MainService {
                                 continue;
                             }
                         }
-
                     case 6:
-                        System.out.println("You have choose the category \"Additional Material\"");
-                        System.out.println("""
-                                Do you want to print short info about additional materials? Type "yes" to confirm. Type "no" to choose another category.\s
-                                Enter "1" to create new additional material. Enter "2" to get additional material by it's ID. Enter "3" to print full info about additional materials.
-                                Type anything else to continue creating lectures.""");
+                        AdditionalMaterialService.addMaterialMenuTitle();
                         String confirmation5 = scanner.next();
                         switch (confirmation5) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -188,8 +168,7 @@ public class MainService {
                         Enter anything else to create new lecture.""");
                 if (scanner.next().equals("yes")) break;
             }
-        }
-        LectureService.printCounter(); // Counter of lectures
+        } LectureService.printCounter(); // Counter of lectures
     }
 
     private static void courseMenu(String confirmation, Scanner scanner) {
@@ -223,13 +202,15 @@ public class MainService {
             } while (scanner.next().equals("yes"));
         } else if (confirmation.equals("3")) {
             courseRepository.findAll();
-            System.out.println("\n++++++++++++++++++++++");
-        }
+        } System.out.println("++++++++++++++++++++++");
     }
 
     private static void lectureMenu(String confirmation1, Scanner scanner) {
         LectureService lectureService = new LectureService();
         LectureRepository lectureRepository = LectureRepository.getInstance();
+        HomeworkRepository homeworkRepository = HomeworkRepository.getInstance();
+        AdditionalMaterialRepository addMaterialRepository = AdditionalMaterialRepository.getInstance();
+        String conf;
         if (confirmation1.equals("yes")) {
             lectureService.printID();
         } else if (confirmation1.equals("1")) {
@@ -240,18 +221,52 @@ public class MainService {
                 int id = scanner.nextInt();
                 try {
                     System.out.println(lectureRepository.getById(id));
+                    lectureService.printHomeworks(id); lectureService.printAddMaterials(id);
+                    homeworkRepository.putIfAbsent(id, new ArrayList<>());
+                    addMaterialRepository.putIfAbsent(id, new ArrayList<>());
                 } catch (EntityNotFoundException e) {
                     System.out.println(e);
                 }
                 System.out.println("""
                         ====================================
                         Would you like to get another lecture? Enter "yes" to confirm.
+                        Enter "1" if you want to add homework to the lecture by it's ID or enter "2" if you want to remove homework by it's ID.
+                        Enter "3" if you want to add additional material to the lecture by it's ID or enter "4" if you want to remove additional material by it's ID.
                         Enter anything else to finish showing lecture's info and return to "Choose category" menu.""");
-            } while (scanner.next().equals("yes"));
+                conf = scanner.next();
+                if (conf.equals("1")) {
+                    try {
+                        if (homeworkRepository.get(id) == null) {
+                            System.out.println("There's no lecture with such ID"); continue;}
+                        System.out.println("====================================\nEnter homework's ID number.");
+                        homeworkRepository.addById(id, scanner.nextInt());
+                    } catch (EntityNotFoundException e) {
+                        System.out.println(e);
+                    }
+                } else if (conf.equals("2")) {
+                    if (homeworkRepository.get(id) == null) {
+                        System.out.println("There's no lecture with such ID"); continue;}
+                    System.out.println("====================================\nEnter homework's ID to remove it from the lecture.");
+                    homeworkRepository.deleteById(id, scanner.nextInt());
+                } else if (conf.equals("3")) {
+                    try {
+                        if (addMaterialRepository.get(id) == null) {
+                            System.out.println("There's no lecture with such ID"); continue;}
+                        System.out.println("====================================\nEnter additional material's ID number.");
+                        addMaterialRepository.addById(id, scanner.nextInt());
+                    } catch (EntityNotFoundException e) {
+                        System.out.println(e);
+                    }
+                } else if (conf.equals("4")) {
+                    if (addMaterialRepository.get(id) == null) {
+                        System.out.println("There's no lecture with such ID"); continue;}
+                    System.out.println("====================================\nEnter additional material's ID to remove it from the lecture.");
+                    addMaterialRepository.deleteById(id, scanner.nextInt());
+                }
+            } while (conf.equals("yes")||conf.equals("1")||conf.equals("2")||conf.equals("3")||conf.equals("4"));
         } else if (confirmation1.equals("3")) {
             lectureRepository.findAll();
-            System.out.println("\n++++++++++++++++++++++");
-        }
+        } System.out.println("++++++++++++++++++++++");
     }
 
     private static void studentMenu(String confirmation2, Scanner scanner) {
@@ -285,8 +300,7 @@ public class MainService {
             } while (scanner.next().equals("yes"));
         } else if (confirmation2.equals("3")) {
             personRepository.findAll(Role.STUDENT);
-            System.out.println("\n++++++++++++++++++++++");
-        }
+        } System.out.println("++++++++++++++++++++++");
     }
 
     private static void teacherMenu(String confirmation3, Scanner scanner) {
@@ -320,8 +334,7 @@ public class MainService {
             } while (scanner.next().equals("yes"));
         } else if (confirmation3.equals("3")) {
             personRepository.findAll(Role.TEACHER);
-            System.out.println("\n++++++++++++++++++++++");
-        }
+        } System.out.println("++++++++++++++++++++++");
     }
 
     private static void homeworkMenu(String confirmation4, Scanner scanner) {
@@ -332,7 +345,8 @@ public class MainService {
         } else if (confirmation4.equals("1")) {
             do {
                 Homework newHomework = HomeworkService.createHomeworkFromConsole();
-                homeworkRepository.add(newHomework);
+                homeworkRepository.putIfAbsent(newHomework.getLectureID(), new ArrayList<>());
+                homeworkRepository.get(newHomework.getLectureID()).add(newHomework);
                 System.out.println("""
                         ==========================================
                         Do you want to create new homework? Enter "yes" to confirm.
@@ -354,30 +368,31 @@ public class MainService {
             } while (scanner.next().equals("yes"));
         } else if (confirmation4.equals("3")) {
             homeworkRepository.findAll();
-            System.out.println("\n++++++++++++++++++++++");
-        }
+        }System.out.println("++++++++++++++++++++++");
     }
 
     private static void addMaterialMenu(String confirmation5, Scanner scanner) {
         AdditionalMaterialService additionalMaterialService = new AdditionalMaterialService();
         AdditionalMaterialRepository additionalMaterialRepository = AdditionalMaterialRepository.getInstance();
-        Collections.sort(additionalMaterialRepository.getAll());
+        List<AdditionalMaterial> list = additionalMaterialRepository.toAddMaterialsList();
+        Collections.sort(list);
         String conf;
         if (confirmation5.equals("yes")) {
             do {
-                additionalMaterialService.printID();
+                additionalMaterialService.printList(list);
                 System.out.println("""
                         ==========================================
                         Enter "1" if you want to sort additional materials by lecture's ID or enter "2" if you want to sort by resource type.
                         Enter anything else to return to "Choose category" menu.""");
                 conf = scanner.next();
-                if (conf.equals("1")) Collections.sort(additionalMaterialRepository.getAll(), AdditionalMaterial.lectureIDComparator);
-                else if (conf.equals("2")) Collections.sort(additionalMaterialRepository.getAll(), AdditionalMaterial.resourceTypeComparator);
+                if (conf.equals("1")) Collections.sort(list, AdditionalMaterial.lectureIDComparator);
+                else if (conf.equals("2")) Collections.sort(list, AdditionalMaterial.resourceTypeComparator);
             } while (conf.equals("1")||conf.equals("2"));
         } else if (confirmation5.equals("1")) {
             do {
                 AdditionalMaterial additionalMaterial = AdditionalMaterialService.createAddMaterialFromConsole();
-                additionalMaterialRepository.add(additionalMaterial);
+                additionalMaterialRepository.putIfAbsent(additionalMaterial.getLectureID(), new ArrayList<>());
+                additionalMaterialRepository.get(additionalMaterial.getLectureID()).add(additionalMaterial);
                 System.out.println("""
                         ==========================================
                         Do you want to create new additional material? Enter "yes" to confirm.
@@ -399,14 +414,14 @@ public class MainService {
             } while (scanner.next().equals("yes"));
         } else if (confirmation5.equals("3")) {
             do {
-                additionalMaterialRepository.findAll();
+                additionalMaterialService.findAllFromTheList(list);
                 System.out.println("""
                         ==========================================
                         Enter "1" if you want to sort additional materials by lecture's ID or enter "2" if you want to sort by resource type.
                         Enter anything else to return to "Choose category" menu.""");
                 conf = scanner.next();
-                if (conf.equals("1")) Collections.sort(additionalMaterialRepository.getAll(), AdditionalMaterial.lectureIDComparator);
-                else if (conf.equals("2")) Collections.sort(additionalMaterialRepository.getAll(), AdditionalMaterial.resourceTypeComparator);
+                if (conf.equals("1")) Collections.sort(list, AdditionalMaterial.lectureIDComparator);
+                else if (conf.equals("2")) Collections.sort(list, AdditionalMaterial.resourceTypeComparator);
             } while (conf.equals("1")||conf.equals("2"));
         } System.out.println("++++++++++++++++++++++");
     }

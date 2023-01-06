@@ -4,6 +4,7 @@ import com.academy.models.ResourceType;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.repository.lectures.AdditionalMaterialRepository;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class AdditionalMaterialService {
@@ -37,10 +38,39 @@ public class AdditionalMaterialService {
     AdditionalMaterialRepository additionalMaterialRepository = AdditionalMaterialRepository.getInstance();
     public void printID(){
         System.out.println("======================\nShort additional materials info:");
-        for (AdditionalMaterial additionalMaterial : additionalMaterialRepository.getAll()) {
-            if (additionalMaterial == null) continue;
-            System.out.println("{Additional Material \"" + additionalMaterial.getName() + "\" ID = " + additionalMaterial.getID() + '}');
+        for (List<AdditionalMaterial> list : additionalMaterialRepository.getAll().values()) {
+            if (list == null) continue;
+            for (AdditionalMaterial additionalMaterial : list) {
+                if (additionalMaterial == null) continue;
+                System.out.println("{Additional Material \"" + additionalMaterial.getName() + "\" ID = " + additionalMaterial.getID() + '}');
+            }
         }
         System.out.println();
+    }
+
+    public void printList(List<AdditionalMaterial> list){
+        System.out.println("======================\nShort additional materials info:");
+            for (AdditionalMaterial additionalMaterial : list) {
+                if (additionalMaterial == null) continue;
+                System.out.println("{Additional Material \"" + additionalMaterial.getName() + "\" ID = " + additionalMaterial.getID() + '}');
+            }
+        System.out.println();
+    }
+
+    public void findAllFromTheList(List<AdditionalMaterial> list) {
+        System.out.println("======================\nFull additional materials info:");
+        if (additionalMaterialRepository.isEmpty()) System.out.println("Array is empty.");
+        for (AdditionalMaterial additionalMaterial : list) {
+                if(additionalMaterial == null) continue;
+                System.out.println(additionalMaterial);
+        }
+    }
+
+    public static void addMaterialMenuTitle() {
+        System.out.println("You have choose the category \"Additional Material\"");
+        System.out.println("""
+                                Do you want to print short info about additional materials? Type "yes" to confirm. Type "no" to choose another category.\s
+                                Enter "1" to create new additional material. Enter "2" to get additional material by it's ID. Enter "3" to print full info about additional materials.
+                                Type anything else to continue creating lectures.""");
     }
 }

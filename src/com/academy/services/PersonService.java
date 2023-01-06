@@ -160,4 +160,20 @@ public class PersonService {
         }
         System.out.println();
     }
+
+    public static void studentMenuTitle() {
+        System.out.println("You have choose the category \"Student\"");
+        System.out.println("""
+                                Do you want to print short info about students? Type "yes" to confirm. Type "no" to choose another category.\s
+                                Enter "1" to create new student. Enter "2" to get student by their ID. Enter "3" to print full info about students.
+                                Type anything else to continue creating lectures.""");
+    }
+
+    public static void teacherMenuTitle() {
+        System.out.println("You have choose the category \"Teacher\"");
+        System.out.println("""
+                                Do you want to print short info about teachers? Type "yes" to confirm. Type "no" to choose another category.\s
+                                Enter "1" to create new teacher. Enter "2" to get teacher by their ID. Enter "3" to print full info about teachers.
+                                Type anything else to continue creating lectures.""");
+    }
 }
