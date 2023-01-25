@@ -11,10 +11,13 @@ import com.academy.repository.lectures.AdditionalMaterialRepository;
 import com.academy.repository.lectures.HomeworkRepository;
 import com.academy.services.lectures.AdditionalMaterialService;
 import com.academy.services.lectures.HomeworkService;
+import com.academy.util.LogService;
+import com.academy.util.Logger;
 
 import java.util.*;
 
 public class MainService {
+    private static final Logger LOGGER = new Logger(MainService.class.getName());
     public static void init() {
         LectureRepository lectureRepository = LectureRepository.getInstance();
         CourseRepository courseRepository = CourseRepository.getInstance();
@@ -53,32 +56,35 @@ public class MainService {
             scanner.skip(".*");
             return scanner.nextInt();
         } catch (InputMismatchException e) {
+            LOGGER.warning("Incorrect input.", e);
             System.out.println(e + ": Incorrect input. Only integer values are allowed.");
             return categoryNumMethod(scanner);
         }
     }
 
     public static void chooseCategoryAndCreateLecture() {
+        LOGGER.debug("Entering chooseCategoryAndCreateLecture() method in MainService class");
         Scanner scanner = new Scanner(System.in);
         LectureRepository lectureRepository = LectureRepository.getInstance();
         int categoryNumber;
         OUTER:
         while (true) {
-            do {
+            do {LOGGER.info("Choose category, enter a number");
                 System.out.println("""
-                        Choose category: press 1 - for "Course", 2 - for "Lecture", 3 - for "Student" or 4 - for "Teacher", 5 - for "Homework", 6 - for "Additional Material".
+                        Choose category: press 1 - for "Course", 2 - for "Lecture", 3 - for "Student" or 4 - for "Teacher", 5 - for "Homework", 6 - for "Additional Material", 7 - for "Log".
                         Type "ex" to exit the program""");
                 if (scanner.hasNext("ex")) break OUTER;
                 try {
                     categoryNumber = scanner.nextInt();
                 } catch (InputMismatchException e) {
+                    LOGGER.warning("Incorrect input.", e);
                     System.out.println(e + ": Incorrect input. Only integer values are allowed.");
                     categoryNumber = categoryNumMethod(scanner);
                 }
 
                 switch (categoryNumber) {
                     case 1:
-                        CourseService.courseMenuTitle();
+                        LOGGER.info("Course menu info"); CourseService.courseMenuTitle();
                         String confirmation = scanner.next();
                         switch (confirmation) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -90,7 +96,7 @@ public class MainService {
                             }
                         }
                     case 2:
-                        LectureService.lectureMenuTitle();
+                        LOGGER.info("Lecture menu info"); LectureService.lectureMenuTitle();
                         String confirmation1 = scanner.next();
                         switch (confirmation1) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -102,7 +108,7 @@ public class MainService {
                             }
                         }
                     case 3:
-                        PersonService.studentMenuTitle();
+                        LOGGER.info("Student menu info"); PersonService.studentMenuTitle();
                         String confirmation2 = scanner.next();
                         switch (confirmation2) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -114,7 +120,7 @@ public class MainService {
                             }
                         }
                     case 4:
-                        PersonService.teacherMenuTitle();
+                        LOGGER.info("Teacher menu info"); PersonService.teacherMenuTitle();
                         String confirmation3 = scanner.next();
                         switch (confirmation3) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -126,7 +132,7 @@ public class MainService {
                             }
                         }
                     case 5:
-                        HomeworkService.homeworkMenuTitle();
+                        LOGGER.info("Homework menu info"); HomeworkService.homeworkMenuTitle();
                         String confirmation4 = scanner.next();
                         switch (confirmation4) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -138,7 +144,7 @@ public class MainService {
                             }
                         }
                     case 6:
-                        AdditionalMaterialService.addMaterialMenuTitle();
+                        LOGGER.info("Additional Material menu info"); AdditionalMaterialService.addMaterialMenuTitle();
                         String confirmation5 = scanner.next();
                         switch (confirmation5) {
                             case "yes", "no", "1", "2", "3" -> {
@@ -149,15 +155,25 @@ public class MainService {
                                 continue;
                             }
                         }
+                    case 7:
+                    LOGGER.info("Log menu info"); LogService.logMenuTitle();
+                        String confirmation6 = scanner.next();
+                        if (confirmation6.equals("yes")) {
+                            System.out.println(LogService.readLog()); continue OUTER;
+                        } if (confirmation6.equals("no")) {
+                            continue OUTER;
+                        } else continue ;
+
                     default:
-                        System.out.println("Please, enter a number from 1 to 6");
+                        System.out.println("Please, enter a number from 1 to 7");
                 }
-            } while (categoryNumber < 1 || categoryNumber > 6);
+            } while (categoryNumber < 1 || categoryNumber > 7);
             while (Lecture.getCounterOfLectures() < 8) {
                 Lecture newLecture = LectureService.createLectureFromConsole();
                 lectureRepository.add(newLecture);
-                System.out.println(newLecture);
+                LOGGER.info("Printing new lecture"); System.out.println(newLecture);
                 if (Lecture.getCounterOfLectures() == 8) {
+                    LOGGER.debug("Eight lectures have been created. You can't create more.\nExiting chooseCategoryAndCreateLecture()...");
                     System.out.println("=================\nExiting program: eight lectures have already been created.");
                     break OUTER;
                 }
@@ -168,7 +184,8 @@ public class MainService {
                         Enter anything else to create new lecture.""");
                 if (scanner.next().equals("yes")) break;
             }
-        } LectureService.printCounter(); // Counter of lectures
+        } LOGGER.info("Counter of lectures"); LectureService.printCounter();
+        LOGGER.debug("Exiting chooseCategoryAndCreateLecture() method...");
     }
 
     private static void courseMenu(String confirmation, Scanner scanner) {
@@ -180,6 +197,7 @@ public class MainService {
         } else if (confirmation.equals("1")) {
             do {
                 Course newCourse = courseService.createCourseFromConsole();
+                LOGGER.debug("New course has been created successfully.");
                 courseRepository.add(newCourse);
                 System.out.println("""
                         ==========================================
@@ -189,10 +207,16 @@ public class MainService {
         } else if (confirmation.equals("2")) {
             do {
                 System.out.println("====================================\nEnter ID number of the course.");
-                int id = scanner.nextInt();
+                int id = 0;
+                try {
+                    id = scanner.nextInt();
+                } catch (InputMismatchException ex) {
+                    LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                }
                 try {
                     System.out.println(courseRepository.getById(id));
                 } catch (EntityNotFoundException e) {
+                    LOGGER.warning("There's no course with such ID", e);
                     System.out.println(e);
                 }
                 System.out.println("""
@@ -202,6 +226,7 @@ public class MainService {
             } while (scanner.next().equals("yes"));
         } else if (confirmation.equals("3")) {
             courseRepository.findAll();
+            LOGGER.info("All information about courses.");
         } System.out.println("++++++++++++++++++++++");
     }
 
@@ -218,13 +243,20 @@ public class MainService {
         } else if (confirmation1.equals("2")) {
             do {
                 System.out.println("====================================\nEnter ID number of the lecture.");
-                int id = scanner.nextInt();
+                int id = 0;
+                try {
+                    id = scanner.nextInt();
+                } catch (InputMismatchException ex){
+                    LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                }
                 try {
                     System.out.println(lectureRepository.getById(id));
                     lectureService.printHomeworks(id); lectureService.printAddMaterials(id);
+                    LOGGER.info("Printing info about lecture by it's ID.");
                     homeworkRepository.putIfAbsent(id, new ArrayList<>());
                     addMaterialRepository.putIfAbsent(id, new ArrayList<>());
                 } catch (EntityNotFoundException e) {
+                    LOGGER.warning("There's no lecture with such ID", e);
                     System.out.println(e);
                 }
                 System.out.println("""
@@ -241,6 +273,7 @@ public class MainService {
                         System.out.println("====================================\nEnter homework's ID number.");
                         homeworkRepository.addById(id, scanner.nextInt());
                     } catch (EntityNotFoundException e) {
+                        LOGGER.warning("There's no homework with such ID", e);
                         System.out.println(e);
                     }
                 } else if (conf.equals("2")) {
@@ -255,6 +288,7 @@ public class MainService {
                         System.out.println("====================================\nEnter additional material's ID number.");
                         addMaterialRepository.addById(id, scanner.nextInt());
                     } catch (EntityNotFoundException e) {
+                        LOGGER.warning("There's no additional material with such ID", e);
                         System.out.println(e);
                     }
                 } else if (conf.equals("4")) {
@@ -266,6 +300,7 @@ public class MainService {
             } while (conf.equals("yes")||conf.equals("1")||conf.equals("2")||conf.equals("3")||conf.equals("4"));
         } else if (confirmation1.equals("3")) {
             lectureRepository.findAll();
+            LOGGER.info("All information about lectures.");
         } System.out.println("++++++++++++++++++++++");
     }
 
@@ -278,6 +313,7 @@ public class MainService {
         } else if (confirmation2.equals("1")) {
             do {
                 Person newStudent = PersonService.createStudentFromConsole();
+                LOGGER.debug("New student has been created successfully.");
                 personRepository.add(newStudent);
                 System.out.println("""
                         ==========================================
@@ -287,10 +323,16 @@ public class MainService {
         } else if (confirmation2.equals("2")) {
             do {
                 System.out.println("====================================\nEnter ID number of the student.");
-                int id = scanner.nextInt();
+                int id = 0;
+                try {
+                    id = scanner.nextInt();
+                } catch (InputMismatchException ex) {
+                    LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                }
                 try {
                     System.out.println(personRepository.getStudentById(id));
                 } catch (EntityNotFoundException e) {
+                    LOGGER.warning("There's no student with such ID.", e);
                     System.out.println(e);
                 }
                 System.out.println("""
@@ -300,6 +342,7 @@ public class MainService {
             } while (scanner.next().equals("yes"));
         } else if (confirmation2.equals("3")) {
             personRepository.findAll(Role.STUDENT);
+            LOGGER.info("All information about students.");
         } System.out.println("++++++++++++++++++++++");
     }
 
@@ -312,6 +355,7 @@ public class MainService {
         } else if (confirmation3.equals("1")) {
             do {
                 Person newTeacher = PersonService.createTeacherFromConsole();
+                LOGGER.debug("New teacher has been created successfully.");
                 personRepository.add(newTeacher);
                 System.out.println("""
                         ==========================================
@@ -321,10 +365,16 @@ public class MainService {
         } else if (confirmation3.equals("2")) {
             do {
                 System.out.println("====================================\nEnter ID number of the teacher.");
-                int id = scanner.nextInt();
+                int id = 0;
+                try {
+                    id = scanner.nextInt();
+                } catch (InputMismatchException ex) {
+                    LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                }
                 try {
                     System.out.println(personRepository.getTeacherById(id));
                 } catch (EntityNotFoundException e) {
+                    LOGGER.warning("There's no teacher with such ID.", e);
                     System.out.println(e);
                 }
                 System.out.println("""
@@ -334,6 +384,7 @@ public class MainService {
             } while (scanner.next().equals("yes"));
         } else if (confirmation3.equals("3")) {
             personRepository.findAll(Role.TEACHER);
+            LOGGER.info("All information about teachers.");
         } System.out.println("++++++++++++++++++++++");
     }
 
@@ -345,6 +396,7 @@ public class MainService {
         } else if (confirmation4.equals("1")) {
             do {
                 Homework newHomework = HomeworkService.createHomeworkFromConsole();
+                LOGGER.debug("New homework has been created successfully.");
                 homeworkRepository.putIfAbsent(newHomework.getLectureID(), new ArrayList<>());
                 homeworkRepository.get(newHomework.getLectureID()).add(newHomework);
                 System.out.println("""
@@ -355,10 +407,16 @@ public class MainService {
         } else if (confirmation4.equals("2")) {
             do {
                 System.out.println("====================================\nEnter ID number of the homework.");
-                int id = scanner.nextInt();
+                int id = 0;
+                try{
+                    id = scanner.nextInt();
+                } catch (InputMismatchException ex){
+                    LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                }
                 try {
                     System.out.println(homeworkRepository.getById(id));
                 } catch (EntityNotFoundException e) {
+                    LOGGER.warning("There's no homework with such ID", e);
                     System.out.println(e);
                 }
                 System.out.println("""
@@ -368,6 +426,7 @@ public class MainService {
             } while (scanner.next().equals("yes"));
         } else if (confirmation4.equals("3")) {
             homeworkRepository.findAll();
+            LOGGER.info("All information about homeworks.");
         }System.out.println("++++++++++++++++++++++");
     }
 
@@ -391,6 +450,7 @@ public class MainService {
         } else if (confirmation5.equals("1")) {
             do {
                 AdditionalMaterial additionalMaterial = AdditionalMaterialService.createAddMaterialFromConsole();
+                LOGGER.debug("New additional material has been created successfully.");
                 additionalMaterialRepository.putIfAbsent(additionalMaterial.getLectureID(), new ArrayList<>());
                 additionalMaterialRepository.get(additionalMaterial.getLectureID()).add(additionalMaterial);
                 System.out.println("""
@@ -401,10 +461,16 @@ public class MainService {
         } else if (confirmation5.equals("2")) {
             do {
                 System.out.println("====================================\nEnter ID number of the additional material.");
-                int id = scanner.nextInt();
+                int id = 0;
+                try {
+                    id = scanner.nextInt();
+                } catch (InputMismatchException ex){
+                    LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                }
                 try {
                     System.out.println(additionalMaterialRepository.getById(id));
                 } catch (EntityNotFoundException e) {
+                    LOGGER.warning("There's no additional material with such ID", e);
                     System.out.println(e);
                 }
                 System.out.println("""
@@ -423,6 +489,7 @@ public class MainService {
                 if (conf.equals("1")) Collections.sort(list, AdditionalMaterial.lectureIDComparator);
                 else if (conf.equals("2")) Collections.sort(list, AdditionalMaterial.resourceTypeComparator);
             } while (conf.equals("1")||conf.equals("2"));
+            LOGGER.info("All information about additional materials.");
         } System.out.println("++++++++++++++++++++++");
     }
 }

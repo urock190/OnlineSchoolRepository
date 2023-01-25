@@ -7,12 +7,14 @@ import com.academy.models.Person;
 import com.academy.repository.CourseRepository;
 import com.academy.repository.LectureRepository;
 import com.academy.repository.PersonRepository;
+import com.academy.util.Logger;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CourseService {
+    private static final Logger LOGGER = new Logger(CourseService.class.getName());
     private static final Pattern NAME_PATTERN = Pattern.compile("^\\s$|[\\W&&[\\S]]");
     private static String validationFindFalseMethod (Pattern pattern, Scanner scanner) throws ValidationErrorException {
         String newString = scanner.next() + scanner.nextLine();
@@ -32,6 +34,7 @@ public class CourseService {
         return new Course(name, teacher, student);}
 
     public Course createCourseFromConsole(){
+        LOGGER.debug("Creating new course");
         PersonRepository personRepository = PersonRepository.getInstance();
         LectureRepository lectureRepository = LectureRepository.getInstance();
         Scanner scanner = new Scanner(System.in);
@@ -43,14 +46,18 @@ public class CourseService {
                 name = validationFindFalseMethod(NAME_PATTERN, scanner);
                 out = true;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("The course name must contain only English letters and numbers.");
             }
         }
         Person teacher = PersonService.createTeacherFromConsole();
+        LOGGER.debug("New teacher has been created successfully.");
         personRepository.add(teacher);
         Person student = PersonService.createStudentFromConsole();
+        LOGGER.debug("New student has been created successfully.");
         personRepository.add(student);
         Lecture lecture = LectureService.createLectureFromConsole();
+        LOGGER.debug("New lecture has been created successfully.");
         lectureRepository.add(lecture);
         return new Course(name, teacher, student, lecture);
     }

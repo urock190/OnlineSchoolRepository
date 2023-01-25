@@ -4,12 +4,14 @@ import com.academy.exceptions.ValidationErrorException;
 import com.academy.models.Person;
 import com.academy.models.Role;
 import com.academy.repository.PersonRepository;
+import com.academy.util.Logger;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PersonService {
+    private static final Logger LOGGER = new Logger(PersonService.class.getName());
     private static final Pattern NAMES_PATTERN = Pattern.compile("^\\s$|\\d|[\\W&&[\\S]]|.{30,}");
     private static final Pattern mobileNumberPattern = Pattern.compile("(^\\+(\\(?\\d{3}\\)?-?){4} {0,4}$)|(^\\s{0,4}-\\s{0,4}$)");
     private static final Pattern emailPattern = Pattern.compile("(^[\\w-]+@\\w+\\.\\w+ {0,4}$)|(^\\s{0,3}-\\s{0,3}$)");
@@ -41,6 +43,7 @@ public class PersonService {
         System.out.println("course ID of " + person.getRole() +" №"+ person.getID() + " = " + person.getCourseID());
     }
     public static Person createStudentFromConsole() {
+        LOGGER.debug("Creating new student");
         Scanner scanner = new Scanner(System.in);
         String name = " ";
         boolean out = false;
@@ -50,6 +53,7 @@ public class PersonService {
                 name = validationFindFalseMethod(NAMES_PATTERN, scanner);
                 out = true;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("Student's name must contain only English letters and be shorter than 30 characters.");
             }
         }
@@ -60,6 +64,7 @@ public class PersonService {
                 lastName = validationFindFalseMethod(NAMES_PATTERN, scanner);
                 out = false;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("Student's last name must contain only English letters and be shorter than 30 characters.");
             }
         }
@@ -70,6 +75,7 @@ public class PersonService {
                 phone = validationFindTrueMethod(mobileNumberPattern, scanner);
                 out = true;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("The phone number must contain 12 digits and can be written in the format " +
                         "+(XXX)-(XXX)(XXX)(XXX), with or without brackets and dashes.\nTo skip this option, enter \" - \"");
             }
@@ -81,12 +87,14 @@ public class PersonService {
                 email = validationFindTrueMethod(emailPattern, scanner);
                 out = false;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("Email entered in incorrect format. Try again, please.\nTo skip this option, enter \" - \"");
             }
         }
         return new Person (Role.STUDENT, name, lastName, phone, email);
     }
     public static Person createTeacherFromConsole() {
+        LOGGER.debug("Creating new teacher");
         Scanner scanner = new Scanner(System.in);
         String name = " ";
         boolean out = false;
@@ -96,6 +104,7 @@ public class PersonService {
                 name = validationFindFalseMethod(NAMES_PATTERN, scanner);
                 out = true;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("Teacher's name must contain only English letters and be shorter than 30 characters.");
             }
         }
@@ -106,6 +115,7 @@ public class PersonService {
                 lastName = validationFindFalseMethod(NAMES_PATTERN, scanner);
                 out = false;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("Teacher's last name must contain only English letters and be shorter than 30 characters.");
             }
         }
@@ -116,6 +126,7 @@ public class PersonService {
                 phone = validationFindTrueMethod(mobileNumberPattern, scanner);
                 out = true;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("The phone number must contain 12 digits and can be written in the format " +
                         "+(XXX)-(XXX)(XXX)(XXX), with or without brackets and dashes.\nTo skip this option, enter \" - \"");
             }
@@ -127,6 +138,7 @@ public class PersonService {
                 email = validationFindTrueMethod(emailPattern, scanner);
                 out = false;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("Email entered in incorrect format. Try again, please.\nTo skip this option, enter \" - \"");
             }
         }
@@ -164,7 +176,7 @@ public class PersonService {
     public static void studentMenuTitle() {
         System.out.println("You have choose the category \"Student\"");
         System.out.println("""
-                                Do you want to print short info about students? Type "yes" to confirm. Type "no" to choose another category.\s
+                                Do you want to print short info about students? Type "yes" to confirm. Type "no" to choose another category.
                                 Enter "1" to create new student. Enter "2" to get student by their ID. Enter "3" to print full info about students.
                                 Type anything else to continue creating lectures.""");
     }
@@ -172,7 +184,7 @@ public class PersonService {
     public static void teacherMenuTitle() {
         System.out.println("You have choose the category \"Teacher\"");
         System.out.println("""
-                                Do you want to print short info about teachers? Type "yes" to confirm. Type "no" to choose another category.\s
+                                Do you want to print short info about teachers? Type "yes" to confirm. Type "no" to choose another category.
                                 Enter "1" to create new teacher. Enter "2" to get teacher by their ID. Enter "3" to print full info about teachers.
                                 Type anything else to continue creating lectures.""");
     }

@@ -11,13 +11,16 @@ import com.academy.repository.lectures.AdditionalMaterialRepository;
 import com.academy.repository.lectures.HomeworkRepository;
 import com.academy.services.lectures.AdditionalMaterialService;
 import com.academy.services.lectures.HomeworkService;
+import com.academy.util.Logger;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LectureService {
+    private static final Logger LOGGER = new Logger(LectureService.class.getName());
     private static final Pattern namePattern = Pattern.compile("^\\s$|[\\W&&[\\S]]");
     private static final Pattern descriptionPattern = Pattern.compile("^\\s$|.{201,}");
 
@@ -50,6 +53,7 @@ public class LectureService {
     }
 
     public static Lecture createLectureFromConsole() {
+        LOGGER.debug("Creating lecture.");
         HomeworkRepository homeworkRepository = HomeworkRepository.getInstance();
         AdditionalMaterialRepository addMaterialRepository = AdditionalMaterialRepository.getInstance();
         Scanner scanner = new Scanner(System.in);
@@ -63,11 +67,17 @@ public class LectureService {
                 name = validationFindFalseMethod(namePattern, scanner);
                 out = true;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("Validation Error. The lecture name must contain only English letters and numbers.");
             }
         }
         System.out.println("Enter amount of lectures");
-        int amount = scanner.nextInt();
+        int amount = 0;
+        try {
+            amount = scanner.nextInt();
+        } catch (InputMismatchException ex) {
+            LOGGER.error("Incorrect input. Need to solve the problem", ex);
+        }
         System.out.println("Enter a short description of the lecture, please.");
         String description = " ";
         while (out) {
@@ -75,6 +85,7 @@ public class LectureService {
                 description = validationFindFalseMethod(descriptionPattern, scanner);
                 out = false;
             } catch (ValidationErrorException e) {
+                LOGGER.warning("Validation error", e);
                 System.out.println("The description must contain a maximum of 200 characters. Please enter a shorter description.");
             }
         }
@@ -89,9 +100,10 @@ public class LectureService {
             homeworks = tmpArray;
             System.out.println("==========================================\nDo you want to create new homework? " +
                     "Enter something to confirm.\nEnter \"no\" to finish creating homeworks.");
-            if (scanner.next().equals("no")) out = true;
+            if (scanner.next().equals("no")) {LOGGER.debug("Homeworks have been created successfully."); out = true;}
         }
         AdditionalMaterial additionalMaterial = AdditionalMaterialService.createAddMaterialFromConsole();
+        LOGGER.debug("Additional material has been created successfully.");
         addMaterialRepository.putIfAbsent(additionalMaterial.getLectureID() + 1, new ArrayList<>());
         addMaterialRepository.get(additionalMaterial.getLectureID() + 1).add(additionalMaterial);
         return new Lecture(name, amount, description, homeworks, additionalMaterial);
@@ -142,19 +154,28 @@ public class LectureService {
         System.out.println("==========================\nAdd a teacher for a lecture. \nEnter lecture's ID first.");
         int lectureID = 0;
         while (lectureID == 0) {
-            lectureID = scanner.nextInt();
+            try {
+                lectureID = scanner.nextInt();
+            } catch (InputMismatchException ex) {
+                LOGGER.error("Incorrect input. Need to solve the problem", ex);
+            }
             try {
                 lectureRepository.getById(lectureID);
                 System.out.println("==========================\nEnter teacher's ID, please.");
                 int teacherID = 0;
                 while (teacherID == 0) {
-                    teacherID = scanner.nextInt();
+                    try {
+                        teacherID = scanner.nextInt();
+                    } catch (InputMismatchException ex){
+                        LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                    }
                     try {
                         personRepository.getTeacherById(teacherID);
                         lectureRepository.getById(lectureID).setPersonID(teacherID);
                         System.out.println("Teacher's ID has been successfully added.\n=============================");
                         return;
                     } catch (EntityNotFoundException a) {
+                        LOGGER.warning("EntityNotFoundException, no teacher with such ID", a);
                         System.out.println("There's no teacher with ID = " + teacherID + ". Please, enter correct ID or type" +
                                 " \"ex\" for exit.");
                         teacherID = 0;
@@ -162,6 +183,7 @@ public class LectureService {
                     if (scanner.hasNext("ex")) break;
                 }
             } catch (EntityNotFoundException e) {
+                LOGGER.warning("EntityNotFoundException, no lecture with such ID", e);
                 System.out.println("There's no lecture with ID = " + lectureID + ". Please, enter correct ID or type" +
                         " \"ex\" for exit.");
                 lectureID = 0;
@@ -173,7 +195,7 @@ public class LectureService {
     public static void lectureMenuTitle(){
         System.out.println("You have choose the category \"Lecture\"");
         System.out.println("""
-                                Do you want to print short info about lecture objects? Type "yes" to confirm. Type "no" to choose another category.\s
+                                Do you want to print short info about lecture objects? Type "yes" to confirm. Type "no" to choose another category.
                                 Enter "1" to add teacher's ID to the lecture. Enter "2" to get lecture by it's ID. Enter "3" to print full info about lectures.
                                 Type anything else to continue creating lectures.""");
     }
