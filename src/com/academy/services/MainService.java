@@ -18,6 +18,21 @@ import java.util.*;
 
 public class MainService {
     private static final Logger LOGGER = new Logger(MainService.class.getName());
+    public static Person[] studentsForControlWork() {
+        Person[] studs = new Person[10];
+        studs[0] = new Person(Role.STUDENT, "A.", "Arnold");
+        studs[1] = new Person(Role.STUDENT, "B.", "Johnson");
+        studs[2] = new Person(Role.STUDENT, "C.", "Evans");
+        studs[3] = new Person(Role.STUDENT, "D.", "Johnson");
+        studs[4] = new Person(Role.STUDENT, "E.", "Moriarty");
+        studs[5] = new Person(Role.STUDENT, "F.", "Ferdinand");
+        studs[6] = new Person(Role.STUDENT, "G.", "Stacy");
+        studs[7] = new Person(Role.STUDENT, "I.", "Elba");
+        studs[8] = new Person(Role.STUDENT, "J.", "McCain");
+        studs[9] = new Person(Role.STUDENT, "K.", "Denver");
+        return studs;
+    }
+
     public static void init() {
         LectureRepository lectureRepository = LectureRepository.getInstance();
         CourseRepository courseRepository = CourseRepository.getInstance();
@@ -71,7 +86,8 @@ public class MainService {
         while (true) {
             do {LOGGER.info("Choose category, enter a number");
                 System.out.println("""
-                        Choose category: press 1 - for "Course", 2 - for "Lecture", 3 - for "Student" or 4 - for "Teacher", 5 - for "Homework", 6 - for "Additional Material", 7 - for "Log".
+                        Choose category: press 1 - for "Course", 2 - for "Lecture", 3 - for "Student" or 4 - for "Teacher", 5 - for "Homework", 6 - for "Additional Material",
+                        7 - for "Log" or 8 - for "Control Work".
                         Type "ex" to exit the program""");
                 if (scanner.hasNext("ex")) break OUTER;
                 try {
@@ -160,14 +176,31 @@ public class MainService {
                         String confirmation6 = scanner.next();
                         if (confirmation6.equals("yes")) {
                             System.out.println(LogService.readLog()); continue OUTER;
-                        } if (confirmation6.equals("no")) {
+                        } else if (confirmation6.equals("no")) {
+                            continue OUTER;
+                        } else continue ;
+
+                    case 8:
+                        LOGGER.info("Control work menu info"); ControlWork.controlWorkMenuTitle();
+                        String confirmation7 = scanner.next();
+                        if (confirmation7.equals("yes")) {
+                            ControlWork.startControlWork(studentsForControlWork());
+                            try {
+                                Thread.sleep(15000);
+                                System.out.println("++++++++++++++++++++++");
+                            } catch (InterruptedException e) {
+                                LOGGER.error("Interrupted exception. Need to solve the problem", e);
+                                throw new RuntimeException(e);
+                            }
+                            continue OUTER;
+                        } else if (confirmation7.equals("no")) {
                             continue OUTER;
                         } else continue ;
 
                     default:
-                        System.out.println("Please, enter a number from 1 to 7");
+                        System.out.println("Please, enter a number from 1 to 8.");
                 }
-            } while (categoryNumber < 1 || categoryNumber > 7);
+            } while (categoryNumber < 1 || categoryNumber > 8);
             while (Lecture.getCounterOfLectures() < 8) {
                 Lecture newLecture = LectureService.createLectureFromConsole();
                 lectureRepository.add(newLecture);
