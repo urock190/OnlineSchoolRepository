@@ -1,9 +1,8 @@
 package com.academy.util;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class LogService {
     public static void writeLog(Log log) {
@@ -28,6 +27,29 @@ public class LogService {
             System.out.println(e.getMessage());
         }
         return new String(buffer);
+    }
+
+    public static void writeLevelSetting (Level level) {
+        String string = level.name();
+        File file = new File("src/com/academy/util/setting.txt");
+        try (FileWriter writer = new FileWriter(file)){
+            writer.write("level = " + string);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static Level readLevelSetting() {
+        Path path = Path.of("src/com/academy/util/setting.txt");
+        Level level = Level.OFF;
+        try (BufferedReader br = Files.newBufferedReader(path)) {
+            String lvl = br.readLine();
+            if (lvl.startsWith("level = "))
+                level = Level.valueOf(lvl.substring(8));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return level;
     }
 
     public static void logMenuTitle() {

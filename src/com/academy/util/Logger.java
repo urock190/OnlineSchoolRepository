@@ -7,9 +7,11 @@ import java.util.List;
 public class Logger {
     private final String name;
     private static List<Log> logs = new ArrayList<>();
+    private static int levelValue;
 
     public Logger(String name) {
         this.name = name;
+        levelValue = LogService.readLevelSetting().getValue();
     }
 
     public List<Log> getLogs() {return logs;}
@@ -20,37 +22,51 @@ public class Logger {
 
     public Log remove(int index) {return logs.remove(index);}
 
-    public Log info(String message){
+    public void info(String message){
+        if (!isLoggable(Level.INFO)) return;
         Log inf = new Log(this.name, Level.INFO, message);
         logs.add(inf);
         LogService.writeLog(inf);
-        return inf;
     }
 
-    public Log debug(String message){
+    public void debug(String message){
+        if (!isLoggable(Level.DEBUG)) return;
         Log db = new Log(this.name, Level.DEBUG, message);
         logs.add(db);
         LogService.writeLog(db);
-        return db;
     }
 
-    public Log warning(String message, Throwable ex){
+    public void warning(String message, Throwable ex){
+        if (!isLoggable(Level.WARNING)) return;
         Log warn = new Log(this.name, Level.WARNING, message);
         warn.setStacktrace(Arrays.toString(ex.getStackTrace()));
         logs.add(warn);
         LogService.writeLog(warn);
-        return warn;
     }
 
-    public Log error(String message, Throwable ex){
+    public void error(String message, Throwable ex){
+        if (!isLoggable(Level.ERROR)) return;
         Log err = new Log(this.name, Level.ERROR, message);
         err.setStacktrace(Arrays.toString(ex.getStackTrace()));
         logs.add(err);
         LogService.writeLog(err);
-        return err;
+    }
+
+    public boolean isLoggable(Level level) {
+        if (level.getValue() < levelValue) {
+            return false;
+        } else return true;
     }
 
     public String getName() {
         return name;
+    }
+
+    public static int getLevelValue() {
+        return levelValue;
+    }
+
+    public static void setLevelValue(int levelValue) {
+        Logger.levelValue = levelValue;
     }
 }

@@ -245,6 +245,7 @@ public class MainService {
                     id = scanner.nextInt();
                 } catch (InputMismatchException ex) {
                     LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                    scanner.skip(".*");
                 }
                 try {
                     System.out.println(courseRepository.getById(id));
@@ -281,6 +282,7 @@ public class MainService {
                     id = scanner.nextInt();
                 } catch (InputMismatchException ex){
                     LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                    scanner.skip(".*");
                 }
                 try {
                     System.out.println(lectureRepository.getById(id));
@@ -361,6 +363,7 @@ public class MainService {
                     id = scanner.nextInt();
                 } catch (InputMismatchException ex) {
                     LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                    scanner.skip(".*");
                 }
                 try {
                     System.out.println(personRepository.getStudentById(id));
@@ -403,6 +406,7 @@ public class MainService {
                     id = scanner.nextInt();
                 } catch (InputMismatchException ex) {
                     LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                    scanner.skip(".*");
                 }
                 try {
                     System.out.println(personRepository.getTeacherById(id));
@@ -445,6 +449,7 @@ public class MainService {
                     id = scanner.nextInt();
                 } catch (InputMismatchException ex){
                     LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                    scanner.skip(".*");
                 }
                 try {
                     System.out.println(homeworkRepository.getById(id));
@@ -499,6 +504,7 @@ public class MainService {
                     id = scanner.nextInt();
                 } catch (InputMismatchException ex){
                     LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                    scanner.skip(".*");
                 }
                 try {
                     System.out.println(additionalMaterialRepository.getById(id));
