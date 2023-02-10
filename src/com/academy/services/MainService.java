@@ -1,5 +1,8 @@
 package com.academy.services;
 
+import com.academy.ServerClient.Client;
+import com.academy.ServerClient.Server;
+import com.academy.ServerClient.Service;
 import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.*;
 import com.academy.models.lectures.AdditionalMaterial;
@@ -87,7 +90,7 @@ public class MainService {
             do {LOGGER.info("Choose category, enter a number");
                 System.out.println("""
                         Choose category: press 1 - for "Course", 2 - for "Lecture", 3 - for "Student" or 4 - for "Teacher", 5 - for "Homework", 6 - for "Additional Material",
-                        7 - for "Log" or 8 - for "Control Work".
+                        7 - for "Log", 8 - for "Control Work" or 9 - for "Server-Client".
                         Type "ex" to exit the program""");
                 if (scanner.hasNext("ex")) break OUTER;
                 try {
@@ -197,10 +200,30 @@ public class MainService {
                             continue OUTER;
                         } else continue ;
 
+                    case 9:
+                        LOGGER.info("Server-client menu info"); Service.serverClientMenuTitle();
+                        String confirmation8 = scanner.next();
+                        if (confirmation8.equals("yes")) {
+                            Thread server = new Thread(new Server(), "server");
+                            server.start();
+                            try {
+                                Thread.sleep(300);
+                            Thread client = new Thread(new Client(), "client");
+                            client.start();
+                                server.join();
+                            } catch (InterruptedException e) {
+                                LOGGER.error("Interrupted exception. Need to solve the problem", e);
+                                throw new RuntimeException(e);
+                            }
+                            continue OUTER;
+                        } else if (confirmation8.equals("no")) {
+                            continue OUTER;
+                        } else continue ;
+
                     default:
-                        System.out.println("Please, enter a number from 1 to 8.");
+                        System.out.println("Please, enter a number from 1 to 9.");
                 }
-            } while (categoryNumber < 1 || categoryNumber > 8);
+            } while (categoryNumber < 1 || categoryNumber > 9);
             while (Lecture.getCounterOfLectures() < 8) {
                 Lecture newLecture = LectureService.createLectureFromConsole();
                 lectureRepository.add(newLecture);
