@@ -2,9 +2,14 @@ package com.academy.models.lectures;
 
 import com.academy.models.Models;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import static com.academy.models.Lecture.getCounterOfLectures;
 
-public class Homework extends Models {
+public class Homework extends Models implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 123454867704L;
     private int lectureID;
     private String task;
     private int numberOfTasks;
@@ -60,5 +65,8 @@ public class Homework extends Models {
 
     public void setTask(String task) {
         this.task = task;
+    }
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 }

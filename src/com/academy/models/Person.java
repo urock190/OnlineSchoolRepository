@@ -1,8 +1,13 @@
 package com.academy.models;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import static com.academy.models.Course.getCounterOfCourses;
 
-public class Person extends Models implements Comparable<Person> {
+public class Person extends Models implements Comparable<Person>, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1234677704L;
     private String lastName;
     private String phone;
     private String email;
@@ -125,6 +130,9 @@ public class Person extends Models implements Comparable<Person> {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.academy.models;
 
-public abstract class Models {
+import java.io.Serializable;
+
+public abstract class Models implements Serializable {
     private String name;
     private Integer ID;
 

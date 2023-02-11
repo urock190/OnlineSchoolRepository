@@ -1,5 +1,7 @@
 package com.academy.models;
 
-public enum ResourceType {
+import java.io.Serializable;
+
+public enum ResourceType implements Serializable {
     URL, VIDEO, BOOK
 }

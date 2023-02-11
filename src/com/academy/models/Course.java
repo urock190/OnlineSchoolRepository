@@ -1,6 +1,11 @@
 package com.academy.models;
 
-public class Course extends Models implements Comparable<Course> {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Course extends Models implements Comparable<Course>, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1246742084L;
     private static int counterOfCourses;
     private Person teacher;
     private Person student;
@@ -21,12 +26,16 @@ public class Course extends Models implements Comparable<Course> {
         this.lecture = lecture;
         setID(++counterOfCourses);
         lecture.setCourseID(getID());
+        student.setCourseID(getID());
+        teacher.setCourseID(getID());
     }
     public Course (String name, Person teacher, Person student) {
         this.setName(name);
         this.teacher = teacher;
         this.student = student;
         setID(++counterOfCourses);
+        student.setCourseID(getID());
+        teacher.setCourseID(getID());
     }
     public Course(){
         setID(++counterOfCourses);
@@ -60,6 +69,9 @@ public class Course extends Models implements Comparable<Course> {
     }
     public Person getStudent() {
         return student;
+    }
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     /**

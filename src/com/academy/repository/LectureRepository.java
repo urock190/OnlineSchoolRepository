@@ -76,6 +76,15 @@ public class LectureRepository implements Repository {
         throw new EntityNotFoundException("There's no lecture with such ID");
     }
 
+    public List<Lecture> getByCourseId (int courseID) throws EntityNotFoundException {
+        List<Lecture> lecturesOfThisCourse = new ArrayList<>();
+        for (Lecture lecture : lectures){
+            if (lecture == null) continue;
+            if (lecture.getCourseID() == courseID) lecturesOfThisCourse.add(lecture);
+        }
+        if (lecturesOfThisCourse.isEmpty()) throw new EntityNotFoundException("There's no lectures with such course ID");
+        else return lecturesOfThisCourse;
+    }
     @Override
     public void deleteById(int ID) {
         for (int i = 0; i < size(); i++){

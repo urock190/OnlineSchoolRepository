@@ -12,6 +12,7 @@ import com.academy.repository.LectureRepository;
 import com.academy.repository.PersonRepository;
 import com.academy.repository.lectures.AdditionalMaterialRepository;
 import com.academy.repository.lectures.HomeworkRepository;
+import com.academy.serializationUtil.SerializationUtils;
 import com.academy.services.lectures.AdditionalMaterialService;
 import com.academy.services.lectures.HomeworkService;
 import com.academy.util.LogService;
@@ -53,7 +54,7 @@ public class MainService {
                 new AdditionalMaterial("Organic chemistry", ResourceType.BOOK));
         lectureRepository.add(firstLecture);
         homeworkRepository.put(firstLecture.getID(), new ArrayList<>());
-        for (Homework homework : firstLecture.getHomework()) {
+        for (Homework homework : firstLecture.getHomeworks()) {
             homeworkRepository.get(firstLecture.getID()).add(homework);}
         addMaterialRepository.put(firstLecture.getID(), new ArrayList<>());
         addMaterialRepository.get(firstLecture.getID()).add(firstLecture.getAdditionalMaterial());
@@ -67,6 +68,7 @@ public class MainService {
         addMaterialRepository.get(thirdLecture.getID()).add(thirdLecture.getAdditionalMaterial());
         addMaterialRepository.put(secondLecture.getID(), new ArrayList<>());
         addMaterialRepository.get(secondLecture.getID()).add(secondLecture.getAdditionalMaterial());
+        SerializationUtils.serializeToFile(firstCourse);
     }
 
     private static int categoryNumMethod(Scanner scanner) {

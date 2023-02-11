@@ -3,11 +3,15 @@ package com.academy.models.lectures;
 import com.academy.models.Models;
 import com.academy.models.ResourceType;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Comparator;
 
 import static com.academy.models.Lecture.getCounterOfLectures;
 
-public class AdditionalMaterial extends Models implements Comparable<AdditionalMaterial>{
+public class AdditionalMaterial extends Models implements Comparable<AdditionalMaterial>, Serializable {
+    @Serial
+    private static final long serialVersionUID = 123454648635304L;
     private int lectureID;
     private static int counterOfAddMaterials;
     private ResourceType resourceType;
@@ -45,7 +49,9 @@ public class AdditionalMaterial extends Models implements Comparable<AdditionalM
     public void setLectureID(int lectureID) {
         this.lectureID = lectureID;
     }
-
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
     public ResourceType getResourceType() {
         return resourceType;
     }

@@ -3,10 +3,15 @@ package com.academy.models;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import static com.academy.models.Course.getCounterOfCourses;
 import static com.academy.models.Person.getCounterOfPersons;
 
-public class Lecture extends Models {
+public class Lecture extends Models implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 123446487704L;
     private int amount;
     private String description;
     private static int counterOfLectures;
@@ -72,7 +77,7 @@ public class Lecture extends Models {
         this.amount = amount;
     }
 
-    public void setHomework(Homework [] homeworks) {
+    public void setHomeworks(Homework [] homeworks) {
         this.homeworks = homeworks;
     }
 
@@ -93,7 +98,7 @@ public class Lecture extends Models {
         return amount;
     }
 
-    public Homework[] getHomework() {
+    public Homework[] getHomeworks() {
         return homeworks;
     }
 
@@ -110,5 +115,8 @@ public class Lecture extends Models {
     }
     public static int getCounterOfLectures() {
         return counterOfLectures;
+    }
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 }

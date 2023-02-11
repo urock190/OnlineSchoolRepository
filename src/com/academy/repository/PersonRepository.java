@@ -106,6 +106,26 @@ public class PersonRepository implements Repository {
         }
         throw new EntityNotFoundException("There's no student with such ID");
     }
+
+    public List<Person> getTeachersByCourseId (int courseID) throws EntityNotFoundException {
+        List<Person> teachersOfThisCourse = new ArrayList<>();
+        for (Person teacher : persons){
+            if (teacher == null || teacher.getRole() != Role.TEACHER) continue;
+            if (teacher.getCourseID() == courseID) teachersOfThisCourse.add(teacher);
+        }
+        if(teachersOfThisCourse.isEmpty()) throw new EntityNotFoundException("There's no teachers with such course ID.");
+        else return teachersOfThisCourse;
+    }
+
+    public List<Person> getStudentsByCourseId (int courseID) throws EntityNotFoundException {
+        List<Person> studentsOfThisCourse = new ArrayList<>();
+        for (Person student : persons){
+            if (student == null || student.getRole() != Role.STUDENT) continue;
+            if (student.getCourseID() == courseID) studentsOfThisCourse.add(student);
+        }
+        if(studentsOfThisCourse.isEmpty()) throw new EntityNotFoundException("There's no students with such course ID.");
+        else return studentsOfThisCourse;
+    }
     @Override
     public void deleteById(int ID){
         for (int i = 0; i < size(); i++){

@@ -1,7 +1,10 @@
 package com.academy.repository.lectures;
 
 import com.academy.exceptions.EntityNotFoundException;
+import com.academy.models.Lecture;
 import com.academy.models.lectures.AdditionalMaterial;
+import com.academy.repository.LectureRepository;
+import com.academy.util.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AdditionalMaterialRepository {
+    private static final Logger LOGGER = new Logger(AdditionalMaterialRepository.class.getName());
     private static AdditionalMaterialRepository instance;
     private Map<Integer, List<AdditionalMaterial>> additionalMaterials;
 
@@ -64,6 +68,33 @@ public class AdditionalMaterialRepository {
             }
         }
         throw new EntityNotFoundException("There's no additional material with such ID");
+    }
+    public List<AdditionalMaterial> getByLectureId (int lectureID) throws EntityNotFoundException {
+        List<AdditionalMaterial> AddMatsOfThisLecture = new ArrayList<>();
+        for (List<AdditionalMaterial> list : additionalMaterials.values()) {
+            if (list == null) continue;
+            for (AdditionalMaterial additionalMaterial : list){
+                if (additionalMaterial == null) continue;
+                if (additionalMaterial.getLectureID() == lectureID) AddMatsOfThisLecture.add(additionalMaterial);
+            }
+        }
+        if(AddMatsOfThisLecture.isEmpty()) throw new EntityNotFoundException("There's no additional materials with such lecture ID");
+        else return AddMatsOfThisLecture;
+    }
+
+    public List<AdditionalMaterial> getByCourseId (int courseID) throws EntityNotFoundException {
+        List<AdditionalMaterial> AddMatsOfThisCourse = new ArrayList<>();
+        for (Lecture lecture : LectureRepository.getInstance().getByCourseId(courseID)){
+            if (lecture == null) continue;
+            try {
+                List<AdditionalMaterial> ofThisLecture = getByLectureId(lecture.getID());
+                AddMatsOfThisCourse.addAll(ofThisLecture);
+            } catch (EntityNotFoundException e){
+                LOGGER.warning("There's no additional materials with such lecture ID.", e);
+            }
+        }
+        if(AddMatsOfThisCourse.isEmpty()) throw new EntityNotFoundException("There's no additional materials with such course ID");
+        else return AddMatsOfThisCourse;
     }
 
     public void addById (int lectureID, int ID) throws EntityNotFoundException {
