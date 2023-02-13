@@ -1,1 +1,1 @@
-level = OFF
+level = DEBUG

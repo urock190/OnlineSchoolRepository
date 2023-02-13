@@ -1,5 +1,7 @@
 package com.academy.util;
 
+import com.academy.myDateTimeFormats.DateTimeFormats;
+
 import java.time.LocalDateTime;
 
 public class Log {
@@ -18,7 +20,7 @@ public class Log {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("Date " + date +
+        StringBuilder builder = new StringBuilder("Date " + DateTimeFormats.logDateFormat(date) +
                 "; level - " + level + "; name - " + name +
                 "; message - \"" + message + '\"');
         if (stacktrace != null) builder.append(", stacktrace - ").append(stacktrace);

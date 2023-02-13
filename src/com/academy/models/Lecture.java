@@ -2,9 +2,12 @@ package com.academy.models;
 
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
+import com.academy.myDateTimeFormats.DateTimeFormats;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static com.academy.models.Course.getCounterOfCourses;
 import static com.academy.models.Person.getCounterOfPersons;
@@ -19,6 +22,8 @@ public class Lecture extends Models implements Serializable {
     private AdditionalMaterial additionalMaterial;
     private int courseID;
     private int personID;
+    private String creationDate;
+    private LocalDateTime lectureDate;
     @Override
     public String toString() {
         return "Lecture (" +
@@ -27,9 +32,9 @@ public class Lecture extends Models implements Serializable {
                 ", description = \"" + description + '\"'+
                 ", ID = " + getID() +
                 ", courseID = " + courseID +
-                ", personID = " + personID +')';
+                ", personID = " + personID + ", lecture date = " + DateTimeFormats.lectureDateFormat(lectureDate) + ')';
     }
-    public Lecture (String name, int amount, Homework [] homeworks, AdditionalMaterial additionalMaterial) {
+    public Lecture (String name, int amount, Homework [] homeworks, AdditionalMaterial additionalMaterial, LocalDateTime lectureDate) {
         this.setName(name);
         this.amount = amount;
         this.homeworks = homeworks;
@@ -40,10 +45,13 @@ public class Lecture extends Models implements Serializable {
         for (Homework homework : homeworks) {
             if (homework == null) continue;
             homework.setLectureID(getID());
+            homework.setDeadline(LocalDateTime.of(lectureDate.toLocalDate().plusDays(1), LocalTime.NOON));
         }
         additionalMaterial.setLectureID(getID());
+        this.creationDate = DateTimeFormats.lectureDateFormat(LocalDateTime.now());
+        this.lectureDate = lectureDate;
     }
-    public Lecture(String name, int amount, String description, Homework [] homeworks, AdditionalMaterial additionalMaterial) {
+    public Lecture(String name, int amount, String description, Homework [] homeworks, AdditionalMaterial additionalMaterial, LocalDateTime lectureDate) {
         this.setName(name);
         this.amount = amount;
         this.description = description;
@@ -55,16 +63,34 @@ public class Lecture extends Models implements Serializable {
         for (Homework homework : homeworks) {
             if (homework == null) continue;
             homework.setLectureID(getID());
+            homework.setDeadline(LocalDateTime.of(lectureDate.toLocalDate().plusDays(1), LocalTime.NOON));
         }
         additionalMaterial.setLectureID(getID());
+        this.creationDate = DateTimeFormats.lectureDateFormat(LocalDateTime.now());
+        this.lectureDate = lectureDate;
     }
 
     public Lecture(){
         setID(++counterOfLectures);
         courseID = getCounterOfCourses();
         personID = getCounterOfPersons();
+        this.creationDate = DateTimeFormats.lectureDateFormat(LocalDateTime.now());
+    }
+    public String getCreationDate() {
+        return creationDate;
     }
 
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = DateTimeFormats.lectureDateFormat(creationDate);
+    }
+
+    public LocalDateTime getLectureDate() {
+        return lectureDate;
+    }
+
+    public void setLectureDate(LocalDateTime lectureDate) {
+        this.lectureDate = lectureDate;
+    }
     public String getDescription() {
         return description;
     }

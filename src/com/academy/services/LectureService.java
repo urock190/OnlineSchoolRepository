@@ -13,6 +13,9 @@ import com.academy.services.lectures.AdditionalMaterialService;
 import com.academy.services.lectures.HomeworkService;
 import com.academy.util.Logger;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -43,13 +46,14 @@ public class LectureService {
         return new Lecture();
     }
 
-    public static Lecture createLecture(String name, int amount, Homework[] homeworks, AdditionalMaterial additionalMaterial) {
-        return new Lecture(name, amount, homeworks, additionalMaterial);
+    public static Lecture createLecture(String name, int amount, Homework[] homeworks, AdditionalMaterial additionalMaterial,
+                                        LocalDateTime lectureDate) {
+        return new Lecture(name, amount, homeworks, additionalMaterial, lectureDate);
     }
 
     public static Lecture createLecture(String name, int amount, String description, Homework[] homeworks,
-                                        AdditionalMaterial additionalMaterial) {
-        return new Lecture(name, amount, description, homeworks, additionalMaterial);
+                                        AdditionalMaterial additionalMaterial, LocalDateTime lectureDate) {
+        return new Lecture(name, amount, description, homeworks, additionalMaterial, lectureDate);
     }
 
     public static Lecture createLectureFromConsole() {
@@ -106,7 +110,18 @@ public class LectureService {
         LOGGER.debug("Additional material has been created successfully.");
         addMaterialRepository.putIfAbsent(additionalMaterial.getLectureID() + 1, new ArrayList<>());
         addMaterialRepository.get(additionalMaterial.getLectureID() + 1).add(additionalMaterial);
-        return new Lecture(name, amount, description, homeworks, additionalMaterial);
+        System.out.println("Set the date of the lecture.\nEnter the date of the lecture in the format YYYY-MM-DD (year-month-day in numbers).");
+        String date = scanner.next() + scanner.nextLine();
+        System.out.println("Enter the time of the lecture in the format HH:mm (hours:minutes).");
+        String time = scanner.next() + scanner.nextLine();
+        String dateTime = date + "T" + time;
+        LocalDateTime lectureDate = LocalDateTime.of(2023,12,31,23,59);
+        try{lectureDate = LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(dateTime));}
+        catch (DateTimeParseException exception){
+            LOGGER.warning("Error during parsing. The date and time are probably entered incorrectly.", exception);
+            System.out.println("Error during parsing. The date 31.12.2023 23:59 will be set instead of the date of the lecture.");
+        }
+        return new Lecture(name, amount, description, homeworks, additionalMaterial, lectureDate);
     }
 
     LectureRepository lectureRepository = LectureRepository.getInstance();

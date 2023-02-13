@@ -1,6 +1,5 @@
 package com.academy.repository.lectures;
 
-import com.academy.Main;
 import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Lecture;
 import com.academy.models.lectures.Homework;

@@ -1,8 +1,5 @@
 package com.academy;
 
-import com.academy.models.Course;
-import com.academy.serializationUtil.SerializationUtils;
-import com.academy.services.CourseService;
 import com.academy.services.MainService;
 import com.academy.util.Level;
 import com.academy.util.LevelWatcher;
@@ -19,10 +16,10 @@ public class Main {
         LOGGER.debug("Creating 1 course & 3 lectures.");
         MainService.init();
         LOGGER.debug("1 course and 3 lectures have been created");
-//        MainService.chooseCategoryAndCreateLecture();
-        CourseService courseService = new CourseService();
-        Course course = SerializationUtils.deserializeCourseObj();
-        courseService.printCourseInfo(course);
+        MainService.chooseCategoryAndCreateLecture();
+//        CourseService courseService = new CourseService();
+//        Course course = SerializationUtils.deserializeCourseObj();
+//        courseService.printCourseInfo(course);
         lvlWatcher.interrupt();
         LOGGER.debug("Program finished");
     }

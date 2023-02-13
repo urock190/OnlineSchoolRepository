@@ -18,6 +18,7 @@ import com.academy.services.lectures.HomeworkService;
 import com.academy.util.LogService;
 import com.academy.util.Logger;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class MainService {
@@ -51,7 +52,7 @@ public class MainService {
         personRepository.add(firstCourse.getStudent());
         Lecture firstLecture = LectureService.createLecture("Chemistry", 70, new Homework[]{new Homework("exercises",
                         3, "task 1"), new Homework("reading", 1, "article 2")},
-                new AdditionalMaterial("Organic chemistry", ResourceType.BOOK));
+                new AdditionalMaterial("Organic chemistry", ResourceType.BOOK), LocalDateTime.of(2023,2,14,16,25));
         lectureRepository.add(firstLecture);
         homeworkRepository.put(firstLecture.getID(), new ArrayList<>());
         for (Homework homework : firstLecture.getHomeworks()) {
@@ -59,10 +60,10 @@ public class MainService {
         addMaterialRepository.put(firstLecture.getID(), new ArrayList<>());
         addMaterialRepository.get(firstLecture.getID()).add(firstLecture.getAdditionalMaterial());
         Lecture secondLecture = LectureService.createLecture("English", 75, new Homework[]{},
-                new AdditionalMaterial("Big Fat Video-course", ResourceType.VIDEO));
+                new AdditionalMaterial("Big Fat Video-course", ResourceType.VIDEO), LocalDateTime.of(2023,2,14,17,55));
         lectureRepository.add(secondLecture);
         Lecture thirdLecture = LectureService.createLecture("Informatics", 70, new Homework[]{},
-                new AdditionalMaterial("Head First Java", ResourceType.BOOK));
+                new AdditionalMaterial("Head First Java", ResourceType.BOOK), LocalDateTime.of(2023,2,16,19,25));
         lectureRepository.add(thirdLecture);
         addMaterialRepository.put(thirdLecture.getID(), new ArrayList<>());
         addMaterialRepository.get(thirdLecture.getID()).add(thirdLecture.getAdditionalMaterial());
