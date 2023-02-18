@@ -104,6 +104,11 @@ public class AdditionalMaterialRepository {
         getById(ID).setLectureID(lectureID);
     }
 
+    public void add (int lectureID, AdditionalMaterial material) {
+        get(lectureID).add(material);
+        material.setLectureID(lectureID);
+    }
+
     public void findAll() {
         System.out.println("======================\nFull additional materials info:");
         if (isEmpty()) System.out.println("Array is empty.");

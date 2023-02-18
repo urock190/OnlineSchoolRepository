@@ -66,9 +66,9 @@ public class MainService {
                 new AdditionalMaterial("Head First Java", ResourceType.BOOK), LocalDateTime.of(2023,2,16,19,25));
         lectureRepository.add(thirdLecture);
         addMaterialRepository.put(thirdLecture.getID(), new ArrayList<>());
-        addMaterialRepository.get(thirdLecture.getID()).add(thirdLecture.getAdditionalMaterial());
+        addMaterialRepository.add(thirdLecture.getID(), thirdLecture.getAdditionalMaterial());
         addMaterialRepository.put(secondLecture.getID(), new ArrayList<>());
-        addMaterialRepository.get(secondLecture.getID()).add(secondLecture.getAdditionalMaterial());
+        addMaterialRepository.add(secondLecture.getID(), secondLecture.getAdditionalMaterial());
         SerializationUtils.serializeToFile(firstCourse);
     }
 
@@ -121,7 +121,7 @@ public class MainService {
                         LOGGER.info("Lecture menu info"); LectureService.lectureMenuTitle();
                         String confirmation1 = scanner.next();
                         switch (confirmation1) {
-                            case "yes", "no", "1", "2", "3" -> {
+                            case "yes", "no", "1", "2", "3", "4" -> {
                                 lectureMenu(confirmation1, scanner);
                                 continue OUTER;
                             }
@@ -362,7 +362,23 @@ public class MainService {
         } else if (confirmation1.equals("3")) {
             lectureRepository.findAll();
             LOGGER.info("All information about lectures.");
-        } System.out.println("++++++++++++++++++++++");
+        } else if (confirmation1.equals("4")) {
+            do {
+                System.out.println("Enter \"1\" to print lectures starting from the specified date. \"2\" to print lectures " +
+                    "that start before the specified date.\n\"3\" to print lectures between the specified dates. " +
+                    "Enter anything else to return to \"Choose category\" menu.");
+                conf = scanner.next();
+                if (conf.equals("1")) lectureService.printLecturesFromDate(lectureRepository.getAll(),
+                        LectureService.dateFromConsole(scanner, true));
+                else if (conf.equals("2")) lectureService.printLecturesBeforeDate(lectureRepository.getAll(),
+                        LectureService.dateFromConsole(scanner, false));
+                else if (conf.equals("3")) {
+                    lectureService.printLecturesBetweenDates(lectureRepository.getAll(),
+                            LectureService.dateFromConsole(scanner,true), LectureService.dateFromConsole(scanner,false));
+                }
+            } while (conf.equals("1")||conf.equals("2")||conf.equals("3"));
+        }
+        System.out.println("++++++++++++++++++++++");
     }
 
     private static void studentMenu(String confirmation2, Scanner scanner) {
@@ -500,17 +516,22 @@ public class MainService {
         List<AdditionalMaterial> list = additionalMaterialRepository.toAddMaterialsList();
         Collections.sort(list);
         String conf;
-        if (confirmation5.equals("yes")) {
-            do {
-                additionalMaterialService.printList(list);
-                System.out.println("""
+        String sortAddMatsMenu = """
                         ==========================================
                         Enter "1" if you want to sort additional materials by lecture's ID or enter "2" if you want to sort by resource type.
-                        Enter anything else to return to "Choose category" menu.""");
+                        Enter "3" if yo want to group additional materials by lectures.
+                        Enter anything else to return to "Choose category" menu.""";
+        if (confirmation5.equals("yes")) {
+                additionalMaterialService.printList(list);
+            do {
+                System.out.println(sortAddMatsMenu);
                 conf = scanner.next();
-                if (conf.equals("1")) Collections.sort(list, AdditionalMaterial.lectureIDComparator);
-                else if (conf.equals("2")) Collections.sort(list, AdditionalMaterial.resourceTypeComparator);
-            } while (conf.equals("1")||conf.equals("2"));
+                if (conf.equals("1")) {Collections.sort(list, AdditionalMaterial.lectureIDComparator);
+                    additionalMaterialService.printList(list);}
+                else if (conf.equals("2")) {Collections.sort(list, AdditionalMaterial.resourceTypeComparator);
+                    additionalMaterialService.printList(list);}
+                else if (conf.equals("3")) additionalMaterialService.shortGroupedByLectures(additionalMaterialRepository.getAll());
+            } while (conf.equals("1")||conf.equals("2")||conf.equals("3"));
         } else if (confirmation5.equals("1")) {
             do {
                 AdditionalMaterial additionalMaterial = AdditionalMaterialService.createAddMaterialFromConsole();
@@ -544,16 +565,16 @@ public class MainService {
                         Enter anything else to finish showing additional material's info and return to "Choose category" menu.""");
             } while (scanner.next().equals("yes"));
         } else if (confirmation5.equals("3")) {
-            do {
                 additionalMaterialService.findAllFromTheList(list);
-                System.out.println("""
-                        ==========================================
-                        Enter "1" if you want to sort additional materials by lecture's ID or enter "2" if you want to sort by resource type.
-                        Enter anything else to return to "Choose category" menu.""");
+            do {
+                System.out.println(sortAddMatsMenu);
                 conf = scanner.next();
-                if (conf.equals("1")) Collections.sort(list, AdditionalMaterial.lectureIDComparator);
-                else if (conf.equals("2")) Collections.sort(list, AdditionalMaterial.resourceTypeComparator);
-            } while (conf.equals("1")||conf.equals("2"));
+                if (conf.equals("1")) {Collections.sort(list, AdditionalMaterial.lectureIDComparator);
+                    additionalMaterialService.findAllFromTheList(list);}
+                else if (conf.equals("2")) {Collections.sort(list, AdditionalMaterial.resourceTypeComparator);
+                    additionalMaterialService.findAllFromTheList(list);}
+                else if (conf.equals("3")) additionalMaterialService.printGroupedByLectures(additionalMaterialRepository.getAll());
+            } while (conf.equals("1")||conf.equals("2")||conf.equals("3"));
             LOGGER.info("All information about additional materials.");
         } System.out.println("++++++++++++++++++++++");
     }

@@ -5,6 +5,7 @@ import com.academy.exceptions.ValidationErrorException;
 import com.academy.models.Lecture;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
+import com.academy.myDateTimeFormats.DateTimeFormats;
 import com.academy.repository.LectureRepository;
 import com.academy.repository.PersonRepository;
 import com.academy.repository.lectures.AdditionalMaterialRepository;
@@ -13,12 +14,13 @@ import com.academy.services.lectures.AdditionalMaterialService;
 import com.academy.services.lectures.HomeworkService;
 import com.academy.util.Logger;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,12 +125,64 @@ public class LectureService {
         }
         return new Lecture(name, amount, description, homeworks, additionalMaterial, lectureDate);
     }
-
+    public static LocalDate dateFromConsole(Scanner scanner, boolean isStartDate){
+        LocalDate date;
+        if (isStartDate){
+            System.out.println("Enter the start date in the format YYYY-MM-DD (year-month-day in numbers).");
+            date = LocalDate.MIN;
+        } else {
+            System.out.println("Enter the end date in the format YYYY-MM-DD (year-month-day in numbers).");
+            date = LocalDate.MAX;
+        }
+        String dateString = scanner.next() + scanner.nextLine();
+        try{date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateString));}
+        catch (DateTimeParseException exception){
+            LOGGER.warning("Error during parsing. The date is probably entered incorrectly.", exception);
+            System.out.println("Error during parsing. The date " + date + " will be set by default.");
+        }
+        return date;
+    }
     LectureRepository lectureRepository = LectureRepository.getInstance();
     PersonRepository personRepository = PersonRepository.getInstance();
     HomeworkRepository homeworkRepository = HomeworkRepository.getInstance();
     AdditionalMaterialRepository addMaterialRepository = AdditionalMaterialRepository.getInstance();
 
+    public List<Lecture> lecturesBetweenDates (List<Lecture> lectures, LocalDate fromDate, LocalDate toDate){
+        Predicate<Lecture> isAfterDate = lecture -> lecture.getLectureDate().toLocalDate().isAfter(fromDate)||
+                lecture.getLectureDate().toLocalDate().isEqual(fromDate);
+        Predicate<Lecture> isBeforeDate = lecture -> lecture.getLectureDate().toLocalDate().isBefore(toDate);
+        return lectures.stream().filter(isAfterDate.and(isBeforeDate)).toList();
+    }
+    public List<Lecture> lecturesFromTheDate (List<Lecture> lectures, LocalDate fromDate){
+        Predicate<Lecture> isAfterDate = lecture -> lecture.getLectureDate().toLocalDate().isAfter(fromDate)||
+                lecture.getLectureDate().toLocalDate().isEqual(fromDate);
+        return lectures.stream().filter(isAfterDate).toList();
+    }
+    public List<Lecture> lecturesBeforeDate (List<Lecture> lectures, LocalDate toDate){
+        Predicate<Lecture> isBeforeDate = lecture -> lecture.getLectureDate().toLocalDate().isBefore(toDate);
+        return lectures.stream().filter(isBeforeDate).toList();
+    }
+
+    Consumer<List<Lecture>> consumer = lectures -> {for (Lecture lecture : lectures) {
+        if (lecture == null) continue;
+        System.out.println(lecture);
+        }
+        System.out.println();
+    };
+
+    public void printLecturesBeforeDate(List<Lecture> lectures, LocalDate toDate){
+        System.out.printf("======================\nLectures before date %s:\n", DateTimeFormats.dayMonthYear(toDate));
+        consumer.accept(lecturesBeforeDate(lectures, toDate));
+    }
+    public void printLecturesFromDate(List<Lecture> lectures, LocalDate fromDate){
+        System.out.printf("======================\nLectures from date %s:\n", DateTimeFormats.dayMonthYear(fromDate));
+        consumer.accept(lecturesFromTheDate(lectures, fromDate));
+    }
+    public void printLecturesBetweenDates(List<Lecture> lectures, LocalDate fromDate, LocalDate toDate){
+        System.out.printf("======================\nLectures between dates %s - %s:\n", DateTimeFormats.dayMonthYear(fromDate),
+                DateTimeFormats.dayMonthYear(toDate));
+        consumer.accept(lecturesBetweenDates(lectures, fromDate, toDate));
+    }
     public void printID() {
         System.out.println("======================\nShort lectures info:");
         for (Lecture lecture : lectureRepository.getAll()) {
@@ -212,6 +266,7 @@ public class LectureService {
         System.out.println("""
                                 Do you want to print short info about lecture objects? Type "yes" to confirm. Type "no" to choose another category.
                                 Enter "1" to add teacher's ID to the lecture. Enter "2" to get lecture by it's ID. Enter "3" to print full info about lectures.
+                                Enter "4" if you want to filter and print lectures by dates.
                                 Type anything else to continue creating lectures.""");
     }
 }

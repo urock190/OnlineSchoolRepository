@@ -1,5 +1,6 @@
 package com.academy.myDateTimeFormats;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -15,5 +16,9 @@ public class DateTimeFormats {
 
     public static String logDateFormat(LocalDateTime dateTime){
         return DateTimeFormatter.ofPattern("dd-MM-yyyy  HH:mm:ss:SSS").format(dateTime);
+    }
+
+    public static String dayMonthYear(LocalDate date){
+        return DateTimeFormatter.ofPattern("dd.MM.yyyy").format(date);
     }
 }

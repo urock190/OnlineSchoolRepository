@@ -17,9 +17,6 @@ public class Main {
         MainService.init();
         LOGGER.debug("1 course and 3 lectures have been created");
         MainService.chooseCategoryAndCreateLecture();
-//        CourseService courseService = new CourseService();
-//        Course course = SerializationUtils.deserializeCourseObj();
-//        courseService.printCourseInfo(course);
         lvlWatcher.interrupt();
         LOGGER.debug("Program finished");
     }

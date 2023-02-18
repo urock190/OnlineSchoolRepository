@@ -7,13 +7,14 @@ import com.academy.util.Logger;
 
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 public class AdditionalMaterialService {
     private static final Logger LOGGER = new Logger(AdditionalMaterialService.class.getName());
-    public static void printCounter() {
-        System.out.println(AdditionalMaterial.getCounterOfAddMaterials());
-    }
+    AdditionalMaterialRepository additionalMaterialRepository = AdditionalMaterialRepository.getInstance();
+
     public static AdditionalMaterial createAdditionalMaterial() {
         return new AdditionalMaterial();
     }
@@ -44,17 +45,29 @@ public class AdditionalMaterialService {
         return new AdditionalMaterial(addMatName, resourceType);
     }
 
-    AdditionalMaterialRepository additionalMaterialRepository = AdditionalMaterialRepository.getInstance();
-    public void printID(){
-        System.out.println("======================\nShort additional materials info:");
-        for (List<AdditionalMaterial> list : additionalMaterialRepository.getAll().values()) {
-            if (list == null) continue;
-            for (AdditionalMaterial additionalMaterial : list) {
-                if (additionalMaterial == null) continue;
-                System.out.println("{Additional Material \"" + additionalMaterial.getName() + "\" ID = " + additionalMaterial.getID() + '}');
-            }
-        }
-        System.out.println();
+    Consumer<Map<Integer, List<AdditionalMaterial>>> fullInfoCons = integerListMap ->
+            integerListMap.forEach((key, value) -> {
+                System.out.printf("Lecture id = " + key + '\n');
+                for (AdditionalMaterial additionalMaterial : value) {
+                    if (additionalMaterial == null) continue;
+                    System.out.println(additionalMaterial);
+                }
+            });
+
+    Consumer<Map<Integer, List<AdditionalMaterial>>> shortInfoCons = integerListMap ->
+            integerListMap.forEach((key, value) -> {
+                System.out.printf("Lecture id = " + key + '\n');
+                for (AdditionalMaterial additionalMaterial : value) {
+                    if (additionalMaterial == null) continue;
+                    System.out.println("{Additional Material \"" + additionalMaterial.getName() + "\" ID = " + additionalMaterial.getID() + '}');
+                }
+            });
+
+    public void printGroupedByLectures(Map<Integer, List<AdditionalMaterial>> materialsMap){
+        fullInfoCons.accept(materialsMap);
+    }
+    public void shortGroupedByLectures(Map<Integer, List<AdditionalMaterial>> materialsMap){
+        shortInfoCons.accept(materialsMap);
     }
 
     public void printList(List<AdditionalMaterial> list){
