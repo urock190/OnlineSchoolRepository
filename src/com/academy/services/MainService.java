@@ -70,6 +70,11 @@ public class MainService {
         addMaterialRepository.put(secondLecture.getID(), new ArrayList<>());
         addMaterialRepository.add(secondLecture.getID(), secondLecture.getAdditionalMaterial());
         SerializationUtils.serializeToFile(firstCourse);
+        Person t1 = new Person(Role.TEACHER, "Count", "Dracula");
+        Person t2 = new Person(Role.TEACHER, "Hakeem", "Olajuwon");
+        Person t3 = new Person(Role.TEACHER, "Vega", "Nico");
+        Person t4 = new Person(Role.TEACHER, "Olena", "Abakumova");
+        personRepository.add(t1); personRepository.add(t2); personRepository.add(t3); personRepository.add(t4);
     }
 
     private static int categoryNumMethod(Scanner scanner) {
@@ -180,11 +185,18 @@ public class MainService {
                     case 7:
                     LOGGER.info("Log menu info"); LogService.logMenuTitle();
                         String confirmation6 = scanner.next();
-                        if (confirmation6.equals("yes")) {
-                            System.out.println(LogService.readLog()); continue OUTER;
-                        } else if (confirmation6.equals("no")) {
-                            continue OUTER;
-                        } else continue ;
+                        switch (confirmation6) {
+                            case "yes":
+                                System.out.println(LogService.readLog());
+                                continue OUTER;
+                            case "no":
+                                continue OUTER;
+                            case "1":
+                                LogService.readMessagesOnly();
+                                continue OUTER;
+                            default:
+                                continue;
+                        }
 
                     case 8:
                         LOGGER.info("Control work menu info"); ControlWork.controlWorkMenuTitle();

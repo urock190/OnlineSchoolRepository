@@ -23,7 +23,7 @@ public class Log {
         StringBuilder builder = new StringBuilder("Date " + DateTimeFormats.logDateFormat(date) +
                 "; level - " + level + "; name - " + name +
                 "; message - \"" + message + '\"');
-        if (stacktrace != null) builder.append(", stacktrace - ").append(stacktrace);
+        if (stacktrace != null) builder.append("; stacktrace - ").append(stacktrace);
         return builder.toString();
     }
 

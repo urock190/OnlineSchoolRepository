@@ -145,7 +145,7 @@ public class PersonService {
         return new Person (Role.TEACHER, name, lastName, phone, email);
     }
     PersonRepository personRepository = PersonRepository.getInstance();
-   public void printAllID(){
+    public void printAllID(){
         System.out.println("======================\nShort persons info:");
         for (Person person : personRepository.getAll()) {
             if (person == null) continue;
@@ -171,6 +171,15 @@ public class PersonService {
                     teacher.getID() + '}');
         }
         System.out.println();
+    }
+
+    /** Get teachers filtered by the first letter of their last name.
+     * All up to the letter (char firstLetter) exclusively.
+     */
+    public void printFilteredTeachers(char firstLetter){
+        System.out.println("======================\nTeachers with last name before the letter '" + firstLetter + '\'');
+        personRepository.getAll().stream().filter(person -> person.getRole() == Role.TEACHER &&
+                        person.getLastName().charAt(0) < firstLetter).forEach(System.out::println);
     }
 
     public static void studentMenuTitle() {
