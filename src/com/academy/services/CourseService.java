@@ -26,6 +26,7 @@ public class CourseService {
     LectureRepository lectureRepository = LectureRepository.getInstance();
     AdditionalMaterialRepository materialRepository = AdditionalMaterialRepository.getInstance();
     HomeworkRepository homeworkRepository = HomeworkRepository.getInstance();
+    PersonService personService = new PersonService();
     private static String validationFindFalseMethod (Pattern pattern, Scanner scanner) throws ValidationErrorException {
         String newString = scanner.next() + scanner.nextLine();
         Matcher matcher = pattern.matcher(newString);
@@ -58,10 +59,10 @@ public class CourseService {
                 System.out.println("The course name must contain only English letters and numbers.");
             }
         }
-        Person teacher = PersonService.createTeacherFromConsole();
+        Person teacher = personService.createTeacherFromConsole();
         LOGGER.debug("New teacher has been created successfully.");
         personRepository.add(teacher);
-        Person student = PersonService.createStudentFromConsole();
+        Person student = personService.createStudentFromConsole();
         LOGGER.debug("New student has been created successfully.");
         personRepository.add(student);
         Lecture lecture = LectureService.createLectureFromConsole();

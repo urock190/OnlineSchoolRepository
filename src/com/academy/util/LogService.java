@@ -37,13 +37,25 @@ public class LogService {
     public static void readMessagesOnly(){
         System.out.println("==========================\nAll messages from the log file:");
         try {
-            Files.lines(Path.of(logFilePath)).forEach(line -> Arrays.stream(line.trim().split(";")).
+            Files.lines(Path.of(logFilePath)).forEach(line -> Arrays.stream(line.split(";")).
                     filter(part -> part.contains("message - ")).forEach(message ->
                                     System.out.println(message.substring(message.indexOf('\"'), message.lastIndexOf('\"')+1))
                     )
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        System.out.println();
+    }
+
+    public static void readInfoFromTheMiddle(){
+        try {
+            int linesNumber = (int) Files.lines(Path.of(logFilePath)).count();
+            int infosFromTheMiddle = (int) Files.lines(Path.of(logFilePath)).skip(linesNumber/2).filter(line ->
+                    line.contains("level - INFO")).count();
+            System.out.println("The number of INFO-logs starting from the middle of the file - " + infosFromTheMiddle);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         System.out.println();
     }

@@ -65,15 +65,17 @@ public class MainService {
         Lecture thirdLecture = LectureService.createLecture("Informatics", 70, new Homework[]{},
                 new AdditionalMaterial("Head First Java", ResourceType.BOOK), LocalDateTime.of(2023,2,16,19,25));
         lectureRepository.add(thirdLecture);
+        AdditionalMaterial additionalMaterial2 = new AdditionalMaterial("Holy Bible", ResourceType.BOOK);
         addMaterialRepository.put(thirdLecture.getID(), new ArrayList<>());
         addMaterialRepository.add(thirdLecture.getID(), thirdLecture.getAdditionalMaterial());
         addMaterialRepository.put(secondLecture.getID(), new ArrayList<>());
         addMaterialRepository.add(secondLecture.getID(), secondLecture.getAdditionalMaterial());
+        addMaterialRepository.add(secondLecture.getID(), additionalMaterial2);
         SerializationUtils.serializeToFile(firstCourse);
-        Person t1 = new Person(Role.TEACHER, "Count", "Dracula");
-        Person t2 = new Person(Role.TEACHER, "Hakeem", "Olajuwon");
-        Person t3 = new Person(Role.TEACHER, "Vega", "Nico");
-        Person t4 = new Person(Role.TEACHER, "Olena", "Abakumova");
+        Person t1 = new Person(Role.TEACHER, "Count", "Dracula","-","dracula@gmail.com");
+        Person t2 = new Person(Role.TEACHER, "Hakeem", "Olajuwon","1234567890","-");
+        Person t3 = new Person(Role.TEACHER, "Vega", "Nico","-","nicovega@ddd.com");
+        Person t4 = new Person(Role.TEACHER, "Olena", "Abakumova","+380991080133","abakumova@ukr.net");
         personRepository.add(t1); personRepository.add(t2); personRepository.add(t3); personRepository.add(t4);
     }
 
@@ -401,7 +403,7 @@ public class MainService {
             personService.printStudentsID();
         } else if (confirmation2.equals("1")) {
             do {
-                Person newStudent = PersonService.createStudentFromConsole();
+                Person newStudent = personService.createStudentFromConsole();
                 LOGGER.debug("New student has been created successfully.");
                 personRepository.add(newStudent);
                 System.out.println("""
@@ -444,7 +446,7 @@ public class MainService {
             personService.printTeachersID();
         } else if (confirmation3.equals("1")) {
             do {
-                Person newTeacher = PersonService.createTeacherFromConsole();
+                Person newTeacher = personService.createTeacherFromConsole();
                 LOGGER.debug("New teacher has been created successfully.");
                 personRepository.add(newTeacher);
                 System.out.println("""

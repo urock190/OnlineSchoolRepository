@@ -6,6 +6,7 @@ import com.academy.models.Role;
 import com.academy.repository.PersonRepository;
 import com.academy.util.Logger;
 
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,7 +43,13 @@ public class PersonService {
     public static void printCourseID(Person person){
         System.out.println("course ID of " + person.getRole() +" №"+ person.getID() + " = " + person.getCourseID());
     }
-    public static Person createStudentFromConsole() {
+
+    private boolean isEmailUsed(String email){
+    return personRepository.getAll().stream().anyMatch(person -> Optional.ofNullable(person.getEmail()).orElse("-").
+            equals(email) && !email.equals("-"));
+    }
+
+    public Person createStudentFromConsole() {
         LOGGER.debug("Creating new student");
         Scanner scanner = new Scanner(System.in);
         String name = " ";
@@ -85,7 +92,9 @@ public class PersonService {
         while (out) {
             try {
                 email = validationFindTrueMethod(emailPattern, scanner);
-                out = false;
+                if (isEmailUsed(email)){
+                    System.out.println("This email is already in use. Type \" - \" to skip email or try another email.");
+                } else out = false;
             } catch (ValidationErrorException e) {
                 LOGGER.warning("Validation error", e);
                 System.out.println("Email entered in incorrect format. Try again, please.\nTo skip this option, enter \" - \"");
@@ -93,7 +102,7 @@ public class PersonService {
         }
         return new Person (Role.STUDENT, name, lastName, phone, email);
     }
-    public static Person createTeacherFromConsole() {
+    public Person createTeacherFromConsole() {
         LOGGER.debug("Creating new teacher");
         Scanner scanner = new Scanner(System.in);
         String name = " ";
@@ -136,7 +145,9 @@ public class PersonService {
         while (out) {
             try {
                 email = validationFindTrueMethod(emailPattern, scanner);
-                out = false;
+                if (isEmailUsed(email)){
+                    System.out.println("This email is already in use. Type \" - \" to skip email or try another email.");
+                } else out = false;
             } catch (ValidationErrorException e) {
                 LOGGER.warning("Validation error", e);
                 System.out.println("Email entered in incorrect format. Try again, please.\nTo skip this option, enter \" - \"");

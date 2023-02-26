@@ -3,6 +3,7 @@ package com.academy.services;
 import com.academy.exceptions.EntityNotFoundException;
 import com.academy.exceptions.ValidationErrorException;
 import com.academy.models.Lecture;
+import com.academy.models.Models;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
 import com.academy.myDateTimeFormats.DateTimeFormats;
@@ -183,6 +184,28 @@ public class LectureService {
                 DateTimeFormats.dayMonthYear(toDate));
         consumer.accept(lecturesBetweenDates(lectures, fromDate, toDate));
     }
+
+    //Displays the lecture created earlier than all others, with the largest amount of additional materials.
+    public void showLecture(){
+       Optional<LocalDateTime> minCreationDate = lectureRepository.getAll().stream().map(Lecture::getCreationDate).
+               min(Comparator.naturalOrder());
+       int[] lectureIDs = lectureRepository.getAll().stream().filter(lecture ->
+               lecture.getCreationDate().equals(minCreationDate.orElseThrow())).mapToInt(Models::getID).toArray();
+
+       OptionalInt maxSize = Arrays.stream(lectureIDs).map(lectureID -> addMaterialRepository.get(lectureID).size()).max();
+
+       int ID = Arrays.stream(lectureIDs).mapToObj(lectureID -> addMaterialRepository.get(lectureID)).
+               filter(addMats -> addMats.size() == maxSize.orElseThrow()).flatMap(Collection::stream).
+               map(AdditionalMaterial::getLectureID).findFirst().orElseThrow();
+        try {
+            System.out.println("Lecture created earlier than all others, with the largest amount of additional materials:\n" +
+                    lectureRepository.getById(ID) + "\n");
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            LOGGER.error("There's no lecture with such ID", e);
+        }
+    }
+
     public void printID() {
         System.out.println("======================\nShort lectures info:");
         for (Lecture lecture : lectureRepository.getAll()) {

@@ -22,7 +22,7 @@ public class Lecture extends Models implements Serializable {
     private AdditionalMaterial additionalMaterial;
     private int courseID;
     private int personID;
-    private String creationDate;
+    private LocalDateTime creationDate;
     private LocalDateTime lectureDate;
     @Override
     public String toString() {
@@ -48,7 +48,7 @@ public class Lecture extends Models implements Serializable {
             homework.setDeadline(LocalDateTime.of(lectureDate.toLocalDate().plusDays(1), LocalTime.NOON));
         }
         additionalMaterial.setLectureID(getID());
-        this.creationDate = DateTimeFormats.lectureDateFormat(LocalDateTime.now());
+        this.creationDate = LocalDateTime.now();
         this.lectureDate = lectureDate;
     }
     public Lecture(String name, int amount, String description, Homework [] homeworks, AdditionalMaterial additionalMaterial, LocalDateTime lectureDate) {
@@ -66,7 +66,7 @@ public class Lecture extends Models implements Serializable {
             homework.setDeadline(LocalDateTime.of(lectureDate.toLocalDate().plusDays(1), LocalTime.NOON));
         }
         additionalMaterial.setLectureID(getID());
-        this.creationDate = DateTimeFormats.lectureDateFormat(LocalDateTime.now());
+        this.creationDate = LocalDateTime.now();
         this.lectureDate = lectureDate;
     }
 
@@ -74,14 +74,14 @@ public class Lecture extends Models implements Serializable {
         setID(++counterOfLectures);
         courseID = getCounterOfCourses();
         personID = getCounterOfPersons();
-        this.creationDate = DateTimeFormats.lectureDateFormat(LocalDateTime.now());
+        this.creationDate = LocalDateTime.now();
     }
-    public String getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
     public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = DateTimeFormats.lectureDateFormat(creationDate);
+        this.creationDate = creationDate;
     }
 
     public LocalDateTime getLectureDate() {

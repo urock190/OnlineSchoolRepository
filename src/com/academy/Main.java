@@ -1,5 +1,6 @@
 package com.academy;
 
+import com.academy.services.LectureService;
 import com.academy.services.MainService;
 import com.academy.services.PersonService;
 import com.academy.util.Level;
@@ -10,7 +11,7 @@ import com.academy.util.Logger;
 public class Main {
     private static final Logger LOGGER = new Logger(Main.class.getName());
     public static void main(String[] args) {
-        LogService.writeLevelSetting(Level.DEBUG);
+        LogService.writeLevelSetting(Level.OFF);
         LOGGER.debug("Entering main() in class Main.");
         Thread lvlWatcher = new Thread(new LevelWatcher(), "level watcher");
         lvlWatcher.start();
@@ -19,6 +20,9 @@ public class Main {
         LOGGER.debug("1 course and 3 lectures have been created");
         MainService.chooseCategoryAndCreateLecture();
         lvlWatcher.interrupt();
+        LectureService lectureService = new LectureService();
+        lectureService.showLecture();
+        LogService.readInfoFromTheMiddle();
         PersonService personService = new PersonService();
         personService.printFilteredTeachers('N');
         LOGGER.debug("Program finished");
