@@ -53,9 +53,7 @@ public class Logger {
     }
 
     public boolean isLoggable(Level level) {
-        if (level.getValue() < levelValue) {
-            return false;
-        } else return true;
+        return level.getValue() >= levelValue;
     }
 
     public String getName() {

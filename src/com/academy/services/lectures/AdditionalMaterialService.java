@@ -1,7 +1,9 @@
 package com.academy.services.lectures;
 
+import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.ResourceType;
 import com.academy.models.lectures.AdditionalMaterial;
+import com.academy.repository.LectureRepository;
 import com.academy.repository.lectures.AdditionalMaterialRepository;
 import com.academy.util.Logger;
 
@@ -14,6 +16,7 @@ import java.util.function.Consumer;
 public class AdditionalMaterialService {
     private static final Logger LOGGER = new Logger(AdditionalMaterialService.class.getName());
     AdditionalMaterialRepository additionalMaterialRepository = AdditionalMaterialRepository.getInstance();
+    LectureRepository lectureRepository = LectureRepository.getInstance();
 
     public static AdditionalMaterial createAdditionalMaterial() {
         return new AdditionalMaterial();
@@ -45,15 +48,6 @@ public class AdditionalMaterialService {
         return new AdditionalMaterial(addMatName, resourceType);
     }
 
-    Consumer<Map<Integer, List<AdditionalMaterial>>> fullInfoCons = integerListMap ->
-            integerListMap.forEach((key, value) -> {
-                System.out.printf("Lecture id = " + key + '\n');
-                for (AdditionalMaterial additionalMaterial : value) {
-                    if (additionalMaterial == null) continue;
-                    System.out.println(additionalMaterial);
-                }
-            });
-
     Consumer<Map<Integer, List<AdditionalMaterial>>> shortInfoCons = integerListMap ->
             integerListMap.forEach((key, value) -> {
                 System.out.printf("Lecture id = " + key + '\n');
@@ -63,9 +57,17 @@ public class AdditionalMaterialService {
                 }
             });
 
-    public void printGroupedByLectures(Map<Integer, List<AdditionalMaterial>> materialsMap){
-        fullInfoCons.accept(materialsMap);
+    public void printGroupedByLectures(){
+        additionalMaterialRepository.getAll().forEach((key, value) -> {
+            try {
+                System.out.println(lectureRepository.getById(key).getName() + ':');
+                value.forEach(System.out::println);
+            } catch (EntityNotFoundException e) {
+                LOGGER.warning(e.getMessage(), e);
+            }
+        });
     }
+
     public void shortGroupedByLectures(Map<Integer, List<AdditionalMaterial>> materialsMap){
         shortInfoCons.accept(materialsMap);
     }

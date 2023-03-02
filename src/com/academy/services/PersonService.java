@@ -6,19 +6,25 @@ import com.academy.models.Role;
 import com.academy.repository.PersonRepository;
 import com.academy.util.Logger;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class PersonService {
     private static final Logger LOGGER = new Logger(PersonService.class.getName());
     private static final Pattern NAMES_PATTERN = Pattern.compile("^\\s$|\\d|[\\W&&[\\S]]|.{30,}");
     private static final Pattern mobileNumberPattern = Pattern.compile("(^\\+(\\(?\\d{3}\\)?-?){4} {0,4}$)|(^\\s{0,4}-\\s{0,4}$)");
     private static final Pattern emailPattern = Pattern.compile("(^[\\w-]+@\\w+\\.\\w+ {0,4}$)|(^\\s{0,3}-\\s{0,3}$)");
-    private static String validationFindFalseMethod (Pattern pattern, Scanner scanner) throws ValidationErrorException {
+    private static String validationFindFalseMethod (Scanner scanner) throws ValidationErrorException {
         String newString = scanner.next() + scanner.nextLine();
-        Matcher matcher = pattern.matcher(newString);
+        Matcher matcher = NAMES_PATTERN.matcher(newString);
         if (!matcher.find()) return newString;
         else throw new ValidationErrorException();
     }
@@ -28,20 +34,12 @@ public class PersonService {
         if (matcher.find()) return newString;
         else throw new ValidationErrorException();
     }
-    public static void printCounter(){
-        System.out.println(Person.getCounterOfPersons());
-    }
-    public static Person createPerson() {
-        return new Person();
-    }
+
     public static Person createPerson (Role role, String name, String lastName){
         return new Person(role, name, lastName);
     }
     public static Person createPerson (Role role, String name, String lastName, String phone, String email){
         return new Person (role, name, lastName, phone, email);
-    }
-    public static void printCourseID(Person person){
-        System.out.println("course ID of " + person.getRole() +" №"+ person.getID() + " = " + person.getCourseID());
     }
 
     private boolean isEmailUsed(String email){
@@ -57,7 +55,7 @@ public class PersonService {
         System.out.println("==========================\nCreate new student. \nEnter the name of this student");
         while (!out) {
             try {
-                name = validationFindFalseMethod(NAMES_PATTERN, scanner);
+                name = validationFindFalseMethod(scanner);
                 out = true;
             } catch (ValidationErrorException e) {
                 LOGGER.warning("Validation error", e);
@@ -68,7 +66,7 @@ public class PersonService {
         String lastName = " ";
         while (out) {
             try {
-                lastName = validationFindFalseMethod(NAMES_PATTERN, scanner);
+                lastName = validationFindFalseMethod(scanner);
                 out = false;
             } catch (ValidationErrorException e) {
                 LOGGER.warning("Validation error", e);
@@ -110,7 +108,7 @@ public class PersonService {
         System.out.println("==========================\nCreate new teacher. \nEnter the name of this teacher");
         while (!out) {
             try {
-                name = validationFindFalseMethod(NAMES_PATTERN, scanner);
+                name = validationFindFalseMethod(scanner);
                 out = true;
             } catch (ValidationErrorException e) {
                 LOGGER.warning("Validation error", e);
@@ -121,7 +119,7 @@ public class PersonService {
         String lastName = " ";
         while (out) {
             try {
-                lastName = validationFindFalseMethod(NAMES_PATTERN, scanner);
+                lastName = validationFindFalseMethod(scanner);
                 out = false;
             } catch (ValidationErrorException e) {
                 LOGGER.warning("Validation error", e);
@@ -156,15 +154,37 @@ public class PersonService {
         return new Person (Role.TEACHER, name, lastName, phone, email);
     }
     PersonRepository personRepository = PersonRepository.getInstance();
-    public void printAllID(){
-        System.out.println("======================\nShort persons info:");
-        for (Person person : personRepository.getAll()) {
-            if (person == null) continue;
-            System.out.println("{" + person.getRole()+" \""+ person.getName()+" "+ person.getLastName()+"\" ID = " +
-                    person.getID() + '}');
-        }
-        System.out.println();
+
+    /** Displays persons filtered by their role and grouped by email. If role is null, returns all persons.
+     * @param role  role of this person or null.
+     */
+    public void printGroupedByEmail(Role role){
+        LOGGER.info("Persons grouped by email.");
+        Predicate <Person> rolePredicate;
+        if (role == null) rolePredicate = person -> person.getRole() == Role.STUDENT || person.getRole() == Role.TEACHER;
+        else rolePredicate = person -> person.getRole() == role;
+
+        personRepository.getAll().stream().filter(rolePredicate).collect(Collectors.toMap(
+                person -> Optional.ofNullable(person.getEmail()).orElse("-"), person -> person.getLastName() +
+                        " " + person.getName(), (str1, str2) -> str1 + ", " + str2))
+                .forEach((key, value) -> System.out.println(key + ":  " + value));
     }
+
+    public void writeStudentsEmails() {
+        File file = new File("src/com/academy/services/Students Email.txt");
+        TreeSet<String> treeSet = personRepository.getAll().stream().collect(Collectors.filtering(person ->
+                        person.getRole() == Role.STUDENT && !Optional.ofNullable(person.getEmail()).orElse("-").equals("-"),
+                Collectors.mapping(Person::getEmail, Collectors.toCollection(TreeSet<String>::new))));
+
+        try (FileWriter writer = new FileWriter(file)){
+            for (String email : treeSet) {
+                writer.write(email + "\n");
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
+
     public void printStudentsID(){
         System.out.println("======================\nShort students info:");
         for (Person student : personRepository.getAll()) {
@@ -198,6 +218,7 @@ public class PersonService {
         System.out.println("""
                                 Do you want to print short info about students? Type "yes" to confirm. Type "no" to choose another category.
                                 Enter "1" to create new student. Enter "2" to get student by their ID. Enter "3" to print full info about students.
+                                Enter "4" to show the emails and students to whom these emails belong.
                                 Type anything else to continue creating lectures.""");
     }
 
@@ -206,6 +227,7 @@ public class PersonService {
         System.out.println("""
                                 Do you want to print short info about teachers? Type "yes" to confirm. Type "no" to choose another category.
                                 Enter "1" to create new teacher. Enter "2" to get teacher by their ID. Enter "3" to print full info about teachers.
+                                Enter "4" to show the emails and teachers to whom these emails belong.
                                 Type anything else to continue creating lectures.""");
     }
 }

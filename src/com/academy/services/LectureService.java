@@ -4,6 +4,7 @@ import com.academy.exceptions.EntityNotFoundException;
 import com.academy.exceptions.ValidationErrorException;
 import com.academy.models.Lecture;
 import com.academy.models.Models;
+import com.academy.models.Person;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
 import com.academy.myDateTimeFormats.DateTimeFormats;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class LectureService {
     private static final Logger LOGGER = new Logger(LectureService.class.getName());
@@ -43,10 +45,6 @@ public class LectureService {
 
     public static void printCourseID(Lecture lecture) {
         System.out.println("course ID of lecture №" + lecture.getID() + " = " + lecture.getCourseID());
-    }
-
-    public static Lecture createLecture() {
-        return new Lecture();
     }
 
     public static Lecture createLecture(String name, int amount, Homework[] homeworks, AdditionalMaterial additionalMaterial,
@@ -241,6 +239,19 @@ public class LectureService {
         System.out.println();
     }
 
+    public void printGroupedByTeachers(){
+        lectureRepository.getAll().stream().collect(Collectors.groupingBy(Lecture::getTeacherID)).
+                forEach((key, value) -> {
+                    try {
+                        Person teacher = personRepository.getTeacherById(key);
+                        System.out.println(teacher.getName() + " " + teacher.getLastName() + " - lectures:");
+                        value.forEach(System.out::println);
+                    } catch (EntityNotFoundException e) {
+                        LOGGER.warning(e.getMessage(), e);
+                    }
+                });
+    }
+
     public void addTeacherByID() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("==========================\nAdd a teacher for a lecture. \nEnter lecture's ID first.");
@@ -263,7 +274,7 @@ public class LectureService {
                     }
                     try {
                         personRepository.getTeacherById(teacherID);
-                        lectureRepository.getById(lectureID).setPersonID(teacherID);
+                        lectureRepository.getById(lectureID).setTeacherID(teacherID);
                         System.out.println("Teacher's ID has been successfully added.\n=============================");
                         return;
                     } catch (EntityNotFoundException a) {
@@ -289,7 +300,7 @@ public class LectureService {
         System.out.println("""
                                 Do you want to print short info about lecture objects? Type "yes" to confirm. Type "no" to choose another category.
                                 Enter "1" to add teacher's ID to the lecture. Enter "2" to get lecture by it's ID. Enter "3" to print full info about lectures.
-                                Enter "4" if you want to filter and print lectures by dates.
+                                Enter "4" if you want to filter and print lectures by dates. "5" to show information about lectures grouped by teachers.
                                 Type anything else to continue creating lectures.""");
     }
 }

@@ -23,6 +23,7 @@ import java.util.*;
 
 public class MainService {
     private static final Logger LOGGER = new Logger(MainService.class.getName());
+    private static final PersonService personService = new PersonService();
     public static Person[] studentsForControlWork() {
         Person[] studs = new Person[10];
         studs[0] = new Person(Role.STUDENT, "A.", "Arnold");
@@ -73,10 +74,18 @@ public class MainService {
         addMaterialRepository.add(secondLecture.getID(), additionalMaterial2);
         SerializationUtils.serializeToFile(firstCourse);
         Person t1 = new Person(Role.TEACHER, "Count", "Dracula","-","dracula@gmail.com");
+        secondLecture.setTeacherID(t1.getTeacherID());
         Person t2 = new Person(Role.TEACHER, "Hakeem", "Olajuwon","1234567890","-");
         Person t3 = new Person(Role.TEACHER, "Vega", "Nico","-","nicovega@ddd.com");
         Person t4 = new Person(Role.TEACHER, "Olena", "Abakumova","+380991080133","abakumova@ukr.net");
+        Person s1 = new Person(Role.STUDENT, "Olena", "Pchilka","+3809977777","pchilka@ukr.net");
+        Person s2 = new Person(Role.STUDENT, "Olha", "Kosach","+3809977779","kosach@ukr.net");
+        Person s3 = new Person(Role.STUDENT, "Fernando", "Torres","+3809977569","torresF@esp.net");
+        Person s4 = new Person(Role.STUDENT, "Gwen", "Stacy","+3809944477","stacyGwen@gmail.com");
+        Person s5 = new Person(Role.STUDENT, "Aston", "Martin","+3806656977","astonMartin@gmail.com");
         personRepository.add(t1); personRepository.add(t2); personRepository.add(t3); personRepository.add(t4);
+        personRepository.add(s1); personRepository.add(s2); personRepository.add(s3); personRepository.add(s4); personRepository.add(s5);
+        personService.writeStudentsEmails();
     }
 
     private static int categoryNumMethod(Scanner scanner) {
@@ -128,7 +137,7 @@ public class MainService {
                         LOGGER.info("Lecture menu info"); LectureService.lectureMenuTitle();
                         String confirmation1 = scanner.next();
                         switch (confirmation1) {
-                            case "yes", "no", "1", "2", "3", "4" -> {
+                            case "yes", "no", "1", "2", "3", "4", "5" -> {
                                 lectureMenu(confirmation1, scanner);
                                 continue OUTER;
                             }
@@ -140,7 +149,7 @@ public class MainService {
                         LOGGER.info("Student menu info"); PersonService.studentMenuTitle();
                         String confirmation2 = scanner.next();
                         switch (confirmation2) {
-                            case "yes", "no", "1", "2", "3" -> {
+                            case "yes", "no", "1", "2", "3", "4" -> {
                                 studentMenu(confirmation2, scanner);
                                 continue OUTER;
                             }
@@ -152,7 +161,7 @@ public class MainService {
                         LOGGER.info("Teacher menu info"); PersonService.teacherMenuTitle();
                         String confirmation3 = scanner.next();
                         switch (confirmation3) {
-                            case "yes", "no", "1", "2", "3" -> {
+                            case "yes", "no", "1", "2", "3", "4" -> {
                                 teacherMenu(confirmation3, scanner);
                                 continue OUTER;
                             }
@@ -258,6 +267,7 @@ public class MainService {
                 if (scanner.next().equals("yes")) break;
             }
         } LOGGER.info("Counter of lectures"); LectureService.printCounter();
+        personService.writeStudentsEmails();
         LOGGER.debug("Exiting chooseCategoryAndCreateLecture() method...");
     }
 
@@ -391,12 +401,14 @@ public class MainService {
                             LectureService.dateFromConsole(scanner,true), LectureService.dateFromConsole(scanner,false));
                 }
             } while (conf.equals("1")||conf.equals("2")||conf.equals("3"));
+        } else if (confirmation1.equals("5")) {
+            lectureService.printGroupedByTeachers();
+            LOGGER.info("All information about lectures grouped by teachers.");
         }
         System.out.println("++++++++++++++++++++++");
     }
 
     private static void studentMenu(String confirmation2, Scanner scanner) {
-        PersonService personService = new PersonService();
         PersonRepository personRepository = PersonRepository.getInstance();
         Collections.sort(personRepository.getAll());
         if (confirmation2.equals("yes")) {
@@ -435,11 +447,14 @@ public class MainService {
         } else if (confirmation2.equals("3")) {
             personRepository.findAll(Role.STUDENT);
             LOGGER.info("All information about students.");
-        } System.out.println("++++++++++++++++++++++");
+        } else if (confirmation2.equals("4")) {
+            personService.printGroupedByEmail(Role.STUDENT);
+            LOGGER.info("Emails and students who own these emails.");
+        }
+        System.out.println("++++++++++++++++++++++");
     }
 
     private static void teacherMenu(String confirmation3, Scanner scanner) {
-        PersonService personService = new PersonService();
         PersonRepository personRepository = PersonRepository.getInstance();
         Collections.sort(personRepository.getAll());
         if (confirmation3.equals("yes")) {
@@ -478,7 +493,11 @@ public class MainService {
         } else if (confirmation3.equals("3")) {
             personRepository.findAll(Role.TEACHER);
             LOGGER.info("All information about teachers.");
-        } System.out.println("++++++++++++++++++++++");
+        } else if (confirmation3.equals("4")) {
+            personService.printGroupedByEmail(Role.TEACHER);
+            LOGGER.info("Emails and teachers who own these emails.");
+        }
+        System.out.println("++++++++++++++++++++++");
     }
 
     private static void homeworkMenu(String confirmation4, Scanner scanner) {
@@ -540,9 +559,9 @@ public class MainService {
             do {
                 System.out.println(sortAddMatsMenu);
                 conf = scanner.next();
-                if (conf.equals("1")) {Collections.sort(list, AdditionalMaterial.lectureIDComparator);
+                if (conf.equals("1")) {list.sort(AdditionalMaterial.lectureIDComparator);
                     additionalMaterialService.printList(list);}
-                else if (conf.equals("2")) {Collections.sort(list, AdditionalMaterial.resourceTypeComparator);
+                else if (conf.equals("2")) {list.sort(AdditionalMaterial.resourceTypeComparator);
                     additionalMaterialService.printList(list);}
                 else if (conf.equals("3")) additionalMaterialService.shortGroupedByLectures(additionalMaterialRepository.getAll());
             } while (conf.equals("1")||conf.equals("2")||conf.equals("3"));
@@ -583,11 +602,11 @@ public class MainService {
             do {
                 System.out.println(sortAddMatsMenu);
                 conf = scanner.next();
-                if (conf.equals("1")) {Collections.sort(list, AdditionalMaterial.lectureIDComparator);
+                if (conf.equals("1")) {list.sort(AdditionalMaterial.lectureIDComparator);
                     additionalMaterialService.findAllFromTheList(list);}
-                else if (conf.equals("2")) {Collections.sort(list, AdditionalMaterial.resourceTypeComparator);
+                else if (conf.equals("2")) {list.sort(AdditionalMaterial.resourceTypeComparator);
                     additionalMaterialService.findAllFromTheList(list);}
-                else if (conf.equals("3")) additionalMaterialService.printGroupedByLectures(additionalMaterialRepository.getAll());
+                else if (conf.equals("3")) additionalMaterialService.printGroupedByLectures();
             } while (conf.equals("1")||conf.equals("2")||conf.equals("3"));
             LOGGER.info("All information about additional materials.");
         } System.out.println("++++++++++++++++++++++");

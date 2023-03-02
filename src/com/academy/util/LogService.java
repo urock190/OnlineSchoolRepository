@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class LogService {
     private static final String logFilePath = "src/com/academy/util/Log.txt";
@@ -36,8 +37,8 @@ public class LogService {
 
     public static void readMessagesOnly(){
         System.out.println("==========================\nAll messages from the log file:");
-        try {
-            Files.lines(Path.of(logFilePath)).forEach(line -> Arrays.stream(line.split(";")).
+        try (Stream<String> logStream = Files.lines(Path.of(logFilePath))){
+            logStream.forEach(line -> Arrays.stream(line.split(";")).
                     filter(part -> part.contains("message - ")).forEach(message ->
                                     System.out.println(message.substring(message.indexOf('\"'), message.lastIndexOf('\"')+1))
                     )
@@ -49,9 +50,10 @@ public class LogService {
     }
 
     public static void readInfoFromTheMiddle(){
-        try {
-            int linesNumber = (int) Files.lines(Path.of(logFilePath)).count();
-            int infosFromTheMiddle = (int) Files.lines(Path.of(logFilePath)).skip(linesNumber/2).filter(line ->
+        final Path logPath = Path.of(logFilePath);
+        try (Stream<String> logStream = Files.lines(logPath); Stream<String> secondStream = Files.lines(logPath)){
+            int linesNumber = (int) logStream.count();
+            int infosFromTheMiddle = (int) secondStream.skip(linesNumber/2).filter(line ->
                     line.contains("level - INFO")).count();
             System.out.println("The number of INFO-logs starting from the middle of the file - " + infosFromTheMiddle);
         } catch (IOException e) {

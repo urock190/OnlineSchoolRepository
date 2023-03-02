@@ -14,9 +14,9 @@ import java.util.regex.Pattern;
 public class HomeworkService {
     private static final Logger LOGGER = new Logger(HomeworkService.class.getName());
     private static final Pattern TASK_PATTERN = Pattern.compile("^\\s$|.{201,}");
-    private static String validationFindFalseMethod (Pattern pattern, Scanner scanner) throws ValidationErrorException {
+    private static String validationFindFalseMethod (Scanner scanner) throws ValidationErrorException {
         String newString = scanner.next() + scanner.nextLine();
-        Matcher matcher = pattern.matcher(newString);
+        Matcher matcher = TASK_PATTERN.matcher(newString);
         if (!matcher.find()) return newString;
         else throw new ValidationErrorException();
     }
@@ -44,7 +44,7 @@ public class HomeworkService {
         String task  = " ";
         while (!out) {
             try {
-                task = validationFindFalseMethod(TASK_PATTERN, scanner);
+                task = validationFindFalseMethod(scanner);
                 out = true;
             } catch (ValidationErrorException e) {
                 LOGGER.warning("Validation error", e);

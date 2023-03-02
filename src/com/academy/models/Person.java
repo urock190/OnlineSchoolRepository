@@ -24,8 +24,8 @@ public class Person extends Models implements Comparable<Person>, Serializable {
         this.setName(name);
         this.lastName = lastName;
         setID(++counterOfPersons);
-        if (this.role == Role.STUDENT) {++counterOfStudents; studentID = super.getID();}
-        else {++counterOfTeachers; teacherID = super.getID();}
+        if (this.role == Role.STUDENT) {this.studentID = ++counterOfStudents;}
+        else {this.teacherID = ++counterOfTeachers;}
         courseID = getCounterOfCourses();
     }
     public Person(Role role, String firstName, String lastName, String phone, String email) {
@@ -35,17 +35,20 @@ public class Person extends Models implements Comparable<Person>, Serializable {
         this.phone = phone;
         this.email = email;
         setID(++counterOfPersons);
-        if (this.role == Role.STUDENT) {++counterOfStudents; studentID = super.getID();}
-        else {++counterOfTeachers; teacherID = super.getID();}
+        if (this.role == Role.STUDENT) {this.studentID = ++counterOfStudents;}
+        else {this.teacherID = ++counterOfTeachers;}
         courseID = getCounterOfCourses();
     }
 
     @Override
     public String toString() {
-        return role + " (" +
-                "name = '" + getName() + '\'' +
-                ", last name = '" + lastName + '\'' +
-                ", phone = " + phone + ", email = " + email + ')';
+        StringBuilder builder = new StringBuilder(role + " (" +
+                "name = '" + getName() + '\'' + ", last name = '" + lastName + '\'' +
+                ", phone = " + phone + ", email = " + email + ", person ID = " + getID());
+        if (role == Role.STUDENT) builder.append(", studentID = ").append(studentID).append(')');
+        else if (role == Role.TEACHER) builder.append(", teacherID = ").append(teacherID).append(')');
+        else builder.append(')');
+        return builder.toString();
     }
 
     public Person(){

@@ -10,18 +10,18 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static com.academy.models.Course.getCounterOfCourses;
-import static com.academy.models.Person.getCounterOfPersons;
+import static com.academy.models.Person.getCounterOfTeachers;
 
 public class Lecture extends Models implements Serializable {
     @Serial
-    private static final long serialVersionUID = 123446487704L;
+    private static final long serialVersionUID = 123446487714L;
     private int amount;
     private String description;
     private static int counterOfLectures;
     private Homework [] homeworks;
     private AdditionalMaterial additionalMaterial;
     private int courseID;
-    private int personID;
+    private int teacherID;
     private LocalDateTime creationDate;
     private LocalDateTime lectureDate;
     @Override
@@ -32,7 +32,7 @@ public class Lecture extends Models implements Serializable {
                 ", description = \"" + description + '\"'+
                 ", ID = " + getID() +
                 ", courseID = " + courseID +
-                ", personID = " + personID + ", lecture date = " + DateTimeFormats.lectureDateFormat(lectureDate) + ')';
+                ", teacherID = " + teacherID + ", lecture date = " + DateTimeFormats.lectureDateFormat(lectureDate) + ')';
     }
     public Lecture (String name, int amount, Homework [] homeworks, AdditionalMaterial additionalMaterial, LocalDateTime lectureDate) {
         this.setName(name);
@@ -41,7 +41,7 @@ public class Lecture extends Models implements Serializable {
         this.additionalMaterial = additionalMaterial;
         setID(++counterOfLectures);
         courseID = getCounterOfCourses();
-        personID = getCounterOfPersons();
+        teacherID = getCounterOfTeachers();
         for (Homework homework : homeworks) {
             if (homework == null) continue;
             homework.setLectureID(getID());
@@ -59,7 +59,7 @@ public class Lecture extends Models implements Serializable {
         this.additionalMaterial = additionalMaterial;
         setID(++counterOfLectures);
         courseID = getCounterOfCourses();
-        personID = getCounterOfPersons();
+        teacherID = getCounterOfTeachers();
         for (Homework homework : homeworks) {
             if (homework == null) continue;
             homework.setLectureID(getID());
@@ -73,7 +73,7 @@ public class Lecture extends Models implements Serializable {
     public Lecture(){
         setID(++counterOfLectures);
         courseID = getCounterOfCourses();
-        personID = getCounterOfPersons();
+        teacherID = getCounterOfTeachers();
         this.creationDate = LocalDateTime.now();
     }
     public LocalDateTime getCreationDate() {
@@ -114,11 +114,11 @@ public class Lecture extends Models implements Serializable {
     public void setCourseID(int courseID) {
         this.courseID = courseID;
     }
-    public int getPersonID() {
-        return personID;
+    public int getTeacherID() {
+        return teacherID;
     }
-    public void setPersonID(int personID) {
-        this.personID = personID;
+    public void setTeacherID(int teacherID) {
+        this.teacherID = teacherID;
     }
     public int getAmount() {
         return amount;

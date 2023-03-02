@@ -27,9 +27,9 @@ public class CourseService {
     AdditionalMaterialRepository materialRepository = AdditionalMaterialRepository.getInstance();
     HomeworkRepository homeworkRepository = HomeworkRepository.getInstance();
     PersonService personService = new PersonService();
-    private static String validationFindFalseMethod (Pattern pattern, Scanner scanner) throws ValidationErrorException {
+    private static String validationFindFalseMethod (Scanner scanner) throws ValidationErrorException {
         String newString = scanner.next() + scanner.nextLine();
-        Matcher matcher = pattern.matcher(newString);
+        Matcher matcher = NAME_PATTERN.matcher(newString);
         if (!matcher.find()) return newString;
         else throw new ValidationErrorException();
     }
@@ -52,7 +52,7 @@ public class CourseService {
         System.out.println("==========================\nCreate new course. \nEnter the name of this course.");
         while (!out) {
             try {
-                name = validationFindFalseMethod(NAME_PATTERN, scanner);
+                name = validationFindFalseMethod(scanner);
                 out = true;
             } catch (ValidationErrorException e) {
                 LOGGER.warning("Validation error", e);

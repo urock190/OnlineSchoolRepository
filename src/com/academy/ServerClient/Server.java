@@ -71,13 +71,12 @@ public class Server implements Runnable {
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            } finally {
-                try {
-                    client.close();
-                    System.out.println("Client is closed.");
-                } catch (IOException e) {
+            }
+            try {
+                client.close();
+                System.out.println("Client is closed.");
+            } catch (IOException e) {
                     throw new RuntimeException(e);
-                }
             }
         }
     }
