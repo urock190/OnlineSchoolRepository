@@ -9,7 +9,7 @@ public class BlacklistWatcher implements Runnable{
     private static final Logger LOGGER = new Logger(BlacklistWatcher.class.getName());
     public void watchBlacklist() throws InterruptedException, IOException {
         WatchService watchService = FileSystems.getDefault().newWatchService();
-        Path path = Paths.get("src/com/academy/ServerClient/");
+        Path path = Paths.get("src/main/java/com/academy/ServerClient/");
         path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
 
         WatchKey key;

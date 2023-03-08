@@ -7,7 +7,7 @@ public class LevelWatcher implements Runnable {
     private static final Logger LOGGER = new Logger(LevelWatcher.class.getName());
     public void watcher() throws InterruptedException, IOException {
         WatchService watchService = FileSystems.getDefault().newWatchService();
-        Path path = Paths.get("src/com/academy/util/");
+        Path path = Paths.get("src/main/java/com/academy/util/");
         path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
 
         WatchKey key;

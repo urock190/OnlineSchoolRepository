@@ -7,7 +7,7 @@ import java.io.*;
 
 public class SerializationUtils {
     private static final Logger LOGGER = new Logger(SerializationUtils.class.getName());
-    private static final String FILE_PATH = "src/com/academy/serializationUtil/serializedCourse.txt";
+    private static final String FILE_PATH = "src/main/java/com/academy/serializationUtil/serializedCourse.txt";
     public static void serializeToFile(Course course) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))){
             oos.writeObject(course);

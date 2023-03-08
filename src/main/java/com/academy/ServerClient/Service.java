@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class Service {
     public static String readBlacklist() {
-        String blacklistPath = "src/com/academy/ServerClient/Blacklist.txt";
+        String blacklistPath = "src/main/java/com/academy/ServerClient/Blacklist.txt";
         Path path = Path.of(blacklistPath);
         StringBuilder builder = new StringBuilder();
         try (BufferedReader br = Files.newBufferedReader(path)) {

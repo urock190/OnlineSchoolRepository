@@ -35,9 +35,6 @@ public class PersonService {
         else throw new ValidationErrorException();
     }
 
-    public static Person createPerson (Role role, String name, String lastName){
-        return new Person(role, name, lastName);
-    }
     public static Person createPerson (Role role, String name, String lastName, String phone, String email){
         return new Person (role, name, lastName, phone, email);
     }
@@ -171,7 +168,7 @@ public class PersonService {
     }
 
     public void writeStudentsEmails() {
-        File file = new File("src/com/academy/services/Students Email.txt");
+        File file = new File("src/main/java/com/academy/services/Students Email.txt");
         TreeSet<String> treeSet = personRepository.getAll().stream().collect(Collectors.filtering(person ->
                         person.getRole() == Role.STUDENT && !Optional.ofNullable(person.getEmail()).orElse("-").equals("-"),
                 Collectors.mapping(Person::getEmail, Collectors.toCollection(TreeSet<String>::new))));

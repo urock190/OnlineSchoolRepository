@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class LogService {
-    private static final String logFilePath = "src/com/academy/util/Log.txt";
-    private static final String settingFilePath = "src/com/academy/util/setting.txt";
+    private static final String logFilePath = "src/main/java/com/academy/util/Log.txt";
+    private static final String settingFilePath = "src/main/java/com/academy/util/setting.txt";
     public static void writeLog(Log log) {
         String string = log.toString();
         File file = new File(logFilePath);
