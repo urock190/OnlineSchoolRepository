@@ -27,17 +27,11 @@ public class CourseService {
     AdditionalMaterialRepository materialRepository = AdditionalMaterialRepository.getInstance();
     HomeworkRepository homeworkRepository = HomeworkRepository.getInstance();
     PersonService personService = new PersonService();
-    private static String validationFindFalseMethod (Scanner scanner) throws ValidationErrorException {
+    private String validationFindFalseMethod (Scanner scanner) throws ValidationErrorException {
         String newString = scanner.next() + scanner.nextLine();
         Matcher matcher = NAME_PATTERN.matcher(newString);
         if (!matcher.find()) return newString;
         else throw new ValidationErrorException();
-    }
-    public static void printCounter(){
-        System.out.println(Course.getCounterOfCourses());
-    }
-    public Course createCourse() {
-        return new Course();
     }
     public Course createCourse(String name, Person teacher, Person student, Lecture lecture) {
         return new Course(name, teacher, student, lecture);}

@@ -44,7 +44,6 @@ class LogServiceTest {
         LogService.writeLevelSetting(Level.DEBUG);
         try {
             Files.deleteIfExists(log);
-//            Files.createFile(log);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoggerTest {
-    Logger logger = new Logger("Test");
+    private final Logger logger = new Logger("Test");
 
     @Test
     void EveryLevelIsLoggableIfLevelSettingIsDebug(){
