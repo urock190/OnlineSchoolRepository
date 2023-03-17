@@ -18,10 +18,6 @@ public class AdditionalMaterialService {
     AdditionalMaterialRepository additionalMaterialRepository = AdditionalMaterialRepository.getInstance();
     LectureRepository lectureRepository = LectureRepository.getInstance();
 
-    public static AdditionalMaterial createAdditionalMaterial() {
-        return new AdditionalMaterial();
-    }
-
     public static AdditionalMaterial createAddMaterialFromConsole() {
         LOGGER.debug("Creating new additional material");
         Scanner scanner = new Scanner(System.in);
