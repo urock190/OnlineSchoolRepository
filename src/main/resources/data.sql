@@ -39,3 +39,9 @@ VALUES ('Organic chemistry', 'BOOK', 1),
        ('Holy Bible', 'BOOK', 3),
        ('Big Video-course', 'VIDEO', 5),
        ('https://comick.app/comic/one-punch-man/6WpdwU_I-chapter-181-en', 'URL', 2);
+
+INSERT INTO lectures (lecture_id, name, amount, description, creation_date, lecture_date, teacher_id, course_id)
+VALUE (6, 'lecture 6th', 10, DEFAULT, '2023-03-20 14:18:59', '2023-10-11 12:00:00', 3, 2);
+
+INSERT INTO additional_materials (name, resource_type, lecture_id)
+VALUE ('https://github.com/urock190/OnlineSchoolRepository', 'URL', 4);
