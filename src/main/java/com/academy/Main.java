@@ -1,8 +1,6 @@
 package com.academy;
 
-import com.academy.services.LectureService;
 import com.academy.services.MainService;
-import com.academy.services.PersonService;
 import com.academy.util.Level;
 import com.academy.util.LevelWatcher;
 import com.academy.util.LogService;
@@ -16,15 +14,11 @@ public class Main {
         Thread lvlWatcher = new Thread(new LevelWatcher(), "level watcher");
         lvlWatcher.start();
         LOGGER.debug("Creating 1 course & 3 lectures.");
-        MainService.init();
+//        MainService.init();
         LOGGER.debug("1 course and 3 lectures have been created");
         MainService.chooseCategoryAndCreateLecture();
         lvlWatcher.interrupt();
-        LectureService lectureService = new LectureService();
-        lectureService.showLecture();
         LogService.readInfoFromTheMiddle();
-        PersonService personService = new PersonService();
-        personService.printFilteredTeachers('N');
         LOGGER.debug("Program finished");
     }
 }

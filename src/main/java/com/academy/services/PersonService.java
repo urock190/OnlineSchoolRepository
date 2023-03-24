@@ -201,15 +201,6 @@ public class PersonService {
         System.out.println();
     }
 
-    /** Get teachers filtered by the first letter of their last name.
-     * All up to the letter (char firstLetter) exclusively.
-     */
-    public void printFilteredTeachers(char firstLetter){
-        System.out.println("======================\nTeachers with last name before the letter '" + firstLetter + '\'');
-        personRepository.getAll().stream().filter(person -> person.getRole() == Role.TEACHER &&
-                        person.getLastName().charAt(0) < firstLetter).forEach(System.out::println);
-    }
-
     public static void studentMenuTitle() {
         System.out.println("You have choose the category \"Student\"");
         System.out.println("""

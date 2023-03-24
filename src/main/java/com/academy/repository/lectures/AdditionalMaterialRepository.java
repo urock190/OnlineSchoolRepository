@@ -3,11 +3,11 @@ package com.academy.repository.lectures;
 import com.academy.exceptions.EntityNotFoundException;
 import com.academy.models.Lecture;
 import com.academy.models.lectures.AdditionalMaterial;
+import com.academy.repository.AddMatRepositoryInDB;
 import com.academy.repository.LectureRepository;
 import com.academy.util.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,9 +15,10 @@ public class AdditionalMaterialRepository {
     private static final Logger LOGGER = new Logger(AdditionalMaterialRepository.class.getName());
     private static AdditionalMaterialRepository instance;
     private Map<Integer, List<AdditionalMaterial>> additionalMaterials;
+    private final AddMatRepositoryInDB addMatDatabase = AddMatRepositoryInDB.getInstance();
 
     private AdditionalMaterialRepository() {
-         additionalMaterials = new HashMap<>();
+         additionalMaterials = addMatDatabase.getAll();
     }
 
     public static AdditionalMaterialRepository getInstance(){
@@ -34,12 +35,16 @@ public class AdditionalMaterialRepository {
 
     public void put (int lectureID, List<AdditionalMaterial> materialsList) {
         additionalMaterials.put(lectureID, materialsList);
+        addMatDatabase.put(lectureID, materialsList);
     }
     public void putIfAbsent (int lectureID, List<AdditionalMaterial> materialsList) {
-        additionalMaterials.putIfAbsent(lectureID, materialsList);
+        if (get(lectureID) == null){
+            put(lectureID, materialsList);
+        }
     }
     public void remove (int lectureID) {
         additionalMaterials.remove(lectureID);
+        addMatDatabase.deleteByLectureID(lectureID);
     }
     public Map<Integer, List<AdditionalMaterial>> getAll() {
         return additionalMaterials;
@@ -53,7 +58,9 @@ public class AdditionalMaterialRepository {
         boolean success = false;
         for (int i = 0; i < get(lectureID).size(); i++){
             if (get(lectureID).get(i) == null) continue;
-            if (get(lectureID).get(i).getID() == ID) {get(lectureID).remove(i); success = true;}
+            if (get(lectureID).get(i).getID() == ID) {
+                get(lectureID).remove(i); addMatDatabase.deleteByID(ID);
+                success = true;}
         }
         if (success) System.out.println("Additional material ID = " + ID + " has been successfully removed from lecture with ID = " + lectureID + '.');
         else System.out.println("Additional material not found.");
@@ -102,23 +109,13 @@ public class AdditionalMaterialRepository {
         System.out.println("Additional material with ID = " + ID + " has been successfully added to the lecture with ID = " + lectureID + '.');
         deleteById(getById(ID).getLectureID(), ID);
         getById(ID).setLectureID(lectureID);
+        addMatDatabase.insert(getById(ID));
     }
 
     public void add (int lectureID, AdditionalMaterial material) {
         get(lectureID).add(material);
         material.setLectureID(lectureID);
-    }
-
-    public void findAll() {
-        System.out.println("======================\nFull additional materials info:");
-        if (isEmpty()) System.out.println("Array is empty.");
-        for (List<AdditionalMaterial> list : additionalMaterials.values()) {
-            if (list == null) continue;
-            for (AdditionalMaterial additionalMaterial : list) {
-                if(additionalMaterial == null) continue;
-                System.out.println(additionalMaterial);
-            }
-        }
+        addMatDatabase.insert(material);
     }
 
     public List<AdditionalMaterial> toAddMaterialsList(){

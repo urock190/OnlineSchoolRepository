@@ -185,7 +185,7 @@ public class MainService {
                         LOGGER.info("Additional Material menu info"); AdditionalMaterialService.addMaterialMenuTitle();
                         String confirmation5 = scanner.next();
                         switch (confirmation5) {
-                            case "yes", "no", "1", "2", "3" -> {
+                            case "yes", "no", "1", "2", "3", "4" -> {
                                 addMaterialMenu(confirmation5, scanner);
                                 continue OUTER;
                             }
@@ -552,7 +552,7 @@ public class MainService {
         String sortAddMatsMenu = """
                         ==========================================
                         Enter "1" if you want to sort additional materials by lecture's ID or enter "2" if you want to sort by resource type.
-                        Enter "3" if yo want to group additional materials by lectures.
+                        Enter "3" if you want to group additional materials by lectures.
                         Enter anything else to return to "Choose category" menu.""";
         if (confirmation5.equals("yes")) {
                 additionalMaterialService.printList(list);
@@ -570,7 +570,7 @@ public class MainService {
                 AdditionalMaterial additionalMaterial = AdditionalMaterialService.createAddMaterialFromConsole();
                 LOGGER.debug("New additional material has been created successfully.");
                 additionalMaterialRepository.putIfAbsent(additionalMaterial.getLectureID(), new ArrayList<>());
-                additionalMaterialRepository.get(additionalMaterial.getLectureID()).add(additionalMaterial);
+                additionalMaterialRepository.add(additionalMaterial.getLectureID(), additionalMaterial);
                 System.out.println("""
                         ==========================================
                         Do you want to create new additional material? Enter "yes" to confirm.
@@ -609,6 +609,27 @@ public class MainService {
                 else if (conf.equals("3")) additionalMaterialService.printGroupedByLectures();
             } while (conf.equals("1")||conf.equals("2")||conf.equals("3"));
             LOGGER.info("All information about additional materials.");
+        } else if (confirmation5.equals("4")) {
+            do {
+                System.out.println("Enter additional material's ID to remove it from database.");
+                int id = 0;
+                try {
+                    id = scanner.nextInt();
+                } catch (InputMismatchException ex){
+                    LOGGER.error("Incorrect input. Need to solve the problem", ex);
+                    scanner.skip(".*");
+                }
+
+                try {
+                    additionalMaterialRepository.deleteById(additionalMaterialRepository.getById(id).getLectureID(), id);
+                } catch (EntityNotFoundException e) {
+                    LOGGER.warning(e.getMessage(), e);
+                    System.out.println(e.getMessage());
+                } System.out.println("""
+                        ==========================================
+                        Do you want to remove other additional material? Enter "yes" to confirm.
+                        Enter anything else to return to "Choose category" menu.""");
+            } while (scanner.next().equals("yes"));
         } System.out.println("++++++++++++++++++++++");
     }
 }

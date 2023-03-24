@@ -25,6 +25,15 @@ public class AdditionalMaterialService {
         ResourceType resourceType = null;
         System.out.println("==========================\nCreate new additional material. Enter the name of additional material");
         String addMatName = scanner.next() + scanner.nextLine();
+        System.out.println("Enter additional material's ID");
+        int id = AdditionalMaterial.getCounterOfAddMaterials() + 1;
+        try {
+            id = scanner.nextInt();
+        } catch (InputMismatchException ex) {
+            LOGGER.error("Incorrect input: " + id + ". Need to solve the problem.", ex);
+            scanner.skip(".*");
+        }
+
             do {
                 System.out.println("Select the resource type of additional material. Enter 1 - for \"URL\", 2 - for \"VIDEO\", " +
                                    "3 - for \"BOOK\"");
@@ -41,7 +50,19 @@ public class AdditionalMaterialService {
                     default -> System.out.println("Please, enter a number from 1 to 3");
                 }
             } while (typeNumber < 1 || typeNumber > 3);
-        return new AdditionalMaterial(addMatName, resourceType);
+
+        System.out.println("Enter additional material's lecture's ID");
+        int lectureID = 0;
+        try {
+            lectureID = scanner.nextInt();
+        } catch (InputMismatchException ex) {
+            LOGGER.error("Incorrect input. Need to solve the problem.", ex);
+            scanner.skip(".*");
+        }
+
+        AdditionalMaterial newAddMat = new AdditionalMaterial(addMatName, resourceType);
+        newAddMat.setID(id);   newAddMat.setLectureID(lectureID);
+        return newAddMat;
     }
 
     Consumer<Map<Integer, List<AdditionalMaterial>>> shortInfoCons = integerListMap ->
@@ -91,6 +112,7 @@ public class AdditionalMaterialService {
         System.out.println("""
                                 Do you want to print short info about additional materials? Type "yes" to confirm. Type "no" to choose another category.
                                 Enter "1" to create new additional material. Enter "2" to get additional material by it's ID. Enter "3" to print full info about additional materials.
+                                Enter "4" if you want to remove additional material by it's ID.
                                 Type anything else to continue creating lectures.""");
     }
 }

@@ -3,7 +3,6 @@ package com.academy.services;
 import com.academy.exceptions.EntityNotFoundException;
 import com.academy.exceptions.ValidationErrorException;
 import com.academy.models.Lecture;
-import com.academy.models.Models;
 import com.academy.models.Person;
 import com.academy.models.lectures.AdditionalMaterial;
 import com.academy.models.lectures.Homework;
@@ -20,7 +19,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -82,6 +84,7 @@ public class LectureService {
             amount = scanner.nextInt();
         } catch (InputMismatchException ex) {
             LOGGER.error("Incorrect input. Need to solve the problem", ex);
+            scanner.skip(".*");
         }
         System.out.println("Enter a short description of the lecture, please.");
         String description = " ";
@@ -109,8 +112,8 @@ public class LectureService {
         }
         AdditionalMaterial additionalMaterial = AdditionalMaterialService.createAddMaterialFromConsole();
         LOGGER.debug("Additional material has been created successfully.");
-        addMaterialRepository.putIfAbsent(additionalMaterial.getLectureID() + 1, new ArrayList<>());
-        addMaterialRepository.get(additionalMaterial.getLectureID() + 1).add(additionalMaterial);
+        addMaterialRepository.putIfAbsent(additionalMaterial.getLectureID(), new ArrayList<>());
+        addMaterialRepository.add(additionalMaterial.getLectureID(), additionalMaterial);
         System.out.println("Set the date of the lecture.\nEnter the date of the lecture in the format YYYY-MM-DD (year-month-day in numbers).");
         String date = scanner.next() + scanner.nextLine();
         System.out.println("Enter the time of the lecture in the format HH:mm (hours:minutes).");
@@ -181,27 +184,6 @@ public class LectureService {
         System.out.printf("======================\nLectures between dates %s - %s:\n", DateTimeFormats.dayMonthYear(fromDate),
                 DateTimeFormats.dayMonthYear(toDate));
         consumer.accept(lecturesBetweenDates(lectures, fromDate, toDate));
-    }
-
-    //Displays the lecture created earlier than all others, with the largest amount of additional materials.
-    public void showLecture(){
-       Optional<LocalDateTime> minCreationDate = lectureRepository.getAll().stream().map(Lecture::getCreationDate).
-               min(Comparator.naturalOrder());
-       int[] lectureIDs = lectureRepository.getAll().stream().filter(lecture ->
-               lecture.getCreationDate().equals(minCreationDate.orElseThrow())).mapToInt(Models::getID).toArray();
-
-       OptionalInt maxSize = Arrays.stream(lectureIDs).map(lectureID -> addMaterialRepository.get(lectureID).size()).max();
-
-       int ID = Arrays.stream(lectureIDs).mapToObj(lectureID -> addMaterialRepository.get(lectureID)).
-               filter(addMats -> addMats.size() == maxSize.orElseThrow()).flatMap(Collection::stream).
-               map(AdditionalMaterial::getLectureID).findFirst().orElseThrow();
-        try {
-            System.out.println("Lecture created earlier than all others, with the largest amount of additional materials:\n" +
-                    lectureRepository.getById(ID) + "\n");
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            LOGGER.error("There's no lecture with such ID", e);
-        }
     }
 
     public void printID() {
