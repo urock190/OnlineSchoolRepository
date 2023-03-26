@@ -65,3 +65,16 @@ CREATE TABLE `additional_materials` (
   `lecture_id` int DEFAULT NULL,
   FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`lecture_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+DROP procedure IF EXISTS getDataFromTable;
+
+DELIMITER $$
+CREATE PROCEDURE getDataFromTable (in table_name varchar(55))
+BEGIN
+    SET @sql = CONCAT('SELECT * FROM ', table_name);
+
+    PREPARE tab FROM @sql;
+    EXECUTE tab;
+    DEALLOCATE PREPARE tab;
+END$$
+DELIMITER ;

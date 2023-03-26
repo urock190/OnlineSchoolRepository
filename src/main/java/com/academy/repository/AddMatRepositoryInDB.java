@@ -2,6 +2,7 @@ package com.academy.repository;
 
 import com.academy.models.ResourceType;
 import com.academy.models.lectures.AdditionalMaterial;
+import com.academy.util.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AddMatRepositoryInDB {
+    private static final Logger LOGGER = new Logger(AddMatRepositoryInDB.class.getName());
     private static final String URL = "jdbc:mysql://localhost/school_schema";
     private static final String USER = "root";
     private static final String PASSWORD = "1234567abS";
@@ -23,12 +25,15 @@ public class AddMatRepositoryInDB {
     }
 
         public Map<Integer, List<AdditionalMaterial>> getAll(){
-            String query = "Select * from additional_materials";
+            String procedure = "{call getDataFromTable(?)}";
             Map<Integer, List<AdditionalMaterial>> mapFromDB = new HashMap<>();
 
             try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-                 Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+                 CallableStatement statement = connection.prepareCall(procedure)) {
 
+                statement.setString(1, "additional_materials");
+
+                ResultSet resultSet = statement.executeQuery();
                 while(resultSet.next()){
                     int id = resultSet.getInt("material_id");
                     String name = resultSet.getString("name");
@@ -41,7 +46,9 @@ public class AddMatRepositoryInDB {
                     mapFromDB.putIfAbsent(lectureID, new ArrayList<>());
                     mapFromDB.get(lectureID).add(newAddMat);
                 }
+                resultSet.close();
             } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
                 e.printStackTrace();
             }
             return mapFromDB;
@@ -58,25 +65,46 @@ public class AddMatRepositoryInDB {
 
         public void insert(AdditionalMaterial material){
             String query = "INSERT INTO additional_materials (material_id, name, resource_type, lecture_id) " +
-                "VALUES (" + material.getID() + ", '" +  material.getName() +"', '"+ material.getResourceType() +"', "+ material.getLectureID() +");";
-            updateExecution(query);
+                "VALUES (?, ?, ?, ?);";
+            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                 PreparedStatement prepStatement = connection.prepareStatement(query)){
+
+                prepStatement.setInt(1, material.getID());
+                prepStatement.setString(2, material.getName());
+                prepStatement.setString(3, material.getResourceType().name());
+                prepStatement.setInt(4, material.getLectureID());
+
+                prepStatement.executeUpdate();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                e.printStackTrace();
+            }
         }
 
         public void deleteByID(int id){
-            String query = "DELETE FROM additional_materials WHERE (material_id = " + id + ");";
-            updateExecution(query);
+            String query = "DELETE FROM additional_materials WHERE (material_id = ?);";
+            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                 PreparedStatement prepStatement = connection.prepareStatement(query)){
+
+                prepStatement.setInt(1, id);
+                prepStatement.executeUpdate();
+
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                e.printStackTrace();
+            }
         }
 
         public void deleteByLectureID(int lectureID){
-            String query = "DELETE FROM additional_materials WHERE (lecture_id = " + lectureID + ");";
-            updateExecution(query);
-        }
-
-        private void updateExecution(String query){
+            String query = "DELETE FROM additional_materials WHERE (lecture_id = ?);";
             try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-                 Statement statement = connection.createStatement()){
-                statement.executeUpdate(query);
+                 PreparedStatement prepStatement = connection.prepareStatement(query)){
+
+                prepStatement.setInt(1, lectureID);
+                prepStatement.executeUpdate();
+
             } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
                 e.printStackTrace();
             }
         }
