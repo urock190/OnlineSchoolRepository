@@ -2,17 +2,12 @@ package dao;
 
 import models.AdditionalMaterial;
 import models.ResourceType;
+import util.DBConnection;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AddMatRepositoryDAO {
-    private static final String URL = "jdbc:mysql://localhost/school_schema";
-    private static final String USER = "root";
-    private static final String PASSWORD = "1234567abS";
     private static AddMatRepositoryDAO instance;
 
     private AddMatRepositoryDAO(){
@@ -33,7 +28,7 @@ public class AddMatRepositoryDAO {
             String procedure = "{call getDataFromTable(?)}";
             Map<Integer, List<AdditionalMaterial>> mapFromDB = new HashMap<>();
 
-            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            try (Connection connection = DBConnection.getConnection();
                  CallableStatement statement = connection.prepareCall(procedure)) {
 
                 statement.setString(1, "additional_materials");
@@ -69,7 +64,7 @@ public class AddMatRepositoryDAO {
         public void insert(AdditionalMaterial material){
             String query = "INSERT INTO school_schema.additional_materials (material_id, name, resource_type, lecture_id) " +
                 "VALUES (?, ?, ?, ?);";
-            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            try (Connection connection = DBConnection.getConnection();
                  PreparedStatement prepStatement = connection.prepareStatement(query)){
 
                 prepStatement.setInt(1, material.getID());
@@ -85,7 +80,7 @@ public class AddMatRepositoryDAO {
 
         public void deleteByID(int id){
             String query = "DELETE FROM school_schema.additional_materials WHERE (material_id = ?);";
-            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            try (Connection connection = DBConnection.getConnection();
                  PreparedStatement prepStatement = connection.prepareStatement(query)){
 
                 prepStatement.setInt(1, id);
@@ -98,7 +93,7 @@ public class AddMatRepositoryDAO {
 
         public void deleteByLectureID(int lectureID){
             String query = "DELETE FROM school_schema.additional_materials WHERE (lecture_id = ?);";
-            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            try (Connection connection = DBConnection.getConnection();
                  PreparedStatement prepStatement = connection.prepareStatement(query)){
 
                 prepStatement.setInt(1, lectureID);
@@ -113,7 +108,7 @@ public class AddMatRepositoryDAO {
             String query = "SELECT * FROM school_schema.additional_materials WHERE (material_id = ?);";
             AdditionalMaterial newAddMat = null;
 
-            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            try (Connection connection = DBConnection.getConnection();
                      PreparedStatement prepStatement = connection.prepareStatement(query)){
 
                 prepStatement.setInt(1, ID);
@@ -137,7 +132,7 @@ public class AddMatRepositoryDAO {
         String procedure = "{call getDataFromTable(?)}";
         List<AdditionalMaterial> listFromDB = new ArrayList<>();
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection connection = DBConnection.getConnection();
              CallableStatement statement = connection.prepareCall(procedure)) {
 
             statement.setString(1, "additional_materials");
@@ -158,5 +153,25 @@ public class AddMatRepositoryDAO {
             e.printStackTrace();
         }
         return listFromDB;
+    }
+
+    public Map<ResourceType, Integer> numberOfAdMatsByResourceType(){
+        String query = "SELECT resource_type, COUNT(resource_type) AS quantity FROM school_schema.additional_materials " +
+                "GROUP BY resource_type;";
+        Map<ResourceType, Integer> map = new EnumMap<>(ResourceType.class);
+
+        try (Connection connection = DBConnection.getConnection(); Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)){
+
+            while (resultSet.next()){
+                ResourceType resourceType = ResourceType.valueOf(resultSet.getString("resource_type"));
+                int materialsNumber = resultSet.getInt("quantity");
+
+                map.put(resourceType, materialsNumber);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 }

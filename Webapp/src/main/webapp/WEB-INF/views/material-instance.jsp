@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<html>
+<html style="background-color: #3eb489">
 <head>
     <title>Additional material instance</title>
 </head>
@@ -21,5 +21,11 @@
     <p>Resource type: ${material.resourceType}</p>
     <p>Lecture ID: ${material.lectureID}</p>
     </div>
+<nav>
+    <ul style="font-size: 20px; line-height: 1.5;">
+        <li><a href="${pageContext.request.contextPath}">Home</a></li>
+        <li><a href="${pageContext.request.contextPath}/ad-materials">Back to Additional materials table</a></li>
+    </ul>
+</nav>
 </body>
 </html>
