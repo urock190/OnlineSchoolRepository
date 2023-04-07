@@ -1,10 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html lang="en" style="background-color: #c9b307">
+<html lang="en" class="create">
 <head>
   <meta charset="UTF-8">
   <title>Add new material</title>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/styles.css">
 </head>
-<body>
+<body style="width: auto">
 <div>
   <h1>Create new additional material</h1>
   <form action="${pageContext.request.contextPath}/add-new-material" method="post" style="margin: 0 auto; width: 400px;">
@@ -33,8 +34,8 @@
       <input type="submit" value="Insert" style="margin-left: 1em;">
     </div>
   </form>
-  <nav>
-    <ul style="font-size: 20px; line-height: 1.5;">
+  <nav class="nav">
+    <ul>
       <li><a href="${pageContext.request.contextPath}">Home</a></li>
       <li><a href="${pageContext.request.contextPath}/ad-materials">Back to Additional materials table</a></li>
     </ul>

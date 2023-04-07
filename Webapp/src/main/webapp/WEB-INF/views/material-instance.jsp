@@ -1,14 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<html style="background-color: #3eb489">
+<html class="table">
 <head>
     <title>Additional material instance</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/styles.css">
 </head>
 <body>
 <h1>Additional material</h1>
 <%--@elvariable id="material" type="src.main.java.models.AdditionalMaterial"--%>
-    <div style="font-size: 24px">
+    <div>
     <p>ID: ${material.ID}</p>
         <c:choose>
         <c:when test="${material.resourceType eq 'URL'}">
@@ -21,8 +22,8 @@
     <p>Resource type: ${material.resourceType}</p>
     <p>Lecture ID: ${material.lectureID}</p>
     </div>
-<nav>
-    <ul style="font-size: 20px; line-height: 1.5;">
+<nav class="nav">
+    <ul>
         <li><a href="${pageContext.request.contextPath}">Home</a></li>
         <li><a href="${pageContext.request.contextPath}/ad-materials">Back to Additional materials table</a></li>
     </ul>

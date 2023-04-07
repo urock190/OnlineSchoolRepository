@@ -1,13 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<html style="background-color: #3eb489">
+<html class="table">
   <head>
     <title>Earliest Lecture With Most Homeworks</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/styles.css">
   </head>
   <body>
   <h1>Earliest lecture with most homeworks</h1>
   <%--@elvariable id="lecture" type="src.main.java.models.Lecture"--%>
-  <div style="font-size: 24px">
+  <div>
     <p>ID: ${lecture.ID}</p>
     <p>Name: ${lecture.name}</p>
     <p>Amount: ${lecture.amount}</p>
@@ -17,8 +18,8 @@
     <p>Teacher ID: ${lecture.teacherID}</p>
     <p>Course ID: ${lecture.courseID}</p>
   </div>
-  <nav>
-    <ul style="font-size: 20px; line-height: 1.5;">
+  <nav class="nav">
+    <ul>
       <li><a href="${pageContext.request.contextPath}">Home</a></li>
       <li><a href="${pageContext.request.contextPath}/lectures">Back to Lectures table</a></li>
     </ul>

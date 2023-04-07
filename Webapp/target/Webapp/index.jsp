@@ -1,19 +1,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<html style="background-color: #b68bf5">
+<html class="home">
 <head>
     <title>Hello World!</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/styles.css">
 </head>
-<body>
+<body style="width: auto">
 <p>Hello World!</p>
-<h1 style="text-align: center; line-height: 2.5;">
-    <a href="${pageContext.request.contextPath}/courses">Courses</a><br>
-    <a href="${pageContext.request.contextPath}/teachers">Teachers</a><br>
-    <a href="${pageContext.request.contextPath}/students">Students</a><br>
-    <a href="${pageContext.request.contextPath}/lectures">Lectures</a><br>
-    <a href="${pageContext.request.contextPath}/homeworks">Homeworks</a><br>
-    <a href="${pageContext.request.contextPath}/ad-materials">Additional materials</a><br>
+<nav class="nav">
+<h1 <%--style="text-align: center; line-height: 2.5;"--%>>
+    <div class="flex-container">
+    <div><a href="${pageContext.request.contextPath}/courses">Courses</a></div>
+    <div><a href="${pageContext.request.contextPath}/teachers">Teachers</a></div>
+    <div><a href="${pageContext.request.contextPath}/students">Students</a></div>
+    <div><a href="${pageContext.request.contextPath}/lectures">Lectures</a></div>
+    <div><a href="${pageContext.request.contextPath}/homeworks">Homeworks</a></div>
+    <div><a href="${pageContext.request.contextPath}/ad-materials">Additional materials</a></div>
+    </div>
 </h1>
+</nav>
 </body>
 </html>

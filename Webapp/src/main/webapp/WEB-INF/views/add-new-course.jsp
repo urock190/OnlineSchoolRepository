@@ -1,9 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html style="background-color: #c9b307">
+<html class="create">
   <head>
     <title>Create new course</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/styles.css">
   </head>
-  <body>
+  <body style="width: auto">
   <div>
     <h1>Create new course</h1>
     <form action="${pageContext.request.contextPath}/add-new-course" method="post" style="margin: 0 auto; width: 400px;">
@@ -19,8 +20,8 @@
         <input type="submit" value="Insert" style="margin-left: 0.5em;">
       </div>
     </form>
-    <nav>
-      <ul style="font-size: 20px; line-height: 1.5;">
+    <nav class="nav">
+      <ul>
         <li><a href="${pageContext.request.contextPath}">Home</a></li>
         <li><a href="${pageContext.request.contextPath}/courses">Back to Courses table</a></li>
       </ul>
