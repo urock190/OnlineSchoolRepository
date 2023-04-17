@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public class StudentRepositoryDAO {
-    private static StudentRepositoryDAO instance;
 
     private StudentRepositoryDAO(){
         try {
@@ -19,11 +18,6 @@ public class StudentRepositoryDAO {
             System.out.println("Unable to load class.");
             e.printStackTrace();
         }
-    }
-
-    public static StudentRepositoryDAO getInstance(){
-        if (instance == null) instance = new StudentRepositoryDAO();
-        return instance;
     }
 
     public List<Student> getAll(){

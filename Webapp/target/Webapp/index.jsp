@@ -9,7 +9,7 @@
 <body style="width: auto">
 <p>Hello World!</p>
 <nav class="nav">
-<h1 <%--style="text-align: center; line-height: 2.5;"--%>>
+<h1>
     <div class="flex-container">
     <div><a href="${pageContext.request.contextPath}/courses">Courses</a></div>
     <div><a href="${pageContext.request.contextPath}/teachers">Teachers</a></div>

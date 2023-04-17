@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Lecture;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 
@@ -16,7 +17,8 @@ public class EarliestLectureWithMostHomeworksController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        lectureRepositoryDAO = LectureRepositoryDAO.getInstance();
+        lectureRepositoryDAO = new ClassPathXmlApplicationContext("context.xml").
+                getBean("lectureRepositoryDAO", LectureRepositoryDAO.class);
     }
 
     @Override

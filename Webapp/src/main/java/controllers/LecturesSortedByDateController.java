@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 import java.util.Map;
@@ -16,7 +17,8 @@ public class LecturesSortedByDateController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        lectureRepositoryDAO = LectureRepositoryDAO.getInstance();
+        lectureRepositoryDAO = new ClassPathXmlApplicationContext("context.xml").
+                getBean("lectureRepositoryDAO", LectureRepositoryDAO.class);
     }
 
     @Override

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class HomeworkRepositoryDAO {
-    private static HomeworkRepositoryDAO instance;
 
     private HomeworkRepositoryDAO(){
         try {
@@ -20,11 +19,6 @@ public class HomeworkRepositoryDAO {
             System.out.println("Unable to load class.");
             e.printStackTrace();
         }
-    }
-
-    public static HomeworkRepositoryDAO getInstance(){
-        if (instance == null) instance = new HomeworkRepositoryDAO();
-        return instance;
     }
 
     public Map<Integer, List<Homework>> getAll(){

@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class LectureRepositoryDAO {
-    private static LectureRepositoryDAO instance;
 
     private LectureRepositoryDAO(){
         try {
@@ -17,11 +16,6 @@ public class LectureRepositoryDAO {
             System.out.println("Unable to load class.");
             e.printStackTrace();
         }
-    }
-
-    public static LectureRepositoryDAO getInstance(){
-        if (instance == null) instance = new LectureRepositoryDAO();
-        return instance;
     }
 
     public List<Lecture> getAll(){

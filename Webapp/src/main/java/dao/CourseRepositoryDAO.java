@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseRepositoryDAO {
-    private static CourseRepositoryDAO instance;
 
     private CourseRepositoryDAO(){
         try {
@@ -17,11 +16,6 @@ public class CourseRepositoryDAO {
             System.out.println("Unable to load class.");
             e.printStackTrace();
         }
-    }
-
-    public static CourseRepositoryDAO getInstance(){
-        if (instance == null) instance = new CourseRepositoryDAO();
-        return instance;
     }
 
     public List<Course> getAll(){

@@ -8,7 +8,6 @@ import java.sql.*;
 import java.util.*;
 
 public class AddMatRepositoryDAO {
-    private static AddMatRepositoryDAO instance;
 
     private AddMatRepositoryDAO(){
         try {
@@ -17,11 +16,6 @@ public class AddMatRepositoryDAO {
             System.out.println("Unable to load class.");
             e.printStackTrace();
         }
-    }
-
-    public static AddMatRepositoryDAO getInstance(){
-        if (instance == null) instance = new AddMatRepositoryDAO();
-        return instance;
     }
 
         public Map<Integer, List<AdditionalMaterial>> getAll(){

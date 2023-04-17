@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Course;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 
@@ -16,7 +17,8 @@ public class AddNewCourseController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        courseRepositoryDAO = CourseRepositoryDAO.getInstance();
+        courseRepositoryDAO = new ClassPathXmlApplicationContext("context.xml").
+                getBean("courseRepositoryDAO", CourseRepositoryDAO.class);
     }
 
     @Override

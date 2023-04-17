@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Homework;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +18,8 @@ public class HomeworksController extends HttpServlet {
 
     @Override
     public void init() {
-        homeworkRepositoryDAO = HomeworkRepositoryDAO.getInstance();
+        homeworkRepositoryDAO = new ClassPathXmlApplicationContext("context.xml").
+                getBean("homeworkRepositoryDAO", HomeworkRepositoryDAO.class);
     }
 
     @Override

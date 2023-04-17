@@ -26,13 +26,13 @@
     </tbody>
   </table>
   <nav class="nav">
-    <ul <%--style="font-size: 20px; line-height: 1.5;"--%>>
+    <ul>
       <li><a href="${pageContext.request.contextPath}">Home</a></li>
       <li><a href="${pageContext.request.contextPath}/add-new-course">Create new course</a></li>
     </ul>
   </nav>
   <footer>
-    <p <%--style="color: rebeccapurple"--%>>OnlineSchool web-api</p>
+    <p>OnlineSchool web-api</p>
   </footer>
   </body>
 </html>

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.ResourceType;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 import java.util.Map;
@@ -17,7 +18,8 @@ public class AdMatsNumberByResourceTypeController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        matRepositoryDAO = AddMatRepositoryDAO.getInstance();
+        matRepositoryDAO = new ClassPathXmlApplicationContext("context.xml").
+                getBean("addMatRepositoryDAO", AddMatRepositoryDAO.class);
     }
 
     @Override

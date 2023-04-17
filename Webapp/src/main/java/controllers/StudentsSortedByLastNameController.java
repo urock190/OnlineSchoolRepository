@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Student;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +18,8 @@ public class StudentsSortedByLastNameController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        studentRepositoryDAO = StudentRepositoryDAO.getInstance();
+        studentRepositoryDAO = new ClassPathXmlApplicationContext("context.xml").
+                getBean("studentRepositoryDAO", StudentRepositoryDAO.class);
     }
 
     @Override
