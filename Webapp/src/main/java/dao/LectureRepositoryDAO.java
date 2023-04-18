@@ -1,28 +1,24 @@
 package dao;
 
 import models.Lecture;
-import util.DBConnection;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class LectureRepositoryDAO {
+    private final DataSource dataSource;
 
-    private LectureRepositoryDAO(){
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Unable to load class.");
-            e.printStackTrace();
-        }
+    public LectureRepositoryDAO(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 
     public List<Lecture> getAll(){
         String procedure = "{call getDataFromTable(?)}";
         List<Lecture> listFromDB = new ArrayList<>();
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall(procedure)) {
 
             statement.setString(1, "lectures");
@@ -56,7 +52,7 @@ public class LectureRepositoryDAO {
     public void insert(Lecture lecture){
         String query = "INSERT INTO school_schema.lectures (lecture_id, name, amount, description, creation_date, " +
                 "lecture_date, teacher_id, course_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
             prepStatement.setInt(1, lecture.getID());
             prepStatement.setString(2, lecture.getName());
@@ -75,7 +71,7 @@ public class LectureRepositoryDAO {
 
     public void deleteByID(int id){
         String query = "DELETE FROM school_schema.lectures WHERE (lecture_id = ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, id);
@@ -90,7 +86,7 @@ public class LectureRepositoryDAO {
         String query = "SELECT * FROM school_schema.lectures WHERE (lecture_id = ?);";
         Lecture lecture = null;
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, ID);
@@ -114,7 +110,7 @@ public class LectureRepositoryDAO {
         order by lecture_date;""";
         Map<String, Integer> map = new LinkedHashMap<>();
 
-        try (Connection connection = DBConnection.getConnection(); Statement statement = connection.createStatement();
+        try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)){
 
             while (resultSet.next()){
@@ -138,7 +134,7 @@ public class LectureRepositoryDAO {
         limit 1;""";
         Lecture lecture = null;
 
-        try (Connection connection = DBConnection.getConnection(); Statement statement = connection.createStatement();
+        try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)){
 
             while (resultSet.next()){

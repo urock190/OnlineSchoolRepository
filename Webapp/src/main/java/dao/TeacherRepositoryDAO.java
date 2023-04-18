@@ -1,28 +1,24 @@
 package dao;
 
 import models.Teacher;
-import util.DBConnection;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TeacherRepositoryDAO {
+    private final DataSource dataSource;
 
-    private TeacherRepositoryDAO(){
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Unable to load class.");
-            e.printStackTrace();
-        }
+    public TeacherRepositoryDAO(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 
     public List<Teacher> getAll(){
         String procedure = "{call getDataFromTable(?)}";
         List<Teacher> listFromDB = new ArrayList<>();
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall(procedure)) {
 
             statement.setString(1, "teachers");
@@ -53,7 +49,7 @@ public class TeacherRepositoryDAO {
     public void insert(Teacher teacher){
         String query = "INSERT INTO school_schema.teachers (teacher_id, name, last_name, phone, email, course_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
             prepStatement.setInt(1, teacher.getID());
             prepStatement.setString(2, teacher.getName());
@@ -70,7 +66,7 @@ public class TeacherRepositoryDAO {
 
     public void deleteByID(int id){
         String query = "DELETE FROM school_schema.teachers WHERE (teacher_id = ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, id);
@@ -85,7 +81,7 @@ public class TeacherRepositoryDAO {
         String query = "SELECT * FROM school_schema.teachers WHERE (teacher_id = ?);";
         Teacher teacher = null;
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, ID);
@@ -105,7 +101,7 @@ public class TeacherRepositoryDAO {
         String query = "SELECT * FROM school_schema.teachers WHERE last_name REGEXP '^[A-MА-М]';";
         List <Teacher> list = new ArrayList<>();
 
-        try (Connection connection = DBConnection.getConnection(); Statement statement = connection.createStatement();
+        try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)){
 
             while(resultSet.next()){

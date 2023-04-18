@@ -1,5 +1,6 @@
 package controllers;
 
+import beans.Config;
 import dao.TeacherRepositoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,7 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Teacher;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,8 +19,8 @@ public class TeachersWithLastNameToTheLetterNController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        teacherRepositoryDAO = new ClassPathXmlApplicationContext("context.xml").
-                getBean("teacherRepositoryDAO", TeacherRepositoryDAO.class);
+        teacherRepositoryDAO = new AnnotationConfigApplicationContext(Config.class).
+                getBean(TeacherRepositoryDAO.class);
     }
 
     @Override

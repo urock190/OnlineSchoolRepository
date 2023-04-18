@@ -1,28 +1,24 @@
 package dao;
 
 import models.Course;
-import util.DBConnection;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CourseRepositoryDAO {
+    private final DataSource dataSource;
 
-    private CourseRepositoryDAO(){
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Unable to load class.");
-            e.printStackTrace();
-        }
+    public CourseRepositoryDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public List<Course> getAll(){
         String procedure = "{call getDataFromTable(?)}";
         List<Course> listFromDB = new ArrayList<>();
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall(procedure)) {
 
             statement.setString(1, "courses");
@@ -44,7 +40,7 @@ public class CourseRepositoryDAO {
 
     public void insert(Course course){
         String query = "INSERT INTO school_schema.courses (course_id, name) VALUES (?, ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
             prepStatement.setInt(1, course.getID());
             prepStatement.setString(2, course.getName());
@@ -57,7 +53,7 @@ public class CourseRepositoryDAO {
 
     public void deleteByID(int id){
         String query = "DELETE FROM school_schema.courses WHERE (course_id = ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, id);
@@ -72,7 +68,7 @@ public class CourseRepositoryDAO {
         String query = "SELECT * FROM school_schema.courses WHERE (course_id = ?);";
         Course course = null;
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, ID);

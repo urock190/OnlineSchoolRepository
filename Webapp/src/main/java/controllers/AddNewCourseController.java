@@ -1,5 +1,6 @@
 package controllers;
 
+import beans.Config;
 import dao.CourseRepositoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,7 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Course;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
 
@@ -17,8 +18,8 @@ public class AddNewCourseController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        courseRepositoryDAO = new ClassPathXmlApplicationContext("context.xml").
-                getBean("courseRepositoryDAO", CourseRepositoryDAO.class);
+        courseRepositoryDAO = new AnnotationConfigApplicationContext(Config.class).
+                getBean(CourseRepositoryDAO.class);
     }
 
     @Override

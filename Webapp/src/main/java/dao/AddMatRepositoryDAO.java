@@ -2,27 +2,23 @@ package dao;
 
 import models.AdditionalMaterial;
 import models.ResourceType;
-import util.DBConnection;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 
 public class AddMatRepositoryDAO {
+    private final DataSource dataSource;
 
-    private AddMatRepositoryDAO(){
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Unable to load class.");
-            e.printStackTrace();
-        }
+    public AddMatRepositoryDAO(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 
         public Map<Integer, List<AdditionalMaterial>> getAll(){
             String procedure = "{call getDataFromTable(?)}";
             Map<Integer, List<AdditionalMaterial>> mapFromDB = new HashMap<>();
 
-            try (Connection connection = DBConnection.getConnection();
+            try (Connection connection = dataSource.getConnection();
                  CallableStatement statement = connection.prepareCall(procedure)) {
 
                 statement.setString(1, "additional_materials");
@@ -58,7 +54,7 @@ public class AddMatRepositoryDAO {
         public void insert(AdditionalMaterial material){
             String query = "INSERT INTO school_schema.additional_materials (material_id, name, resource_type, lecture_id) " +
                 "VALUES (?, ?, ?, ?);";
-            try (Connection connection = DBConnection.getConnection();
+            try (Connection connection = dataSource.getConnection();
                  PreparedStatement prepStatement = connection.prepareStatement(query)){
 
                 prepStatement.setInt(1, material.getID());
@@ -74,7 +70,7 @@ public class AddMatRepositoryDAO {
 
         public void deleteByID(int id){
             String query = "DELETE FROM school_schema.additional_materials WHERE (material_id = ?);";
-            try (Connection connection = DBConnection.getConnection();
+            try (Connection connection = dataSource.getConnection();
                  PreparedStatement prepStatement = connection.prepareStatement(query)){
 
                 prepStatement.setInt(1, id);
@@ -87,7 +83,7 @@ public class AddMatRepositoryDAO {
 
         public void deleteByLectureID(int lectureID){
             String query = "DELETE FROM school_schema.additional_materials WHERE (lecture_id = ?);";
-            try (Connection connection = DBConnection.getConnection();
+            try (Connection connection = dataSource.getConnection();
                  PreparedStatement prepStatement = connection.prepareStatement(query)){
 
                 prepStatement.setInt(1, lectureID);
@@ -102,7 +98,7 @@ public class AddMatRepositoryDAO {
             String query = "SELECT * FROM school_schema.additional_materials WHERE (material_id = ?);";
             AdditionalMaterial newAddMat = null;
 
-            try (Connection connection = DBConnection.getConnection();
+            try (Connection connection = dataSource.getConnection();
                      PreparedStatement prepStatement = connection.prepareStatement(query)){
 
                 prepStatement.setInt(1, ID);
@@ -126,7 +122,7 @@ public class AddMatRepositoryDAO {
         String procedure = "{call getDataFromTable(?)}";
         List<AdditionalMaterial> listFromDB = new ArrayList<>();
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall(procedure)) {
 
             statement.setString(1, "additional_materials");
@@ -154,7 +150,7 @@ public class AddMatRepositoryDAO {
                 "GROUP BY resource_type;";
         Map<ResourceType, Integer> map = new EnumMap<>(ResourceType.class);
 
-        try (Connection connection = DBConnection.getConnection(); Statement statement = connection.createStatement();
+        try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)){
 
             while (resultSet.next()){

@@ -1,8 +1,8 @@
 package dao;
 
 import models.Student;
-import util.DBConnection;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -10,21 +10,17 @@ import java.util.List;
 import java.util.Map;
 
 public class StudentRepositoryDAO {
+    private final DataSource dataSource;
 
-    private StudentRepositoryDAO(){
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Unable to load class.");
-            e.printStackTrace();
-        }
+    public StudentRepositoryDAO(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 
     public List<Student> getAll(){
         String procedure = "{call getDataFromTable(?)}";
         List<Student> listFromDB = new ArrayList<>();
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall(procedure)) {
 
             statement.setString(1, "students");
@@ -54,7 +50,7 @@ public class StudentRepositoryDAO {
     public List<Student> getOrderedByLastName(){
         String query = "SELECT * FROM school_schema.students order by last_name;";
         List<Student> studentList = new ArrayList<>();
-        try (Connection connection = DBConnection.getConnection(); Statement statement = connection.createStatement();
+        try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)){
 
             while (resultSet.next()){
@@ -70,7 +66,7 @@ public class StudentRepositoryDAO {
     public void insert(Student student){
         String query = "INSERT INTO school_schema.students (student_id, name, last_name, phone, email) " +
                 "VALUES (?, ?, ?, ?, ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
             prepStatement.setInt(1, student.getID());
             prepStatement.setString(2, student.getName());
@@ -86,7 +82,7 @@ public class StudentRepositoryDAO {
 
     public void deleteByID(int id){
         String query = "DELETE FROM school_schema.students WHERE (student_id = ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, id);
@@ -101,7 +97,7 @@ public class StudentRepositoryDAO {
         String query = "SELECT * FROM school_schema.students WHERE (student_id = ?);";
         Student student = null;
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, ID);
@@ -127,7 +123,7 @@ public class StudentRepositoryDAO {
         ORDER BY last_name;""";
         Map<Student, Integer> map = new LinkedHashMap<>();
 
-        try (Connection connection = DBConnection.getConnection(); Statement statement = connection.createStatement();
+        try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)){
 
             while (resultSet.next()){

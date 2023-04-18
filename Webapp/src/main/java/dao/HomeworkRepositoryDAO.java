@@ -1,8 +1,8 @@
 package dao;
 
 import models.Homework;
-import util.DBConnection;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,21 +11,17 @@ import java.util.List;
 import java.util.Map;
 
 public class HomeworkRepositoryDAO {
+    private final DataSource dataSource;
 
-    private HomeworkRepositoryDAO(){
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Unable to load class.");
-            e.printStackTrace();
-        }
+    public HomeworkRepositoryDAO(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 
     public Map<Integer, List<Homework>> getAll(){
         String procedure = "{call getDataFromTable(?)}";
         Map<Integer, List<Homework>> mapFromDB = new HashMap<>();
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall(procedure)) {
 
             statement.setString(1, "homeworks");
@@ -67,7 +63,7 @@ public class HomeworkRepositoryDAO {
     public void insert(Homework homework){
         String query = "INSERT INTO school_schema.homeworks (homework_id, name, task, number_of_tasks, deadline, lecture_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, homework.getID());
@@ -85,7 +81,7 @@ public class HomeworkRepositoryDAO {
 
     public void deleteByID(int id){
         String query = "DELETE FROM school_schema.homeworks WHERE (homework_id = ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, id);
@@ -98,7 +94,7 @@ public class HomeworkRepositoryDAO {
 
     public void deleteByLectureID(int lectureID){
         String query = "DELETE FROM school_schema.homeworks WHERE (lecture_id = ?);";
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, lectureID);
@@ -113,7 +109,7 @@ public class HomeworkRepositoryDAO {
         String query = "SELECT * FROM school_schema.homeworks WHERE (homework_id = ?);";
         Homework homework = null;
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement prepStatement = connection.prepareStatement(query)){
 
             prepStatement.setInt(1, ID);
@@ -132,7 +128,7 @@ public class HomeworkRepositoryDAO {
         String procedure = "{call getDataFromTable(?)}";
         List<Homework> listFromDB = new ArrayList<>();
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall(procedure)) {
 
             statement.setString(1, "homeworks");
