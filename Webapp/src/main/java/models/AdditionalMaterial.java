@@ -1,18 +1,31 @@
 package models;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+@Entity
+@Table(name = "additional_materials", schema = "school_schema")
 public class AdditionalMaterial {
+    @Column(name = "name")
     private String name;
+    @Id
+    @Column(name = "material_id")
     private Integer ID;
+    @Column(name = "lecture_id")
     private int lectureID;
+    @Column(name = "resource_type")
+    @Enumerated(EnumType.STRING)
     private ResourceType resourceType;
+
+    public AdditionalMaterial() {}
 
     public AdditionalMaterial(String name, ResourceType resourceType, int lectureID) {
         this.name = name;
         this.resourceType = resourceType;
         this.lectureID = lectureID;
     }
+
     public AdditionalMaterial(String name, int ID, ResourceType resourceType, int lectureID){
         this.name = name;
         this.ID = ID;

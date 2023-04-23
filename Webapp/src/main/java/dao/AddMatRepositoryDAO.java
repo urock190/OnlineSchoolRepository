@@ -1,43 +1,35 @@
 package dao;
 
+import jakarta.persistence.Tuple;
 import models.AdditionalMaterial;
 import models.ResourceType;
+import org.hibernate.ScrollableResults;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import util.HibernateUtil;
 
-import javax.sql.DataSource;
-import java.sql.*;
 import java.util.*;
 
 public class AddMatRepositoryDAO {
-    private final DataSource dataSource;
 
-    public AddMatRepositoryDAO(DataSource dataSource){
-        this.dataSource = dataSource;
-    }
+    public AddMatRepositoryDAO() {}
 
         public Map<Integer, List<AdditionalMaterial>> getAll(){
-            String procedure = "{call getDataFromTable(?)}";
             Map<Integer, List<AdditionalMaterial>> mapFromDB = new HashMap<>();
 
-            try (Connection connection = dataSource.getConnection();
-                 CallableStatement statement = connection.prepareCall(procedure)) {
+            try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
-                statement.setString(1, "additional_materials");
-
-                ResultSet resultSet = statement.executeQuery();
-                while(resultSet.next()){
-                    int id = resultSet.getInt("material_id");
-                    String name = resultSet.getString("name");
-                    ResourceType resourceType = ResourceType.valueOf(resultSet.getString("resource_type"));
-                    int lectureID = resultSet.getInt("lecture_id");
-
-                    AdditionalMaterial newAddMat = new AdditionalMaterial(name, id, resourceType, lectureID);
-
+                Query<AdditionalMaterial> query = session.createQuery("from AdditionalMaterial",
+                                AdditionalMaterial.class).setReadOnly(true);
+                ScrollableResults<AdditionalMaterial> results = query.scroll();
+                while (results.next()){
+                    AdditionalMaterial newAddMat = results.get();
+                    int lectureID = newAddMat.getLectureID();
                     mapFromDB.putIfAbsent(lectureID, new ArrayList<>());
                     mapFromDB.get(lectureID).add(newAddMat);
                 }
-                resultSet.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+                results.close();
             }
             return mapFromDB;
         }
@@ -52,115 +44,63 @@ public class AddMatRepositoryDAO {
         }
 
         public void insert(AdditionalMaterial material){
-            String query = "INSERT INTO school_schema.additional_materials (material_id, name, resource_type, lecture_id) " +
-                "VALUES (?, ?, ?, ?);";
-            try (Connection connection = dataSource.getConnection();
-                 PreparedStatement prepStatement = connection.prepareStatement(query)){
-
-                prepStatement.setInt(1, material.getID());
-                prepStatement.setString(2, material.getName());
-                prepStatement.setString(3, material.getResourceType().name());
-                prepStatement.setInt(4, material.getLectureID());
-
-                prepStatement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            try (Session session = HibernateUtil.getSessionFactory().openSession()){
+                Transaction transaction = session.beginTransaction();
+                session.persist(material);
+                transaction.commit();
             }
         }
 
         public void deleteByID(int id){
-            String query = "DELETE FROM school_schema.additional_materials WHERE (material_id = ?);";
-            try (Connection connection = dataSource.getConnection();
-                 PreparedStatement prepStatement = connection.prepareStatement(query)){
+            String hql = "DELETE FROM AdditionalMaterial WHERE ID = :ID";
 
-                prepStatement.setInt(1, id);
-                prepStatement.executeUpdate();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+            try (Session session = HibernateUtil.getSessionFactory().openSession()){
+                Query<AdditionalMaterial> query = session.createQuery(hql, AdditionalMaterial.class);
+                query.setParameter("ID", id);
+                query.executeUpdate();
             }
         }
 
         public void deleteByLectureID(int lectureID){
-            String query = "DELETE FROM school_schema.additional_materials WHERE (lecture_id = ?);";
-            try (Connection connection = dataSource.getConnection();
-                 PreparedStatement prepStatement = connection.prepareStatement(query)){
+            String hql = "DELETE FROM AdditionalMaterial am WHERE am.lectureID = :lectureID";
 
-                prepStatement.setInt(1, lectureID);
-                prepStatement.executeUpdate();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+            try (Session session = HibernateUtil.getSessionFactory().openSession()){
+                Query<AdditionalMaterial> query = session.createQuery(hql, AdditionalMaterial.class);
+                query.setParameter("lectureID", lectureID);
+                query.executeUpdate();
             }
         }
 
         public AdditionalMaterial getByID(int ID){
-            String query = "SELECT * FROM school_schema.additional_materials WHERE (material_id = ?);";
-            AdditionalMaterial newAddMat = null;
+            AdditionalMaterial newAddMat;
 
-            try (Connection connection = dataSource.getConnection();
-                     PreparedStatement prepStatement = connection.prepareStatement(query)){
-
-                prepStatement.setInt(1, ID);
-                ResultSet resultSet = prepStatement.executeQuery();
-                while(resultSet.next()){
-                    int id = resultSet.getInt("material_id");
-                    String name = resultSet.getString("name");
-                    ResourceType resourceType = ResourceType.valueOf(resultSet.getString("resource_type"));
-                    int lectureID = resultSet.getInt("lecture_id");
-
-                    newAddMat = new AdditionalMaterial(name, id, resourceType, lectureID);
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+            try (Session session = HibernateUtil.getSessionFactory().openSession()){
+                newAddMat = session.get(AdditionalMaterial.class, ID);
             }
             return newAddMat;
         }
 
     public List<AdditionalMaterial> getAllAsList(){
-        String procedure = "{call getDataFromTable(?)}";
-        List<AdditionalMaterial> listFromDB = new ArrayList<>();
+        List<AdditionalMaterial> listFromDB;
 
-        try (Connection connection = dataSource.getConnection();
-             CallableStatement statement = connection.prepareCall(procedure)) {
-
-            statement.setString(1, "additional_materials");
-
-            ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()){
-                int id = resultSet.getInt("material_id");
-                String name = resultSet.getString("name");
-                ResourceType resourceType = ResourceType.valueOf(resultSet.getString("resource_type"));
-                int lectureID = resultSet.getInt("lecture_id");
-
-                AdditionalMaterial newAddMat = new AdditionalMaterial(name, id, resourceType, lectureID);
-
-                listFromDB.add(newAddMat);
-            }
-            resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<AdditionalMaterial> query = session.createQuery("from AdditionalMaterial", AdditionalMaterial.class);
+//                    setReadOnly(true);
+            listFromDB = query.list();
         }
         return listFromDB;
     }
 
-    public Map<ResourceType, Integer> numberOfAdMatsByResourceType(){
-        String query = "SELECT resource_type, COUNT(resource_type) AS quantity FROM school_schema.additional_materials " +
-                "GROUP BY resource_type;";
-        Map<ResourceType, Integer> map = new EnumMap<>(ResourceType.class);
+    public Map<ResourceType, Long> numberOfAdMatsByResourceType(){
+        String hql = "SELECT resourceType, COUNT(resourceType) AS quantity FROM AdditionalMaterial " +
+                "GROUP BY resourceType";
+        Map<ResourceType, Long> map = new EnumMap<>(ResourceType.class);
 
-        try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)){
-
-            while (resultSet.next()){
-                ResourceType resourceType = ResourceType.valueOf(resultSet.getString("resource_type"));
-                int materialsNumber = resultSet.getInt("quantity");
-
-                map.put(resourceType, materialsNumber);
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            List<Tuple> list = session.createQuery(hql, Tuple.class).getResultList();
+            for (Tuple t: list) {
+                    map.put(t.get(0, ResourceType.class), t.get(1, Long.class));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return map;
     }

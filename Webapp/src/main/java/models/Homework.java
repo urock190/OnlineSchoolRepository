@@ -1,14 +1,29 @@
 package models;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+@Entity
+@Table(name = "homeworks", schema = "school_schema")
 public class Homework {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "homework_id")
     private Integer ID;
+    @Column(name = "name")
     private String name;
+    @Column(name = "lecture_id")
     private int lectureID;
+    @Column(name = "task")
     private String task;
+    @Column(name = "number_of_tasks")
     private int numberOfTasks;
+    @Column(name = "deadline")
     private LocalDateTime deadline;
+
+    public Homework() {}
 
     public Homework(Integer ID, String name, int lectureID, String task, int numberOfTasks, LocalDateTime deadline) {
         this.ID = ID;
@@ -65,5 +80,20 @@ public class Homework {
 
     public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Homework that = (Homework) o;
+        return Objects.equals(ID, that.ID) && Objects.equals(name, that.name) && Objects.equals(task, that.task) &&
+                Objects.equals(numberOfTasks, that.numberOfTasks) && Objects.equals(deadline, that.deadline) &&
+                lectureID == that.lectureID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ID, name, task, numberOfTasks, deadline, lectureID);
     }
 }

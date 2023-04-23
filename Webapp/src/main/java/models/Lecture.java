@@ -1,16 +1,32 @@
 package models;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "lectures", schema = "school_schema")
 public class Lecture {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "lecture_id")
     private Integer ID;
+    @Column(name = "name")
     private String name;
+    @Column(name = "amount")
     private int amount;
+    @Column(name = "description")
     private String description;
+    @Column(name = "creation_date")
     private LocalDateTime creationDate;
+    @Column(name = "lecture_date")
     private LocalDateTime lectureDate;
+    @Column(name = "teacher_id")
     private int teacherID;
+    @Column(name = "course_id")
     private int courseID;
+
+    public Lecture() {}
 
     public Lecture(Integer ID, String name, int amount, String description, LocalDateTime creationDate,
                    LocalDateTime lectureDate, int teacherID, int courseID) {

@@ -31,7 +31,7 @@ public class Config {
     @Bean
     @Scope("singleton")
     public AddMatRepositoryDAO addMatRepositoryDAO() {
-        return new AddMatRepositoryDAO(dataSource());
+        return new AddMatRepositoryDAO();
     }
 
     @Bean
@@ -43,7 +43,7 @@ public class Config {
     @Bean
     @Scope("singleton")
     public HomeworkRepositoryDAO homeworkRepositoryDAO() {
-        return new HomeworkRepositoryDAO(dataSource());
+        return new HomeworkRepositoryDAO();
     }
 
     @Bean

@@ -25,7 +25,7 @@ public class AdMatsNumberByResourceTypeController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<ResourceType, Integer> map = matRepositoryDAO.numberOfAdMatsByResourceType();
+        Map<ResourceType, Long> map = matRepositoryDAO.numberOfAdMatsByResourceType();
         req.setAttribute("map", map);
 
         req.getRequestDispatcher("/WEB-INF/views/number-of-ad-mats-by-resource-type.jsp").forward(req, resp);
