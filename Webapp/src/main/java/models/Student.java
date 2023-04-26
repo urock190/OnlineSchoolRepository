@@ -2,6 +2,8 @@ package models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -17,17 +19,23 @@ public class Student {
     private String lastName;
     @Column(name = "phone")
     private String phone;
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(name = "student_course_relation",
+            joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "course_id"))
+    private List<Course> courses = new ArrayList<>();
 
     public Student() {}
 
-    public Student(Integer ID, String name, String lastName, String phone, String email) {
+    public Student(Integer ID, String name, String lastName, String phone, String email, List<Course> courses) {
         this.ID = ID;
         this.name = name;
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
+        this.courses = courses;
     }
 
     public Integer getID() {
@@ -82,5 +90,13 @@ public class Student {
     @Override
     public int hashCode() {
         return Objects.hash(ID, name, lastName, phone, email);
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 }

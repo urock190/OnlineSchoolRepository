@@ -14,6 +14,10 @@
     <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
     <mapping class="models.AdditionalMaterial"/>
     <mapping class="models.Homework"/>
+    <mapping class="models.Lecture"/>
+    <mapping class="models.Teacher"/>
+    <mapping class="models.Student"/>
+    <mapping class="models.Course"/>
   </session-factory>
 
 </hibernate-configuration>

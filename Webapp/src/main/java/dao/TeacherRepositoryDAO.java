@@ -1,116 +1,62 @@
 package dao;
 
 import models.Teacher;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
+import util.HibernateUtil;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TeacherRepositoryDAO {
-    private final DataSource dataSource;
 
-    public TeacherRepositoryDAO(DataSource dataSource){
-        this.dataSource = dataSource;
-    }
+    public TeacherRepositoryDAO() {}
 
     public List<Teacher> getAll(){
-        String procedure = "{call getDataFromTable(?)}";
-        List<Teacher> listFromDB = new ArrayList<>();
+        List<Teacher> listFromDB;
 
-        try (Connection connection = dataSource.getConnection();
-             CallableStatement statement = connection.prepareCall(procedure)) {
-
-            statement.setString(1, "teachers");
-
-            ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()){
-                Teacher teacher = createFromResultSet(resultSet);
-                listFromDB.add(teacher);
-            }
-            resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Teacher> query = session.createQuery("from Teacher", Teacher.class).setReadOnly(true);
+            listFromDB = query.list();
         }
         return listFromDB;
     }
 
-    private Teacher createFromResultSet(ResultSet resultSet) throws SQLException {
-        int id = resultSet.getInt("teacher_id");
-        String name = resultSet.getString("name");
-        String lastName = resultSet.getString("last_name");
-        String phone = resultSet.getString("phone");
-        String email = resultSet.getString("email");
-        int courseID = resultSet.getInt("course_id");
-
-        return new Teacher(id, name, lastName, phone, email, courseID);
-    }
-
     public void insert(Teacher teacher){
-        String query = "INSERT INTO school_schema.teachers (teacher_id, name, last_name, phone, email, course_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?);";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement prepStatement = connection.prepareStatement(query)){
-            prepStatement.setInt(1, teacher.getID());
-            prepStatement.setString(2, teacher.getName());
-            prepStatement.setString(3, teacher.getLastName());
-            prepStatement.setString(4, teacher.getPhone());
-            prepStatement.setString(5, teacher.getEmail());
-            prepStatement.setInt(6, teacher.getCourseID());
-
-            prepStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.persist(teacher);
+            transaction.commit();
         }
     }
 
     public void deleteByID(int id){
-        String query = "DELETE FROM school_schema.teachers WHERE (teacher_id = ?);";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement prepStatement = connection.prepareStatement(query)){
+        String hql = "DELETE FROM Teacher WHERE ID = :ID";
 
-            prepStatement.setInt(1, id);
-            prepStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+            Query<Teacher> query = session.createQuery(hql, Teacher.class);
+            query.setParameter("ID", id);
+            query.executeUpdate();
         }
     }
 
     public Teacher getByID(int ID){
-        String query = "SELECT * FROM school_schema.teachers WHERE (teacher_id = ?);";
-        Teacher teacher = null;
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement prepStatement = connection.prepareStatement(query)){
-
-            prepStatement.setInt(1, ID);
-            ResultSet resultSet = prepStatement.executeQuery();
-            while(resultSet.next()){
-                teacher = createFromResultSet(resultSet);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Teacher teacher;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+            teacher = session.get(Teacher.class, ID);
         }
         return teacher;
     }
 
     //Get teachers filtered by the first letter of their last name. All up to the letter N (or Ukrainian 'H') exclusively.
     public List<Teacher> teachersWithLastNameToTheLetterN(){
-        String query = "SELECT * FROM school_schema.teachers WHERE last_name REGEXP '^[A-MА-М]';";
-        List <Teacher> list = new ArrayList<>();
+        String sql = "SELECT * FROM teachers WHERE last_name regexp '^[A-MА-М]'";
+        List <Teacher> list;
 
-        try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)){
-
-            while(resultSet.next()){
-                Teacher teacher = createFromResultSet(resultSet);
-                list.add(teacher);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery<Teacher> query = session.createNativeQuery(sql, Teacher.class);
+            list = query.getResultList();
         }
         return list;
     }

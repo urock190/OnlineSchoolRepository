@@ -84,8 +84,8 @@ public class AddMatRepositoryDAO {
         List<AdditionalMaterial> listFromDB;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<AdditionalMaterial> query = session.createQuery("from AdditionalMaterial", AdditionalMaterial.class);
-//                    setReadOnly(true);
+            Query<AdditionalMaterial> query = session.createQuery("from AdditionalMaterial", AdditionalMaterial.class).
+                    setReadOnly(true);
             listFromDB = query.list();
         }
         return listFromDB;

@@ -12,21 +12,21 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource("classpath:db.properties")
+//@PropertySource("classpath:db.properties")
 public class Config {
-    @Autowired
-    private Environment environment;
-
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(environment.getRequiredProperty("DRIVER"));
-        dataSource.setUrl(environment.getRequiredProperty("URL"));
-        dataSource.setUsername(environment.getRequiredProperty("USER"));
-        dataSource.setPassword(environment.getRequiredProperty("PASSWORD"));
-
-        return dataSource;
-    }
+//    @Autowired
+//    private Environment environment;
+//
+//    @Bean
+//    public DataSource dataSource() {
+//        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//        dataSource.setDriverClassName(environment.getRequiredProperty("DRIVER"));
+//        dataSource.setUrl(environment.getRequiredProperty("URL"));
+//        dataSource.setUsername(environment.getRequiredProperty("USER"));
+//        dataSource.setPassword(environment.getRequiredProperty("PASSWORD"));
+//
+//        return dataSource;
+//    }
 
     @Bean
     @Scope("singleton")
@@ -37,7 +37,7 @@ public class Config {
     @Bean
     @Scope("singleton")
     public CourseRepositoryDAO courseRepositoryDAO() {
-        return new CourseRepositoryDAO(dataSource());
+        return new CourseRepositoryDAO();
     }
 
     @Bean
@@ -49,18 +49,18 @@ public class Config {
     @Bean
     @Scope("singleton")
     public LectureRepositoryDAO lectureRepositoryDAO() {
-        return new LectureRepositoryDAO(dataSource());
+        return new LectureRepositoryDAO();
     }
 
     @Bean
     @Scope("singleton")
     public StudentRepositoryDAO studentRepositoryDAO() {
-        return new StudentRepositoryDAO(dataSource());
+        return new StudentRepositoryDAO();
     }
 
     @Bean
     @Scope("singleton")
     public TeacherRepositoryDAO teacherRepositoryDAO() {
-        return new TeacherRepositoryDAO(dataSource());
+        return new TeacherRepositoryDAO();
     }
 }

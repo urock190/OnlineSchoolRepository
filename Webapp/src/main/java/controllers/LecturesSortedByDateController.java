@@ -24,7 +24,7 @@ public class LecturesSortedByDateController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<String, Integer> map = lectureRepositoryDAO.getUntil2024sortedByLectureDate();
+        Map<String, Long> map = lectureRepositoryDAO.getUntil2024sortedByLectureDate();
         req.setAttribute("map", map);
 
         req.getRequestDispatcher("/WEB-INF/views/lectures-sorted-by-date.jsp").forward(req, resp);

@@ -3,6 +3,9 @@ package models;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "lectures", schema = "school_schema")
@@ -25,11 +28,18 @@ public class Lecture {
     private int teacherID;
     @Column(name = "course_id")
     private int courseID;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_id", referencedColumnName = "lecture_id")
+    private List<AdditionalMaterial> materials = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_id", referencedColumnName = "lecture_id")
+    private List<Homework> homeworks = new ArrayList<>();
 
     public Lecture() {}
 
     public Lecture(Integer ID, String name, int amount, String description, LocalDateTime creationDate,
-                   LocalDateTime lectureDate, int teacherID, int courseID) {
+                   LocalDateTime lectureDate, int teacherID, int courseID, List<Homework> homeworks,
+                   List<AdditionalMaterial> materials) {
         this.ID = ID;
         this.name = name;
         this.amount = amount;
@@ -38,10 +48,12 @@ public class Lecture {
         this.lectureDate = lectureDate;
         this.teacherID = teacherID;
         this.courseID = courseID;
+        this.homeworks = homeworks;
+        this.materials = materials;
     }
 
     public Lecture(Integer ID, String name, int amount, String description, LocalDateTime lectureDate,
-                   int teacherID, int courseID) {
+                   int teacherID, int courseID, List<Homework> homeworks, List<AdditionalMaterial> materials) {
         this.ID = ID;
         this.name = name;
         this.amount = amount;
@@ -50,6 +62,8 @@ public class Lecture {
         this.lectureDate = lectureDate;
         this.teacherID = teacherID;
         this.courseID = courseID;
+        this.homeworks = homeworks;
+        this.materials = materials;
     }
 
     public Integer getID() {
@@ -114,5 +128,38 @@ public class Lecture {
 
     public void setCourseID(int courseID) {
         this.courseID = courseID;
+    }
+
+    public List<AdditionalMaterial> getMaterials() {
+        return materials;
+    }
+
+    public void setMaterials(List<AdditionalMaterial> materials) {
+        this.materials = materials;
+    }
+
+    public List<Homework> getHomeworks() {
+        return homeworks;
+    }
+
+    public void setHomeworks(List<Homework> homeworks) {
+        this.homeworks = homeworks;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Lecture lecture)) return false;
+        return getAmount() == lecture.getAmount() && getTeacherID() == lecture.getTeacherID() &&
+                getCourseID() == lecture.getCourseID() && Objects.equals(getID(), lecture.getID()) &&
+                Objects.equals(getName(), lecture.getName()) && Objects.equals(getDescription(), lecture.getDescription())
+                && Objects.equals(getCreationDate(), lecture.getCreationDate()) &&
+                Objects.equals(getLectureDate(), lecture.getLectureDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getID(), getName(), getAmount(), getDescription(), getCreationDate(), getLectureDate(),
+                getTeacherID(), getCourseID());
     }
 }

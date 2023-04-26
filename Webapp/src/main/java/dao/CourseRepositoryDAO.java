@@ -1,87 +1,50 @@
 package dao;
 
 import models.Course;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import util.HibernateUtil;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CourseRepositoryDAO {
-    private final DataSource dataSource;
 
-    public CourseRepositoryDAO(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    public CourseRepositoryDAO() {}
 
     public List<Course> getAll(){
-        String procedure = "{call getDataFromTable(?)}";
-        List<Course> listFromDB = new ArrayList<>();
+        List<Course> listFromDB;
 
-        try (Connection connection = dataSource.getConnection();
-             CallableStatement statement = connection.prepareCall(procedure)) {
-
-            statement.setString(1, "courses");
-
-            ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()){
-                int id = resultSet.getInt("course_id");
-                String name = resultSet.getString("name");
-
-                Course newAddMat = new Course(id, name);
-                listFromDB.add(newAddMat);
-            }
-            resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Course> query = session.createQuery("from Course", Course.class).setReadOnly(true);
+            listFromDB = query.list();
         }
         return listFromDB;
     }
 
     public void insert(Course course){
-        String query = "INSERT INTO school_schema.courses (course_id, name) VALUES (?, ?);";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement prepStatement = connection.prepareStatement(query)){
-            prepStatement.setInt(1, course.getID());
-            prepStatement.setString(2, course.getName());
-
-            prepStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.persist(course);
+            transaction.commit();
         }
     }
 
     public void deleteByID(int id){
-        String query = "DELETE FROM school_schema.courses WHERE (course_id = ?);";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement prepStatement = connection.prepareStatement(query)){
+        String hql = "DELETE FROM Course WHERE ID = :ID";
 
-            prepStatement.setInt(1, id);
-            prepStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+            Query<Course> query = session.createQuery(hql, Course.class);
+            query.setParameter("ID", id);
+            query.executeUpdate();
         }
     }
 
     public Course getByID(int ID){
-        String query = "SELECT * FROM school_schema.courses WHERE (course_id = ?);";
-        Course course = null;
+        Course course;
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement prepStatement = connection.prepareStatement(query)){
-
-            prepStatement.setInt(1, ID);
-            ResultSet resultSet = prepStatement.executeQuery();
-            while(resultSet.next()){
-                int id = resultSet.getInt("course_id");
-                String name = resultSet.getString("name");
-
-                course = new Course(id, name);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+            course = session.get(Course.class, ID);
         }
         return course;
     }

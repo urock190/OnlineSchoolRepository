@@ -25,7 +25,7 @@ public class StudentsByCoursesNumberAndSortedByLastName extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<Student, Integer> map = studentRepositoryDAO.getGroupedByCoursesNumberAndSortedByLastName();
+        Map<Student, Long> map = studentRepositoryDAO.getGroupedByCoursesNumberAndSortedByLastName();
         req.setAttribute("map", map);
 
         req.getRequestDispatcher("/WEB-INF/views/students-by-courses-number-sorted-by-last-name.jsp").
