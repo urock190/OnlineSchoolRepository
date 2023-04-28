@@ -1,12 +1,16 @@
 package models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "students", schema = "school_schema")
 public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)

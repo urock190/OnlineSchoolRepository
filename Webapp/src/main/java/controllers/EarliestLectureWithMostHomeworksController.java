@@ -17,7 +17,7 @@ public class EarliestLectureWithMostHomeworksController extends HttpServlet {
     private LectureRepositoryDAO lectureRepositoryDAO;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         lectureRepositoryDAO = new AnnotationConfigApplicationContext(Config.class).
                 getBean(LectureRepositoryDAO.class);
     }

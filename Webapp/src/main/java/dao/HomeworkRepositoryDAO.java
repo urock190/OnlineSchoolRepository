@@ -43,10 +43,16 @@ public class HomeworkRepositoryDAO {
     }
 
     public void insert(Homework homework){
+        Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             session.persist(homework);
             transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null){
+                transaction.rollback();
+            }
         }
     }
 

@@ -2,25 +2,22 @@ package models;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "courses", schema = "school_schema")
 public class Course {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "course_id")
     private Integer ID;
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "course_id", referencedColumnName = "course_id")
-    private List<Lecture> lectures = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<Lecture> lectures = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "course_id", referencedColumnName = "course_id")
-    private List<Teacher> teachers = new ArrayList<>();
+    private Set<Teacher> teachers = new HashSet<>();
 
     public Course() {}
 
@@ -29,7 +26,7 @@ public class Course {
         this.name = name;
     }
 
-    public Course(Integer ID, String name, List<Lecture> lectures, List<Teacher> teachers) {
+    public Course(Integer ID, String name, Set<Lecture> lectures, Set<Teacher> teachers) {
         this.ID = ID;
         this.name = name;
         this.lectures = lectures;
@@ -65,19 +62,19 @@ public class Course {
         return Objects.hash(ID, name);
     }
 
-    public List<Teacher> getTeachers() {
+    public Set<Teacher> getTeachers() {
         return teachers;
     }
 
-    public void setTeachers(List<Teacher> teachers) {
+    public void setTeachers(Set<Teacher> teachers) {
         this.teachers = teachers;
     }
 
-    public List<Lecture> getLectures() {
+    public Set<Lecture> getLectures() {
         return lectures;
     }
 
-    public void setLectures(List<Lecture> lectures) {
+    public void setLectures(Set<Lecture> lectures) {
         this.lectures = lectures;
     }
 }

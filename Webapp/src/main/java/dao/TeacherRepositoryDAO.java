@@ -17,17 +17,24 @@ public class TeacherRepositoryDAO {
         List<Teacher> listFromDB;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Teacher> query = session.createQuery("from Teacher", Teacher.class).setReadOnly(true);
+            Query<Teacher> query = session.createQuery("from Teacher t left join fetch t.lectures", Teacher.class).
+                    setHint("org.hibernate.cacheable", true).setReadOnly(true);
             listFromDB = query.list();
         }
         return listFromDB;
     }
 
     public void insert(Teacher teacher){
+        Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             session.persist(teacher);
             transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null){
+                transaction.rollback();
+            }
         }
     }
 

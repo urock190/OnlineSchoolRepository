@@ -19,7 +19,8 @@ public class StudentRepositoryDAO {
         List<Student> listFromDB;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Student> query = session.createQuery("from Student", Student.class).setReadOnly(true);
+            Query<Student> query = session.createQuery("from Student s left join fetch s.courses", Student.class).
+                    setHint("org.hibernate.cacheable", true).setReadOnly(true);
             listFromDB = query.list();
         }
         return listFromDB;
@@ -36,10 +37,16 @@ public class StudentRepositoryDAO {
     }
 
     public void insert(Student student){
+        Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             session.persist(student);
             transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null){
+                transaction.rollback();
+            }
         }
     }
 
@@ -62,7 +69,7 @@ public class StudentRepositoryDAO {
     }
 
     public Map<Student, Long> getGroupedByCoursesNumberAndSortedByLastName(){
-        String hql = """
+        String sql = """
         SELECT last_name, name, (SELECT COUNT(*)
         FROM school_schema.student_course_relation
         WHERE student_id = students.student_id) AS courses_number
@@ -73,7 +80,7 @@ public class StudentRepositoryDAO {
         Map<Student, Long> map = new LinkedHashMap<>();
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            List<Tuple> list = session.createNativeQuery(hql, Tuple.class).getResultList();
+            List<Tuple> list = session.createNativeQuery(sql, Tuple.class).getResultList();
             for (Tuple t: list){
                 Student student = new Student(); student.setLastName(t.get(0, String.class));
                 student.setName(t.get(1, String.class));

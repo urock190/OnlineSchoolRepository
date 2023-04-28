@@ -18,7 +18,7 @@ public class AdMatsNumberByResourceTypeController extends HttpServlet {
     private AddMatRepositoryDAO matRepositoryDAO;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         matRepositoryDAO = new AnnotationConfigApplicationContext(Config.class).
                 getBean(AddMatRepositoryDAO.class);
     }

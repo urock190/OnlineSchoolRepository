@@ -44,10 +44,16 @@ public class AddMatRepositoryDAO {
         }
 
         public void insert(AdditionalMaterial material){
+            Transaction transaction = null;
             try (Session session = HibernateUtil.getSessionFactory().openSession()){
-                Transaction transaction = session.beginTransaction();
+                transaction = session.beginTransaction();
                 session.persist(material);
                 transaction.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (transaction != null){
+                    transaction.rollback();
+                }
             }
         }
 

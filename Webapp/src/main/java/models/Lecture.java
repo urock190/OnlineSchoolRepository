@@ -1,13 +1,15 @@
 package models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cache;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "lectures", schema = "school_schema")
 public class Lecture {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,16 +32,16 @@ public class Lecture {
     private int courseID;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", referencedColumnName = "lecture_id")
-    private List<AdditionalMaterial> materials = new ArrayList<>();
+    private Set<AdditionalMaterial> materials = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", referencedColumnName = "lecture_id")
-    private List<Homework> homeworks = new ArrayList<>();
+    private Set<Homework> homeworks = new HashSet<>();
 
     public Lecture() {}
 
     public Lecture(Integer ID, String name, int amount, String description, LocalDateTime creationDate,
-                   LocalDateTime lectureDate, int teacherID, int courseID, List<Homework> homeworks,
-                   List<AdditionalMaterial> materials) {
+                   LocalDateTime lectureDate, int teacherID, int courseID, Set<Homework> homeworks,
+                   Set<AdditionalMaterial> materials) {
         this.ID = ID;
         this.name = name;
         this.amount = amount;
@@ -53,7 +55,7 @@ public class Lecture {
     }
 
     public Lecture(Integer ID, String name, int amount, String description, LocalDateTime lectureDate,
-                   int teacherID, int courseID, List<Homework> homeworks, List<AdditionalMaterial> materials) {
+                   int teacherID, int courseID, Set<Homework> homeworks, Set<AdditionalMaterial> materials) {
         this.ID = ID;
         this.name = name;
         this.amount = amount;
@@ -130,19 +132,19 @@ public class Lecture {
         this.courseID = courseID;
     }
 
-    public List<AdditionalMaterial> getMaterials() {
+    public Set<AdditionalMaterial> getMaterials() {
         return materials;
     }
 
-    public void setMaterials(List<AdditionalMaterial> materials) {
+    public void setMaterials(Set<AdditionalMaterial> materials) {
         this.materials = materials;
     }
 
-    public List<Homework> getHomeworks() {
+    public Set<Homework> getHomeworks() {
         return homeworks;
     }
 
-    public void setHomeworks(List<Homework> homeworks) {
+    public void setHomeworks(Set<Homework> homeworks) {
         this.homeworks = homeworks;
     }
 

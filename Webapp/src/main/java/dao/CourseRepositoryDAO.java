@@ -1,5 +1,6 @@
 package dao;
 
+import jakarta.persistence.EntityGraph;
 import models.Course;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -16,17 +17,27 @@ public class CourseRepositoryDAO {
         List<Course> listFromDB;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Course> query = session.createQuery("from Course", Course.class).setReadOnly(true);
+            Query<Course> query = session.createQuery("from Course", Course.class);
+
+            EntityGraph<Course> entityGraph = session.createEntityGraph(Course.class);
+            entityGraph.addAttributeNodes("lectures", "teachers");
+            query.setHint("jakarta.persistence.fetchgraph", entityGraph);
             listFromDB = query.list();
         }
         return listFromDB;
     }
 
     public void insert(Course course){
+        Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             session.persist(course);
             transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null){
+                transaction.rollback();
+            }
         }
     }
 

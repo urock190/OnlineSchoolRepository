@@ -17,7 +17,7 @@ public class AddNewCourseController extends HttpServlet {
     private CourseRepositoryDAO courseRepositoryDAO;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         courseRepositoryDAO = new AnnotationConfigApplicationContext(Config.class).
                 getBean(CourseRepositoryDAO.class);
     }
