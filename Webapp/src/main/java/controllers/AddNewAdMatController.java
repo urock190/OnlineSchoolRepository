@@ -1,7 +1,6 @@
 package controllers;
 
 import beans.Config;
-import dao.AddMatRepositoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,17 +9,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import models.AdditionalMaterial;
 import models.ResourceType;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import service.AddMatService;
 
 import java.io.IOException;
 
 @WebServlet(name = "AddNewAdMatController", value = "/add-new-material")
 public class AddNewAdMatController extends HttpServlet {
-    private AddMatRepositoryDAO matRepositoryDAO;
+    private AddMatService matService;
 
     @Override
     public void init() {
-        matRepositoryDAO = new AnnotationConfigApplicationContext(Config.class).
-                getBean(AddMatRepositoryDAO.class);
+        matService = new AnnotationConfigApplicationContext(Config.class).getBean(AddMatService.class);
     }
 
     @Override
@@ -37,7 +36,7 @@ public class AddNewAdMatController extends HttpServlet {
         ResourceType resourceType = ResourceType.valueOf(req.getParameter("resourceType"));
 
         AdditionalMaterial material = new AdditionalMaterial(name, ID, resourceType, lectureID);
-        matRepositoryDAO.insert(material);
+        matService.insert(material);
         resp.sendRedirect(req.getContextPath()+"/ad-materials");
     }
 }

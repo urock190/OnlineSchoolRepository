@@ -1,7 +1,6 @@
 package controllers;
 
 import beans.Config;
-import dao.StudentRepositoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,23 +8,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Student;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import service.StudentService;
 
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "StudentsController", value = "/students")
 public class StudentsController extends HttpServlet {
-    private StudentRepositoryDAO studentRepositoryDAO;
+    private StudentService studentService;
 
     @Override
     public void init() {
-        studentRepositoryDAO = new AnnotationConfigApplicationContext(Config.class).
-                getBean(StudentRepositoryDAO.class);
+        studentService = new AnnotationConfigApplicationContext(Config.class).
+                getBean(StudentService.class);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Student> list = studentRepositoryDAO.getAll();
+        List<Student> list = studentService.getAll();
         req.setAttribute("list", list);
 
         req.getRequestDispatcher("/WEB-INF/views/students.jsp")

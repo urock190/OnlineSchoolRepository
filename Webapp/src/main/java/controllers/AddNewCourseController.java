@@ -1,7 +1,6 @@
 package controllers;
 
 import beans.Config;
-import dao.CourseRepositoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,17 +8,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Course;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import service.CourseService;
 
 import java.io.IOException;
 
 @WebServlet(name = "AddNewCourseController", value = "/add-new-course")
 public class AddNewCourseController extends HttpServlet {
-    private CourseRepositoryDAO courseRepositoryDAO;
+    private CourseService courseService;
 
     @Override
     public void init() {
-        courseRepositoryDAO = new AnnotationConfigApplicationContext(Config.class).
-                getBean(CourseRepositoryDAO.class);
+        courseService = new AnnotationConfigApplicationContext(Config.class).
+                getBean(CourseService.class);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class AddNewCourseController extends HttpServlet {
         String name = req.getParameter("name");
 
         Course course = new Course(ID, name);
-        courseRepositoryDAO.insert(course);
+        courseService.insert(course);
         resp.sendRedirect(req.getContextPath()+"/courses");
     }
 }
