@@ -28,6 +28,7 @@
       <configuration>
         <fileset id="fileset" name="Context" removed="false">
           <file>file://$MODULE_DIR$/src/main/java/beans/Config.java</file>
+          <file>file://$MODULE_DIR$/src/main/java/beans/WebappConfig.java</file>
         </fileset>
       </configuration>
     </facet>

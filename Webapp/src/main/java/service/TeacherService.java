@@ -34,6 +34,7 @@ public class TeacherService {
         return teacherRepositoryDAO.findById(ID).orElse(null);
     }
 
+    //Get teachers filtered by the first letter of their last name. All up to the letter N (or Ukrainian 'H') exclusively.
     public List<Teacher> teachersWithLastNameToTheLetterN() {
         return teacherRepositoryDAO.teachersWithLastNameToTheLetterN();
     }
