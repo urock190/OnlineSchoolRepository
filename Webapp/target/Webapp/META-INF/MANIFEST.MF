@@ -2,4 +2,8 @@ Manifest-Version: 1.0
 Created-By: IntelliJ IDEA
 Built-By: Acer
 Build-Jdk: 17.0.4
+Implementation-Title: Webapp Maven Webapp
+Implementation-Version: 1.0-SNAPSHOT
+Implementation-Vendor-Id: onlineSchool
+Main-Class: ${start-class}
 

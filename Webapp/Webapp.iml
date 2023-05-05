@@ -2,7 +2,7 @@
 <module version="4">
   <component name="AdditionalModuleElements">
     <content url="file://$MODULE_DIR$" dumb="true">
-      <sourceFolder url="file://$MODULE_DIR$/src/main/webapp/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
     </content>
   </component>
   <component name="FacetManager">
@@ -25,12 +25,7 @@
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
-      <configuration>
-        <fileset id="fileset" name="Context" removed="false">
-          <file>file://$MODULE_DIR$/src/main/java/beans/Config.java</file>
-          <file>file://$MODULE_DIR$/src/main/java/beans/WebappConfig.java</file>
-        </fileset>
-      </configuration>
+      <configuration />
     </facet>
   </component>
 </module>
