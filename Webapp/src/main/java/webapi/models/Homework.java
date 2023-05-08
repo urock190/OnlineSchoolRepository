@@ -1,6 +1,7 @@
 package webapi.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -8,19 +9,27 @@ import java.util.Objects;
 @Entity
 @Table(name = "homeworks", schema = "school_schema")
 public class Homework {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "homework_id")
+    @Column(name = "homework_id", nullable = false)
+    @NotNull(message = "{id.notnull}")
+    @Positive(message = "{id.positive}")
     private Integer ID;
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
+    @NotBlank(message = "{name.not-blank}")
+    @Size(max = 75, message = "{name.size}")
     private String name;
     @Column(name = "lecture_id")
-    private int lectureID;
+    @Positive(message = "{id.positive}")
+    private Integer lectureID;
     @Column(name = "task")
+    @Size(max = 200, message = "{task.size}")
     private String task;
     @Column(name = "number_of_tasks")
-    private int numberOfTasks;
-    @Column(name = "deadline")
+    @Positive(message = "{number-of-tasks.positive}")
+    private Integer numberOfTasks;
+    @Column(name = "deadline", nullable = false)
+    @NotNull(message = "{date.notnull}")
+    @Future(message = "{date.future}")
     private LocalDateTime deadline;
 
     public Homework() {}

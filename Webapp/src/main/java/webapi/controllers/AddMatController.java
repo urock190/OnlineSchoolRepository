@@ -1,5 +1,6 @@
 package webapi.controllers;
 
+import jakarta.validation.Valid;
 import webapi.models.AdditionalMaterial;
 import webapi.models.ResourceType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class AddMatController {
     }
 
     @PostMapping("/add-new-material")
-    public String saveAddMaterial(AdditionalMaterial material) {
+    public String saveAddMaterial(@Valid AdditionalMaterial material) {
         matService.insert(material);
         return "redirect:/ad-materials";
     }

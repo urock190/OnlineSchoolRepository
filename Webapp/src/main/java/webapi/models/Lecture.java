@@ -1,6 +1,7 @@
 package webapi.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cache;
 
@@ -12,24 +13,34 @@ import java.util.*;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "lectures", schema = "school_schema")
 public class Lecture {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "lecture_id")
+    @Column(name = "lecture_id", nullable = false)
+    @NotNull(message = "{id.notnull}")
+    @Positive(message = "{id.positive}")
     private Integer ID;
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
+    @NotBlank(message = "{name.not-blank}")
+    @Size(max = 75, message = "{name.size}")
     private String name;
     @Column(name = "amount")
+    @Positive
     private int amount;
     @Column(name = "description")
+    @Size(max = 200, message = "{description.size}")
     private String description;
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", nullable = false)
+    @NotNull(message = "{date.notnull}")
     private LocalDateTime creationDate;
-    @Column(name = "lecture_date")
+    @Column(name = "lecture_date", nullable = false)
+    @NotNull(message = "{date.notnull}")
+    @Future(message = "{date.future}")
     private LocalDateTime lectureDate;
     @Column(name = "teacher_id")
-    private int teacherID;
+    @Positive(message = "{id.positive}")
+    private Integer teacherID;
     @Column(name = "course_id")
-    private int courseID;
+    @Positive(message = "{id.positive}")
+    private Integer courseID;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", referencedColumnName = "lecture_id")
     private Set<AdditionalMaterial> materials = new HashSet<>();

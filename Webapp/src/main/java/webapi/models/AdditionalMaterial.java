@@ -1,21 +1,31 @@
 package webapi.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "additional_materials", schema = "school_schema")
 public class AdditionalMaterial {
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
+    @NotBlank(message = "{name.not-blank}")
+    @Size(max = 200, message = "{name.size}")
     private String name;
     @Id
-    @Column(name = "material_id")
+    @Column(name = "material_id", nullable = false)
+    @NotNull(message = "{id.notnull}")
+    @Positive(message = "{id.positive}")
     private Integer ID;
     @Column(name = "lecture_id")
-    private int lectureID;
-    @Column(name = "resource_type")
+    @Positive(message = "{id.positive}")
+    private Integer lectureID;
+    @Column(name = "resource_type", nullable = false)
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "{resource-type.notnull}")
     private ResourceType resourceType;
 
     public AdditionalMaterial() {}

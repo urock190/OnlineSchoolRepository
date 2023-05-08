@@ -49,7 +49,7 @@ CREATE TABLE `lectures` (
 );
 
 CREATE TABLE `homeworks` (
-  `homework_id` int unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `homework_id` int unsigned PRIMARY KEY NOT NULL,
   `name` varchar(75) NOT NULL,
   `task` varchar(200) DEFAULT NULL,
   `number_of_tasks` tinyint unsigned DEFAULT NULL,

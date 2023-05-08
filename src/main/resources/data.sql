@@ -26,12 +26,12 @@ VALUES ('lecture 1st', 3, 'some description', now(), '2023.11.03 15:00:00', 1, 1
        ('lecture 4th', 2, 'some description #4', now(), '2023.11.05 11:00:00', 4, 1),
        ('lecture 5th', 7, 'some description #5', now(), '2023.11.07 11:30:00', 5, 2);
 
-INSERT INTO homeworks (name, task, number_of_tasks, deadline, lecture_id)
-VALUES ('Homework #1', 'exercise 5, exercise 6', 2, '2023.11.04 12:00', 1),
-       ('Homework #2', 'ex.5, ex.7', 2, '2023.11.04 12:00', 2),
-       ('Homework #3', 'ex.21, read p.10, 11', 3, '2023.11.05 12:00', 3),
-       ('Homework #4', 'ex.11, 12, 14', 3, '2023.11.08 12:00', 5),
-       ('Homework #5', 'read chapter 2', 1, '2023.11.08 12:00', 5);
+INSERT INTO homeworks (homework_id, name, task, number_of_tasks, deadline, lecture_id)
+VALUES (1, 'Homework #1', 'exercise 5, exercise 6', 2, '2023.11.04 12:00', 1),
+       (2, 'Homework #2', 'ex.5, ex.7', 2, '2023.11.04 12:00', 2),
+       (3, 'Homework #3', 'ex.21, read p.10, 11', 3, '2023.11.05 12:00', 3),
+       (4, 'Homework #4', 'ex.11, 12, 14', 3, '2023.11.08 12:00', 5),
+       (5, 'Homework #5', 'read chapter 2', 1, '2023.11.08 12:00', 5);
 
 INSERT INTO additional_materials (material_id, name, resource_type, lecture_id)
 VALUES (1, 'Organic chemistry', 'BOOK', 1),

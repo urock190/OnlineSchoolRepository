@@ -1,6 +1,7 @@
 package webapi.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -13,17 +14,26 @@ import java.util.Objects;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "students", schema = "school_schema")
 public class Student {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "student_id")
+    @Column(name = "student_id", nullable = false)
+    @NotNull(message = "{id.notnull}")
+    @Positive(message = "{id.positive}")
     private Integer ID;
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
+    @NotBlank(message = "{name.not-blank}")
+    @Size(max = 30, message = "{name.size}")
     private String name;
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
+    @NotBlank(message = "{last-name.not-blank}")
+    @Size(max = 30, message = "{last-name.size}")
     private String lastName;
     @Column(name = "phone")
+    @Size(max = 25, message = "{phone.size}")
+    @Pattern(regexp = "(^\\+(\\(?\\d{3}\\)?-?){4} {0,4}$)", message = "{phone.pattern}")
     private String phone;
     @Column(name = "email", unique = true)
+    @Email(message = "{email.valid}")
+    @Size(max = 45, message = "{email.size}")
     private String email;
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "student_course_relation",

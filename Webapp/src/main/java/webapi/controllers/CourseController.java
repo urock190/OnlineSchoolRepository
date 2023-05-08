@@ -1,5 +1,6 @@
 package webapi.controllers;
 
+import jakarta.validation.Valid;
 import webapi.models.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,7 +33,7 @@ public class CourseController {
     }
 
     @PostMapping("/add-new-course")
-    public String saveCourse(Course course) {
+    public String saveCourse(@Valid Course course) {
         courseService.insert(course);
         return "redirect:/courses";
     }
