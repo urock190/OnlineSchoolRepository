@@ -9,4 +9,9 @@ public class MainController {
     public String getHomepage() {
         return "index";
     }
+
+    @GetMapping("/quick-test")
+    public String getQuickTestPage() {
+        return "quick-test";
+    }
 }

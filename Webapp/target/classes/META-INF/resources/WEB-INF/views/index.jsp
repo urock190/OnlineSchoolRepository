@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/styles.css">
 </head>
 <body style="width: auto">
-<p>Hello World!</p>
+<header class="header-flex"><p>Hello World! </p>
+    <p style="font-size: 18px"><a href="${pageContext.request.contextPath}/quick-test">Start quick Test</a></p>
+</header>
 <nav class="nav">
 <h1>
     <div class="flex-container">

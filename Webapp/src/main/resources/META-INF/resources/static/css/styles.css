@@ -23,6 +23,10 @@ body {
     background-color: #c9b307
 }
 
+.javascript {
+    background-color: cadetblue;
+}
+
 ul {
     line-height: 1.5;
 }
@@ -40,6 +44,14 @@ footer {
     min-width: 700px;
     height: 600px;
     max-height: 1080px;
+}
+
+.header-flex {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: auto;
 }
 
 tr:nth-child(2n) {
