@@ -9,6 +9,7 @@
 <body style="width: auto">
 <header class="header-flex"><p>Hello World! </p>
     <p style="font-size: 18px"><a href="${pageContext.request.contextPath}/quick-test">Start quick Test</a></p>
+    <p style="font-size: 18px"><a href="${pageContext.request.contextPath}/login">Log in </a></p>
 </header>
 <nav class="nav">
 <h1>
