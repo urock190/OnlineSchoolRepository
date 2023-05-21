@@ -66,6 +66,16 @@ CREATE TABLE `additional_materials` (
   FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`lecture_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS users_seq (
+  `user_id` int unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `last_name` varchar(30) NOT NULL,
+  `username` varchar(30) NOT NULL,
+  `password` varchar(60) NOT NULL,
+  `role` enum('ADMIN','USER') NOT NULL,
+  UNIQUE KEY `username_UNIQUE` (`username`)
+);
+
 DROP procedure IF EXISTS getDataFromTable;
 
 DELIMITER $$

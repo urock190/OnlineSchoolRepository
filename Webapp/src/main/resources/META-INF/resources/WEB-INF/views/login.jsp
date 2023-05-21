@@ -10,13 +10,13 @@
 <h1 style="text-align: center; margin-bottom: 40px;">Login form</h1>
 <form style="margin: 0 auto; width: 400px;" action="${pageContext.request.contextPath}/login" method="post">
     <div style="margin-top: 1em;">
-        <label for="username" style="display: inline-block; margin-left: 75px; text-align: left;">Username: </label>
+        <label for="username" class="login-label">Username: </label>
         <br>
         <input type="text" name="username" id="username" required class="login-input">
         <span id="nameError" style="margin-left: 75px; color: yellow"> Username incorrect </span>
     </div>
     <div style="margin-top: 1em;">
-        <label for="password" style="display: inline-block; margin-left: 75px; text-align: left;">Password: </label>
+        <label for="password" class="login-label">Password: </label>
         <br>
         <input type="password" name="password" id="password" required class="login-input">
         <span id="passwordError" style="margin-left: 75px; color: yellow"> Password incorrect </span>

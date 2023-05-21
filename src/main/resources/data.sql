@@ -45,3 +45,11 @@ VALUE (6, 'lecture 6th', 10, DEFAULT, '2023-03-20 14:18:59', '2023-10-11 12:00:0
 
 INSERT INTO additional_materials (material_id, name, resource_type, lecture_id)
 VALUE (6, 'https://github.com/urock190/OnlineSchoolRepository', 'URL', 4);
+
+INSERT INTO users_seq (name, last_name, username, password, role)
+VALUES ('Admin', 'Adminson', 'Admin1', '$2a$10$YcJKDDcxbZBfFez1Fsq54eI.SdIj/cW4PwFKK0iI1ScP3jQbc4Yii', 'ADMIN'),
+       #password 1234567abS
+       ('User', 'Userson', 'User1', '$2a$10$JWRBOii9ZDCM45p5Jv/pzOGncnVlukCKHQ/zoQrP3sJWwMgoD.jkO', 'USER'),
+       #password 11257qwerty
+       ('User', 'Albright', 'User2', '$2a$10$KUsw3PF3uGxxqaYE9/zCquehwggpyy9D/qTknUUteBQjigC/HEK0i', 'USER');
+       #password 11qwerty

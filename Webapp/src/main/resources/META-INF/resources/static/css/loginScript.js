@@ -37,8 +37,8 @@ form.addEventListener('submit', (event) => {
         return;
     }
 
-    if(name.split('').some((value) => !isNaN(value))){
-        nameError.innerHTML = 'Username cannot contain numbers or spaces.'
+    if(name.split('').some((value) => value==0 && value!=='0')){
+        nameError.innerHTML = 'Username cannot contain whitespaces.'
         nameError.style.display = 'block';
         return;
     }
